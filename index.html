@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Alex Morgan — Engineering Portfolio</title>
+  <title>Thomas Bainbridge — Engineering Portfolio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
@@ -36,12 +36,10 @@
       overflow-x: hidden;
     }
 
-    /* ── SCROLLBAR ── */
     ::-webkit-scrollbar { width: 4px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
 
-    /* ── NOISE OVERLAY ── */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -51,7 +49,6 @@
       z-index: 1000;
     }
 
-    /* ── NAV ── */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
@@ -83,7 +80,6 @@
     }
     .nav-links a:hover { color: var(--text); }
 
-    /* ── HERO ── */
     #hero {
       min-height: 100vh;
       display: grid;
@@ -139,7 +135,7 @@
       font-size: 17px;
       font-weight: 300;
       color: #b5b2aa;
-      max-width: 440px;
+      max-width: 520px;
       line-height: 1.75;
       margin-bottom: 48px;
       opacity: 0; animation: fadeUp 0.7s ease 0.4s forwards;
@@ -247,7 +243,6 @@
       animation: pulse 2s ease-in-out infinite;
     }
 
-    /* ── SECTIONS ── */
     section { padding: 100px 48px; }
     .section-label {
       display: flex; align-items: center; gap: 12px;
@@ -276,7 +271,6 @@
     }
     h2.section-title em { font-style: italic; color: var(--accent); }
 
-    /* ── ABOUT ── */
     #about { background: var(--bg2); }
     .about-grid {
       display: grid;
@@ -321,7 +315,6 @@
       text-transform: uppercase;
     }
 
-    /* ── SKILLS ── */
     #skills { background: var(--bg); }
     .skills-grid {
       display: grid;
@@ -362,7 +355,6 @@
       letter-spacing: 0.04em;
     }
 
-    /* ── PROJECTS ── */
     #projects { background: var(--bg2); }
     .projects-list { display: flex; flex-direction: column; gap: 2px; }
     .project-item {
@@ -375,7 +367,6 @@
       align-items: start;
       gap: 32px;
       transition: border-color 0.2s, background 0.2s;
-      cursor: pointer;
       text-decoration: none;
       color: inherit;
     }
@@ -426,7 +417,6 @@
     }
     .project-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
 
-    /* ── EXPERIENCE ── */
     #experience { background: var(--bg); }
     .timeline { position: relative; padding-left: 32px; }
     .timeline::before {
@@ -472,29 +462,30 @@
       max-width: 600px;
     }
 
-    /* ── CONTACT ── */
     #contact {
       background: var(--bg2);
       text-align: center;
     }
-    .contact-inner { max-width: 600px; margin: 0 auto; }
+    .contact-inner { max-width: 700px; margin: 0 auto; }
     .contact-inner .section-label { justify-content: center; }
     .contact-inner .section-label::before,
     .contact-inner .section-label::after { display: none; }
     .contact-email {
       font-family: var(--serif);
-      font-size: clamp(28px, 4vw, 44px);
+      font-size: clamp(24px, 3.5vw, 38px);
       color: var(--text);
       text-decoration: none;
       display: block;
       margin: 32px 0;
       transition: color 0.2s;
+      word-break: break-word;
     }
     .contact-email:hover { color: var(--accent); }
     .social-links {
       display: flex; justify-content: center;
       gap: 24px; list-style: none;
       margin-top: 40px;
+      flex-wrap: wrap;
     }
     .social-links a {
       font-family: var(--mono);
@@ -507,7 +498,6 @@
     }
     .social-links a:hover { color: var(--accent); }
 
-    /* ── FOOTER ── */
     footer {
       border-top: 1px solid var(--line);
       padding: 24px 48px;
@@ -521,7 +511,6 @@
       color: var(--muted);
     }
 
-    /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(20px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -548,7 +537,6 @@
       transform: translateY(0);
     }
 
-    /* ── RESPONSIVE ── */
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
       .nav-links { display: none; }
@@ -571,7 +559,7 @@
 
   <!-- NAV -->
   <nav id="nav">
-    <a href="#" class="nav-logo">AM.dev</a>
+    <a href="#" class="nav-logo">TB.dev</a>
     <ul class="nav-links">
       <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
@@ -586,12 +574,13 @@
     <div class="hero-grid-bg"></div>
     <div class="hero-left">
       <div class="hero-tag">Postgraduate Engineer</div>
-      <h1 class="hero-name">Alex<br><em>Morgan</em></h1>
-      <p class="hero-role">MSc Mechanical Engineering · University of [City]</p>
+      <h1 class="hero-name">Thomas<br><em>Bainbridge</em></h1>
+      <p class="hero-role">Computational Fluid Dynamics · Mechanical Engineering · Python</p>
       <p class="hero-desc">
-        I design and build systems at the intersection of mechanical engineering
-        and computational modelling — turning complex problems into elegant,
-        functional solutions.
+        I build engineering tools and simulation-driven workflows across
+        computational fluid dynamics, mechanical engineering, and computational
+        modelling — with a focus on practical analysis, automation, and
+        real-world engineering problems.
       </p>
       <div class="hero-ctas">
         <a href="#projects" class="btn-primary">View Projects</a>
@@ -603,13 +592,13 @@
         <div class="hero-circle"></div>
         <div class="hero-circle hero-circle-2"></div>
         <div class="hero-center-box">
-          <span>projects</span>
-          <strong>6+</strong>
-          <span>completed</span>
+          <span>focus</span>
+          <strong>CFD</strong>
+          <span>engineering</span>
         </div>
       </div>
     </div>
-    <div class="status-dot">Available for opportunities</div>
+    <div class="status-dot">Open to engineering opportunities</div>
   </section>
 
   <!-- ABOUT -->
@@ -617,40 +606,41 @@
     <div class="section-label">01 — About</div>
     <div class="about-grid">
       <div class="about-text reveal">
-        <h2 class="section-title">Building things<br>that <em>actually work</em></h2>
+        <h2 class="section-title">Engineering, simulation,<br>and <em>practical problem solving</em></h2>
         <p>
-          I'm a postgraduate engineering student currently pursuing my MSc,
-          with a focus on [your specialism here]. My work lives at the crossroads
-          of simulation, design, and real-world testing.
+          I'm a postgraduate engineer with a background in mechanical engineering
+          and a current focus on computational fluid dynamics. My work centres on
+          using simulation, coding, and structured analysis to solve engineering
+          problems clearly and rigorously.
         </p>
         <p>
-          Before my masters, I completed a BEng in Mechanical Engineering,
-          where I developed a strong foundation in thermodynamics, structural
-          analysis, and CAD modelling. I'm particularly interested in
-          sustainable engineering and how computational tools can accelerate
-          the design process.
+          Alongside academic work, I build engineering software and technical
+          portfolio projects in Python, ranging from performance analysis tools
+          to simulation workflows and data-driven engineering applications.
         </p>
         <p>
-          Outside of academia, I enjoy [hobby], [hobby], and contributing
-          to open-source engineering tools.
+          Long term, I'm interested in a career that combines engineering
+          analysis, product development, and technical problem solving — whether
+          that sits within CFD, broader mechanical engineering, or engineering
+          software.
         </p>
       </div>
       <div class="about-stats reveal">
         <div class="stat-box">
-          <div class="stat-num">2+</div>
-          <div class="stat-label">Years postgrad</div>
+          <div class="stat-num">CFD</div>
+          <div class="stat-label">Simulation focus</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">6+</div>
-          <div class="stat-label">Projects built</div>
+          <div class="stat-num">PY</div>
+          <div class="stat-label">Engineering tools</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">3</div>
-          <div class="stat-label">Publications</div>
+          <div class="stat-num">MSc</div>
+          <div class="stat-label">Postgraduate study</div>
         </div>
         <div class="stat-box">
-          <div class="stat-num">1st</div>
-          <div class="stat-label">BEng Honours</div>
+          <div class="stat-num">BEng</div>
+          <div class="stat-label">Mechanical background</div>
         </div>
       </div>
     </div>
@@ -659,70 +649,27 @@
   <!-- SKILLS -->
   <section id="skills">
     <div class="section-label">02 — Skills</div>
-    <h2 class="section-title reveal">What I work<br><em>with</em></h2>
+    <h2 class="section-title reveal">Skills section<br><em>coming soon</em></h2>
     <div class="skills-grid reveal">
       <div class="skill-card">
         <span class="skill-card-icon">⚙️</span>
-        <h3>Mechanical Design</h3>
+        <h3>Engineering Software</h3>
         <div class="skill-tags">
-          <span class="tag">SolidWorks</span>
-          <span class="tag">CATIA</span>
-          <span class="tag">AutoCAD</span>
-          <span class="tag">FreeCAD</span>
-          <span class="tag">GD&T</span>
+          <span class="tag">To be added</span>
         </div>
       </div>
       <div class="skill-card">
         <span class="skill-card-icon">📐</span>
-        <h3>Simulation & FEA</h3>
+        <h3>Simulation & Analysis</h3>
         <div class="skill-tags">
-          <span class="tag">ANSYS</span>
-          <span class="tag">COMSOL</span>
-          <span class="tag">Abaqus</span>
-          <span class="tag">OpenFOAM</span>
-          <span class="tag">CFD</span>
+          <span class="tag">To be added</span>
         </div>
       </div>
       <div class="skill-card">
         <span class="skill-card-icon">💻</span>
         <h3>Programming</h3>
         <div class="skill-tags">
-          <span class="tag">Python</span>
-          <span class="tag">MATLAB</span>
-          <span class="tag">C++</span>
-          <span class="tag">NumPy</span>
-          <span class="tag">SciPy</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <span class="skill-card-icon">📊</span>
-        <h3>Data & Analysis</h3>
-        <div class="skill-tags">
-          <span class="tag">Pandas</span>
-          <span class="tag">Matplotlib</span>
-          <span class="tag">LaTeX</span>
-          <span class="tag">Excel</span>
-          <span class="tag">Jupyter</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <span class="skill-card-icon">🔬</span>
-        <h3>Lab & Testing</h3>
-        <div class="skill-tags">
-          <span class="tag">Tensile testing</span>
-          <span class="tag">Microscopy</span>
-          <span class="tag">NDT</span>
-          <span class="tag">Strain gauges</span>
-        </div>
-      </div>
-      <div class="skill-card">
-        <span class="skill-card-icon">🛠️</span>
-        <h3>Manufacturing</h3>
-        <div class="skill-tags">
-          <span class="tag">3D Printing</span>
-          <span class="tag">CNC Milling</span>
-          <span class="tag">Welding</span>
-          <span class="tag">Composites</span>
+          <span class="tag">To be added</span>
         </div>
       </div>
     </div>
@@ -731,111 +678,73 @@
   <!-- PROJECTS -->
   <section id="projects">
     <div class="section-label">03 — Projects</div>
-    <h2 class="section-title reveal">Selected <em>work</em></h2>
+    <h2 class="section-title reveal">Project case studies<br><em>coming soon</em></h2>
     <div class="projects-list">
-
       <a href="#" class="project-item reveal">
         <div>
           <div class="project-num">001</div>
-          <h3>Structural Optimisation of Lightweight Aerospace Frame</h3>
-          <p>Topology optimisation study using ANSYS to reduce component mass by 34% while maintaining yield safety factors. Validated with FEA and physical tensile testing.</p>
+          <h3>Portfolio projects will be added here</h3>
+          <p>
+            This section will be updated with full engineering project write-ups,
+            screenshots, methods, tools used, and links to the relevant GitHub repositories.
+          </p>
           <div class="project-tags">
-            <span class="tag">ANSYS</span>
-            <span class="tag">FEA</span>
-            <span class="tag">Python</span>
-            <span class="tag">Topology Opt.</span>
-          </div>
-        </div>
-        <div class="project-meta">
-          <span class="project-year">2024</span>
-          <span class="project-arrow">↗</span>
-        </div>
-      </a>
-
-      <a href="#" class="project-item reveal">
-        <div>
-          <div class="project-num">002</div>
-          <h3>CFD Analysis of Heat Exchanger Geometry</h3>
-          <p>Parametric CFD study comparing 6 fin geometries in OpenFOAM. Developed a Python pipeline to automate mesh generation, simulation runs, and results extraction.</p>
-          <div class="project-tags">
-            <span class="tag">OpenFOAM</span>
             <span class="tag">CFD</span>
             <span class="tag">Python</span>
-            <span class="tag">Meshing</span>
+            <span class="tag">Engineering</span>
           </div>
         </div>
         <div class="project-meta">
-          <span class="project-year">2024</span>
+          <span class="project-year">In progress</span>
           <span class="project-arrow">↗</span>
         </div>
       </a>
-
-      <a href="#" class="project-item reveal">
-        <div>
-          <div class="project-num">003</div>
-          <h3>Autonomous Inspection Robot — Team Project</h3>
-          <p>Led the mechanical design sub-team for a 4-wheel inspection robot capable of navigating confined spaces. Designed chassis, drivetrain, and camera gimbal in SolidWorks.</p>
-          <div class="project-tags">
-            <span class="tag">SolidWorks</span>
-            <span class="tag">Robotics</span>
-            <span class="tag">3D Printing</span>
-            <span class="tag">ROS</span>
-          </div>
-        </div>
-        <div class="project-meta">
-          <span class="project-year">2023</span>
-          <span class="project-arrow">↗</span>
-        </div>
-      </a>
-
-      <a href="#" class="project-item reveal">
-        <div>
-          <div class="project-num">004</div>
-          <h3>Fatigue Life Prediction Tool — MATLAB</h3>
-          <p>Developed a MATLAB app implementing S–N curve and Miner's rule to predict fatigue life under variable amplitude loading. Used in coursework assessments by 40+ students.</p>
-          <div class="project-tags">
-            <span class="tag">MATLAB</span>
-            <span class="tag">Fatigue</span>
-            <span class="tag">GUI</span>
-          </div>
-        </div>
-        <div class="project-meta">
-          <span class="project-year">2023</span>
-          <span class="project-arrow">↗</span>
-        </div>
-      </a>
-
     </div>
   </section>
 
   <!-- EXPERIENCE -->
   <section id="experience">
     <div class="section-label">04 — Experience</div>
-    <h2 class="section-title reveal">Where I've <em>been</em></h2>
+    <h2 class="section-title reveal">Current <em>focus</em></h2>
     <div class="timeline reveal">
       <div class="timeline-item">
-        <div class="timeline-date">2023 — Present</div>
-        <h3>MSc Mechanical Engineering</h3>
-        <div class="timeline-org">University of [City] · Full-time</div>
-        <p>Research focus on [your specialism]. Coursework includes advanced FEA, computational fluid dynamics, and engineering management. Thesis supervised by Prof. [Name].</p>
+        <div class="timeline-date">Current</div>
+        <h3>Postgraduate Engineering Study</h3>
+        <div class="timeline-org">Computational Fluid Dynamics · Mechanical Engineering</div>
+        <p>
+          Advanced study focused on CFD, simulation-led analysis, and engineering
+          problem solving, with ongoing thesis and group project work.
+        </p>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Summer 2023</div>
-        <h3>Engineering Intern</h3>
-        <div class="timeline-org">[Company Name] · Internship</div>
-        <p>Supported the structural analysis team in reviewing component drawings and running FEA simulations. Wrote Python scripts to automate post-processing workflows, saving ~4 hours/week.</p>
+        <div class="timeline-date">Ongoing</div>
+        <h3>Independent Engineering Projects</h3>
+        <div class="timeline-org">Python · Simulation · Technical Portfolio</div>
+        <p>
+          Building engineering tools and portfolio projects spanning UAV
+          performance analysis, machine learning condition monitoring,
+          scripted geometry and simulation workflows, and other
+          analysis-driven applications.
+        </p>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">2020 — 2023</div>
-        <h3>BEng Mechanical Engineering — First Class</h3>
-        <div class="timeline-org">University of [City]</div>
-        <p>Graduated with First Class Honours. Final year project on [topic], awarded best project in cohort. Active member of the Engineering Society and Formula Student team.</p>
+        <div class="timeline-date">Background</div>
+        <h3>Mechanical Engineering Foundation</h3>
+        <div class="timeline-org">BEng Mechanical Engineering</div>
+        <p>
+          Foundation in thermofluids, mechanics, design, manufacturing, and
+          numerical analysis, forming the base for later CFD and computational work.
+        </p>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">Summer 2022</div>
-        <h3>Design Engineering Placement</h3>
-        <div class="timeline-org">[Company Name] · 3 months</div>
-        <p>Assisted with product development for [product area]. Produced detailed CAD models and manufacturing drawings, and contributed to design reviews with senior engineers.</p>
+        <div class="timeline-date">Career Direction</div>
+        <h3>Engineering Roles & Product Building</h3>
+        <div class="timeline-org">Analysis · Software · Product Development</div>
+        <p>
+          Interested in engineering roles that combine technical depth with
+          practical value, while also building engineering products and
+          software projects independently.
+        </p>
       </div>
     </div>
   </section>
@@ -844,34 +753,34 @@
   <section id="contact">
     <div class="contact-inner">
       <div class="section-label">05 — Contact</div>
-      <h2 class="section-title reveal">Let's <em>talk</em></h2>
-      <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 420px; margin: 0 auto;">
-        Open to internship opportunities, research collaborations, and interesting engineering problems.
+      <h2 class="section-title reveal">Find me <em>online</em></h2>
+      <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 520px; margin: 0 auto;">
+        GitHub and portfolio links are live below. Email, LinkedIn, and CV links can be added next once you decide exactly what you want public on the site.
       </p>
-      <a href="mailto:alex.morgan@email.com" class="contact-email reveal">alex.morgan@email.com</a>
+      <a href="https://thomasbainbridge.github.io/PersonalWebsite/" class="contact-email reveal" target="_blank" rel="noopener">
+        thomasbainbridge.github.io/PersonalWebsite
+      </a>
       <ul class="social-links reveal">
-        <li><a href="#">GitHub</a></li>
-        <li><a href="#">LinkedIn</a></li>
-        <li><a href="#">ResearchGate</a></li>
-        <li><a href="#">CV / Resume ↓</a></li>
+        <li><a href="https://github.com/ThomasBainbridge" target="_blank" rel="noopener">GitHub</a></li>
+        <li><a href="https://thomasbainbridge.github.io/PersonalWebsite/" target="_blank" rel="noopener">Portfolio</a></li>
+        <li><a href="#">LinkedIn (add link)</a></li>
+        <li><a href="#">CV / Resume (add file)</a></li>
       </ul>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2025 Alex Morgan</span>
+    <span>© 2026 Thomas Bainbridge</span>
     <span>Built with HTML · Hosted on GitHub Pages</span>
   </footer>
 
   <script>
-    // Nav scroll effect
     const nav = document.getElementById('nav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 60);
     });
 
-    // Scroll reveal
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((e, i) => {
