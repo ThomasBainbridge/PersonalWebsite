@@ -776,14 +776,17 @@
     <div class="project-num">003</div>
     <h3>Motorsport Lap Performance Analyser</h3>
     <p>
-      A Python tool for analysing and comparing Formula 1 lap telemetry using the
-      FastF1 API. Laps are aligned over a common distance basis and automatically
-      segmented into braking zones and corners, with time-loss attribution broken
-      down to phase level. A machine learning pipeline then extracts telemetry-derived
-      features from each segment, applies unsupervised clustering to identify corner
-      archetypes, and runs cross-validated regression model selection. A single
-      command produces aligned traces, segment rankings, cluster maps, and a
-      summary report — all driven by YAML config files.
+        A Python tool for analysing Formula 1 lap telemetry that combines data-driven
+        comparison with a first-principles vehicle dynamics model. Laps are aligned
+        over a common distance basis and automatically segmented into braking zones
+        and corners, with time-loss attribution broken down to phase level and a
+        machine learning pipeline extracting features, clustering corner archetypes,
+        and running cross-validated regression. A separate physics stage reconstructs
+        the track from position data, solves a quasi-steady-state lap-time envelope
+        with friction ellipse and aerodynamic downforce, and quantifies how close
+        each driver got to the car's theoretical limit. A single command produces
+        aligned traces, segment rankings, cluster maps, envelope overlays, g-g
+        diagrams, and a summary report — all driven by YAML config files.
     </p>
     <div class="project-tags">
       <span class="tag">Python</span>
