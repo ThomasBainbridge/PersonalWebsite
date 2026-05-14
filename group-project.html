@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Optimisation of Pod Deployable UAV — Thomas Bainbridge</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0f; --bg2: #161618; --bg3: #1e1e21; --line: #2a2a2e;
+      --accent: #c8f060; --accent2: #60d4f0; --text: #e8e6df; --muted: #7a786f;
+      --serif: "DM Serif Display", serif; --mono: "DM Mono", monospace; --sans: "DM Sans", sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03; pointer-events: none; z-index: 1000;
+    }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; border-bottom: 1px solid transparent; transition: border-color .3s, background .3s, backdrop-filter .3s; }
+    nav.scrolled { background: rgba(14,14,15,.85); backdrop-filter: blur(16px); border-color: var(--line); }
+    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: .05em; text-decoration: none; }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; }
+    .nav-back::before { content: "\2190  "; }
+    .nav-back:hover { color: var(--text); }
+
+    #hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 48px 80px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 60% 80% at 100% 100%, black, transparent); opacity: .35; }
+    .hero-inner { position: relative; z-index: 2; max-width: 960px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 24px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    .hero-tag::before { content: ""; display: block; width: 24px; height: 1px; background: var(--accent); }
+    .hero-title { font-family: var(--serif); font-size: clamp(36px, 5.5vw, 70px); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 32px; opacity: 0; animation: fadeUp .7s ease .2s forwards; }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; opacity: 0; animation: fadeUp .7s ease .3s forwards; }
+    .hero-meta-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+    .hero-meta-value { font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .hero-desc { font-size: 17px; font-weight: 300; color: #b5b2aa; max-width: 760px; line-height: 1.75; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+
+    section { padding: 96px 48px; }
+    .section-label { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 48px; }
+    .section-label::before { content: ""; display: block; width: 32px; height: 1px; background: var(--accent); }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.5vw, 52px); font-weight: 400; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 24px; }
+    h2.section-title em { font-style: italic; color: var(--accent); }
+    h3.sub-title { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 16px; }
+    .prose { font-size: 16px; font-weight: 300; color: #b5b2aa; line-height: 1.8; }
+    .prose p { margin-bottom: 16px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .img-block { background: var(--bg3); border: 1px dashed var(--line); border-radius: 4px; padding: 48px 32px; text-align: center; margin-top: 24px; }
+    .img-block img { max-width: 100%; border-radius: 4px; display: block; margin: 0 auto; }
+    .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
+    .img-placeholder-text { font-family: var(--mono); font-size: 12px; color: var(--line); }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+    .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
+    .mission-card { background: var(--bg3); border: 1px solid var(--line); padding: 40px; }
+    .mission-card:first-child { border-radius: 4px 0 0 4px; }
+    .mission-card:last-child { border-radius: 0 4px 4px 0; }
+    .mission-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .mission-card h3 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 20px; }
+    .spec-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 16px; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; flex-shrink: 0; }
+    .spec-val { font-family: var(--mono); font-size: 13px; color: var(--text); text-align: right; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 48px; }
+    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
+    .stat-box:first-child { border-radius: 4px 0 0 4px; }
+    .stat-box:last-child { border-radius: 0 4px 4px 0; }
+    .stat-num { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+    .highlight-box { background: var(--bg2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 28px 32px; margin-top: 32px; border-radius: 0 4px 4px 0; }
+    .highlight-box p { font-size: 15px; color: #b5b2aa; line-height: 1.7; margin-bottom: 0; }
+    .highlight-box strong { color: var(--accent); font-weight: 500; }
+
+    .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 32px; }
+    .design-card { background: var(--bg2); border: 1px solid var(--line); padding: 0; overflow: hidden; }
+    .design-card-body { padding: 24px; }
+    .design-card h4 { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .design-card .drag { font-family: var(--mono); font-size: 20px; color: var(--text); margin: 8px 0 2px; }
+    .design-card .drag-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .design-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .workflow { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .workflow-step { background: var(--bg2); border: 1px solid var(--line); padding: 20px 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; }
+    .workflow-step:first-child { border-radius: 4px 4px 0 0; }
+    .workflow-step:last-child { border-radius: 0 0 4px 4px; }
+    .step-num { font-family: var(--serif); font-size: 26px; color: var(--accent); line-height: 1; padding-top: 2px; }
+    .step-content h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: .04em; }
+    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 24px; }
+    .result-table th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg3); }
+    .result-table td { font-family: var(--mono); font-size: 13px; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table .accent { color: var(--accent); font-weight: 500; }
+
+    .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+    .content-card { background: var(--bg2); padding: 32px 28px; }
+    .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
+    .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
+    .team-card.mine { border-color: var(--accent); }
+    .team-initial { font-family: var(--serif); font-size: 30px; color: var(--accent); margin-bottom: 12px; }
+    .team-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .tag { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line); padding: 4px 10px; border-radius: 2px; letter-spacing: .04em; }
+
+    footer { border-top: 1px solid var(--line); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      section { padding: 72px 24px; }
+      #hero { padding: 120px 24px 64px; }
+      .two-col, .two-col-img, .mission-grid, .design-grid, .stat-row, .team-grid { grid-template-columns: 1fr; }
+      .three-col-img, .card-grid-3 { grid-template-columns: 1fr; }
+      .mission-card:first-child { border-radius: 4px 4px 0 0; }
+      .mission-card:last-child { border-radius: 0 0 4px 4px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">TB.dev</a>
+    <a href="index.html#university" class="nav-back">Back to portfolio</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">MSc Group Thesis &mdash; Cranfield University &mdash; April 2026</div>
+      <h1 class="hero-title">Design Optimisation of a<br><em>Pod Deployable UAV</em></h1>
+      <div class="hero-meta">
+        <div><div class="hero-meta-label">Institution</div><div class="hero-meta-value">Cranfield University</div></div>
+        <div><div class="hero-meta-label">Programme</div><div class="hero-meta-value">MSc Computational Fluid Dynamics</div></div>
+        <div><div class="hero-meta-label">Supervisor</div><div class="hero-meta-value">Dr Laszlo K&ouml;n&ouml;zsy</div></div>
+        <div><div class="hero-meta-label">Team Size</div><div class="hero-meta-value">5 Engineers</div></div>
+        <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">April 2026</div></div>
+      </div>
+      <p class="hero-desc">
+        A multidisciplinary group project to design and optimise a pod-deployable UAV capable of fulfilling two
+        contrasting mission profiles &mdash; a short-duration high-speed interception role and a long-endurance
+        payload mission. The project integrated CFD aerodynamics, propulsion analysis, flight dynamics simulation,
+        automated duct optimisation, and a physics-informed machine learning surrogate model into a unified
+        engineering framework.
+      </p>
+    </div>
+  </section>
+
+  <!-- 01 MISSIONS -->
+  <section id="missions" style="background: var(--bg2);">
+    <div class="section-label">01 &mdash; Mission Requirements</div>
+    <h2 class="section-title reveal">Two <em>competing missions</em></h2>
+    <div class="prose reveal">
+      <p>The core design challenge was to develop a single pod-deployable platform capable of fulfilling two fundamentally different missions. The competing requirements imposed conflicting constraints on aerodynamics, propulsion, packaging, stability, and control &mdash; making this a genuine multidisciplinary optimisation problem rather than a straightforward sizing exercise.</p>
+    </div>
+    <div class="mission-grid reveal">
+      <div class="mission-card">
+        <div class="mission-num">Mission 01</div>
+        <h3>High-Speed Interception</h3>
+        <div class="spec-row"><span class="spec-key">Objective</span><span class="spec-val">Rapid threat interception</span></div>
+        <div class="spec-row"><span class="spec-key">Min. velocity</span><span class="spec-val">&ge; 70 m/s</span></div>
+        <div class="spec-row"><span class="spec-key">Duration</span><span class="spec-val">1&ndash;2 minutes</span></div>
+        <div class="spec-row"><span class="spec-key">Max. total mass</span><span class="spec-val">0.5 kg</span></div>
+        <div class="spec-row"><span class="spec-key">Hover required</span><span class="spec-val">No</span></div>
+        <div class="spec-row"><span class="spec-key">Propulsion</span><span class="spec-val">EDF or solid propellant</span></div>
+        <div class="spec-row"><span class="spec-key">Design emphasis</span><span class="spec-val">Speed, compactness, response</span></div>
+      </div>
+      <div class="mission-card">
+        <div class="mission-num">Mission 02</div>
+        <h3>Long-Endurance Payload Carrier</h3>
+        <div class="spec-row"><span class="spec-key">Objective</span><span class="spec-val">Sustained endurance + payload</span></div>
+        <div class="spec-row"><span class="spec-key">Min. velocity</span><span class="spec-val">&ge; 30 m/s</span></div>
+        <div class="spec-row"><span class="spec-key">Duration</span><span class="spec-val">30&ndash;40 minutes</span></div>
+        <div class="spec-row"><span class="spec-key">Max. total mass</span><span class="spec-val">5 kg</span></div>
+        <div class="spec-row"><span class="spec-key">Payload</span><span class="spec-val">3 kg (within 5 kg total)</span></div>
+        <div class="spec-row"><span class="spec-key">Hover required</span><span class="spec-val">Yes &mdash; stable hover</span></div>
+        <div class="spec-row"><span class="spec-key">Design emphasis</span><span class="spec-val">Endurance, payload, stability</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 INITIAL DESIGN -->
+  <section id="design" style="background: var(--bg);">
+    <div class="section-label">02 &mdash; Initial Design &amp; Selection</div>
+    <h2 class="section-title reveal">Four concepts, <em>one hybrid</em></h2>
+    <div class="prose reveal">
+      <p>Four initial UAV configurations were developed and evaluated in ANSYS Fluent to assess external aerodynamics, flow separation, and EDF airflow delivery. A decision matrix combining drag force, manoeuvrability, and ease of manufacture identified the most promising baseline for further iteration. Elements from all four designs were then combined into a final modular hybrid geometry.</p>
+    </div>
+
+    <div class="design-grid reveal">
+      <div class="design-card">
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 1 from report &mdash; Initial Design 1 CAD render</p></div>
+        <div class="design-card-body">
+          <h4>Initial Design 1</h4>
+          <div class="drag">5.03 N</div><div class="drag-label">Drag Force</div>
+          <p>Central inflow duct feeding an EDF at the rear. Lowest drag of all four designs. Foldable wings with control surfaces. Limited to Mission 1 &mdash; any payload would be ingested by the EDF airflow.</p>
+        </div>
+      </div>
+      <div class="design-card">
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 2 from report &mdash; Initial Design 2 CAD render</p></div>
+        <div class="design-card-body">
+          <h4>Initial Design 2</h4>
+          <div class="drag">7.41 N</div><div class="drag-label">Drag Force</div>
+          <p>Four large spring-deployable wings with coaxial propeller propulsion. High manoeuvrability and hover capability. Top speed limited by the coaxial configuration &mdash; not suited to Mission 1.</p>
+        </div>
+      </div>
+      <div class="design-card">
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 3 from report &mdash; Initial Design 3 CAD render</p></div>
+        <div class="design-card-body">
+          <h4>Initial Design 3</h4>
+          <div class="drag">35.8 N</div><div class="drag-label">Drag Force</div>
+          <p>Two-part segmented body with NACA 0010 folding wings and rear EDF. Electronics forward, EDF aft. Blunt nose caused significant flow separation &mdash; highest drag of all four configurations.</p>
+        </div>
+      </div>
+      <div class="design-card">
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 4 from report &mdash; Initial Design 4 CAD render</p></div>
+        <div class="design-card-body">
+          <h4>Initial Design 4</h4>
+          <div class="drag">9.57 N</div><div class="drag-label">Drag Force</div>
+          <p>Modular design with swappable front and rear sections for dual-mission use. Four tilting fan-wings in an X configuration. Complex ducts introduced separation and poor airflow delivery to the EDF.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="highlight-box reveal">
+      <p>Using Design 3 as the template and incorporating effective elements from all concepts, a <strong>final hybrid design</strong> was developed. Mission 1 uses a streamlined converging body with a central semi-circular inflow duct feeding an EDF. Mission 2 swaps the EDF section for a payload module and uses four APC 11x6 folding propellers for hover and cruise. Both configurations share the same core structure and fold within the pod deployment diameter constraint.</p>
+    </div>
+
+    <div class="two-col-img reveal" style="margin-top: 32px;">
+      <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 5 from report &mdash; Mission 1 final hybrid design</p><div class="img-label">Mission 1 &mdash; Interception Configuration</div></div>
+      <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 6 from report &mdash; Mission 2 final hybrid design</p><div class="img-label">Mission 2 &mdash; Endurance Configuration</div></div>
+    </div>
+  </section>
+
+  <!-- 03 AEROFOIL -->
+  <section id="aerofoil" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; Aerofoil Selection &amp; Validation</div>
+    <h2 class="section-title reveal">NACA optimisation <em>framework</em></h2>
+    <div class="two-col reveal">
+      <div>
+        <div class="prose">
+          <p>Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.</p>
+          <p>Four optimisation algorithms were compared for identifying the peak lift-to-drag ratio across the NACA 4412 polar &mdash; Newton-Raphson, Golden Section Search (GSS), Adjoint with Barzilai-Borwein steps, and Newton-Krylov. All four converged to an optimal angle of attack in the range 7.01&deg;&ndash;7.36&deg;, confirming the objective function is smooth and unimodal near the peak. GSS was selected as the preferred algorithm &mdash; it identified the global best CL/CD&nbsp;=&nbsp;63.854 at &alpha;&nbsp;=&nbsp;7.047&deg; using only 15 solver evaluations, with no gradient information required.</p>
+          <p>Five NACA profiles were then evaluated using the validated GSS framework. The <strong>NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform. The NACA 2412 was recommended for the propeller mid-span, and the NACA 4415 for the structurally loaded root section.</p>
+        </div>
+      </div>
+      <div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 21 from report &mdash; NACA 4412 CFD vs XFoil validation (CL, CD, CL/CD vs alpha)</p><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
+        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 25 from report &mdash; NACA aerofoil comparison across all tested profiles</p><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
+        <table class="result-table" style="margin-top: 24px;">
+          <thead><tr><th>Algorithm</th><th>&alpha;* [&deg;]</th><th>CL/CD*</th><th>Evaluations</th></tr></thead>
+          <tbody>
+            <tr><td>Newton-Raphson</td><td>7.10</td><td>63.768</td><td>6</td></tr>
+            <tr><td class="accent">Golden Section Search</td><td class="accent">7.047</td><td class="accent">63.854</td><td class="accent">15</td></tr>
+            <tr><td>Adjoint (BB + Armijo)</td><td>7.01</td><td>63.852</td><td>22</td></tr>
+            <tr><td>Newton-Krylov</td><td>7.36</td><td>63.778</td><td>12</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 PROPULSION -->
+  <section id="propulsion" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; Propulsion Analysis</div>
+    <h2 class="section-title reveal">EDF vs <em>solid propellant</em></h2>
+    <div class="two-col reveal">
+      <div>
+        <div class="prose">
+          <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
+          <p>Solid propellant offered substantially higher thrust at every burn stage, with predicted maximum velocities exceeding 300&nbsp;m/s. However, critical limitations were identified: no throttle control after ignition, extreme thermal loads approaching 3000&nbsp;K requiring sacrificial liner materials, and recirculating stagnant air causing instability near the nozzle exit due to the shared geometry with the EDF duct.</p>
+          <p>Despite the performance advantage, the EDF configuration was selected for the final design &mdash; it better satisfies manoeuvrability, operational flexibility, and mission robustness, with ESC throttle control enabling course correction after launch.</p>
+        </div>
+        <table class="result-table">
+          <thead><tr><th>Burn Stage</th><th>Thrust (N)</th><th>Predicted Vmax (m/s)</th></tr></thead>
+          <tbody>
+            <tr><td>Beginning</td><td>30.91</td><td>133.4</td></tr>
+            <tr><td>Middle</td><td>101.97</td><td>219.6</td></tr>
+            <tr><td>End</td><td>174.64</td><td class="accent">301.1</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 44 from report &mdash; Velocity contours at beginning, middle, and end burn stages</p><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
+        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 45 from report &mdash; Temperature contours at beginning, middle, and end burn stages</p><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 DUCT OPTIMISATION -->
+  <section id="duct" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; Duct Geometry Optimisation</div>
+    <h2 class="section-title reveal">Automated CFD-driven <em>design loop</em></h2>
+    <div class="prose reveal">
+      <p>A 2D geometry optimisation framework was developed to improve air delivery to the EDF fan-face by systematically modifying the internal duct walls and evaluating each candidate geometry using CFD. The objective was to maximise fan-face mass flow rate while tracking total pressure recovery across the duct passage. The entire workflow from geometry generation through to post-processing was automated in Python, allowing a large number of candidate designs to be evaluated without manual intervention.</p>
+    </div>
+
+    <div class="stat-row reveal">
+      <div class="stat-box"><div class="stat-num">6</div><div class="stat-label">Design variables</div></div>
+      <div class="stat-box"><div class="stat-num">221+</div><div class="stat-label">CFD evaluations</div></div>
+      <div class="stat-box"><div class="stat-num">+14.7%</div><div class="stat-label">Mass flow increase</div></div>
+      <div class="stat-box"><div class="stat-num">+27.2%</div><div class="stat-label">Pressure recovery</div></div>
+    </div>
+
+    <div class="two-col reveal" style="margin-top: 64px;">
+      <div>
+        <h3 class="sub-title">Geometry Parametrisation</h3>
+        <div class="prose">
+          <p>Six design variables were defined &mdash; three for the upper internal wall and three for the lower wall, corresponding to fore, mid, and aft regions of the duct passage. Each variable represents a local wall displacement relative to the baseline geometry. Wall perturbations are imposed using Bernstein-based shape functions that vanish identically at the segment endpoints, guaranteeing the perturbed wall meets the unmodified geometry continuously at its boundaries.</p>
+          <p>The perturbed wall profile is defined as y(t)&nbsp;=&nbsp;y&#8320;(t)&nbsp;+&nbsp;x_fore&middot;b&#8321;(t)&nbsp;+&nbsp;x_mid&middot;b&#8322;(t)&nbsp;+&nbsp;x_aft&middot;b&#8323;(t), where t is the normalised arc-length parameter and b&#8321;, b&#8322;, b&#8323; are Bernstein basis functions for each region. Positive values open the wall outward; negative values move it inward.</p>
+        </div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 16 from report &mdash; Cross-sectional view of duct and EDF area showing the optimisation region</p><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
+        <div class="two-col-img" style="margin-top: 16px;">
+          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 17 &mdash; Baseline duct cross-section with optimisation regions highlighted</p><div class="img-label">Baseline with Regions Identified</div></div>
+          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 18 &mdash; Zoomed baseline cross-section with all 6 design variables labelled</p><div class="img-label">Design Variables Identified</div></div>
+        </div>
+        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 19 from report &mdash; Generated 2D mesh on the baseline cross-section</p><div class="img-label">Baseline 2D Mesh</div></div>
+      </div>
+      <div>
+        <h3 class="sub-title">Automated Python Workflow</h3>
+        <div class="workflow">
+          <div class="workflow-step">
+            <div class="step-num">1</div>
+            <div class="step-content"><h4>Feasibility Check</h4><p>Candidate designs where the minimum wall gap falls below a prescribed tolerance are rejected before simulation, preventing wasted compute on infeasible geometries.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">2</div>
+            <div class="step-content"><h4>Geometry Generation</h4><p>Design variables are mapped onto the upper and lower wall regions via the Bernstein shape functions. The modified point-cloud cross-section is written automatically.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">3</div>
+            <div class="step-content"><h4>Meshing</h4><p>A consistent unstructured 2D triangular mesh is applied with local refinement at the inlet, fan-face plane, and wall boundaries, ensuring fair comparison across all candidate geometries.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">4</div>
+            <div class="step-content"><h4>CFD Simulation</h4><p>Steady RANS with k-&omega; SST. Inlet at 70&nbsp;m/s (Mission 1 condition). Fan-face at 0&nbsp;Pa gauge pressure outlet. Turbulence intensity 5%, viscosity ratio 10%.</p></div>
+          </div>
+          <div class="workflow-step">
+            <div class="step-num">5</div>
+            <div class="step-content"><h4>Post-Processing &amp; Search Update</h4><p>Fan-face mass flow is extracted as the tail-mean over the final 10% of iterations. The coordinate search updates the incumbent if sufficient improvement is found, then reduces step size when no further improvement is possible.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal" style="margin-top: 64px;">
+      <h3 class="sub-title">Optimisation Results</h3>
+      <div class="two-col">
+        <div>
+          <div class="prose">
+            <p>The staged coordinate search identified progressive improvements across 221 evaluations before convergence. The objective rose 14.7% from 2.348&nbsp;kg/s to 2.693&nbsp;kg/s at the fan-face, with total pressure recovery improving 27.2% (0.621 to 0.790). Horizontal plateaus in the convergence history correspond to passes where no single variable perturbation produced sufficient improvement, triggering step size reduction.</p>
+            <p>The optimised geometry is characterised by inward displacement of the lower wall sections and comparatively modest upper wall changes, indicating that lower wall shaping had the greatest aerodynamic influence. Velocity contours show the high-velocity core redistributed more broadly across the duct cross-section approaching the fan-face, producing more spatially uniform throughflow. Turbulent kinetic energy is substantially reduced in the upper duct region &mdash; evidence of reduced shear-layer development and smoother flow turning through the passage.</p>
+          </div>
+          <table class="result-table">
+            <thead><tr><th>Metric</th><th>Baseline</th><th>Optimised</th><th>Change</th></tr></thead>
+            <tbody>
+              <tr><td>Fan-face mass flow (kg/s)</td><td>2.348</td><td>2.693</td><td class="accent">+14.7%</td></tr>
+              <tr><td>Total pressure recovery</td><td>0.621</td><td>0.790</td><td class="accent">+27.2%</td></tr>
+            </tbody>
+          </table>
+          <table class="result-table">
+            <thead><tr><th>Design Variable</th><th>Baseline (mm)</th><th>Optimised (mm)</th></tr></thead>
+            <tbody>
+              <tr><td>Upper fore</td><td>0.0</td><td>+2.375</td></tr>
+              <tr><td>Upper mid</td><td>0.0</td><td>+2.6875</td></tr>
+              <tr><td>Upper aft</td><td>0.0</td><td>+0.0625</td></tr>
+              <tr><td>Lower fore</td><td>0.0</td><td class="accent">&minus;8.0</td></tr>
+              <tr><td>Lower mid</td><td>0.0</td><td class="accent">&minus;8.0</td></tr>
+              <tr><td>Lower aft</td><td>0.0</td><td class="accent">&minus;5.3125</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 30 from report &mdash; Optimisation convergence history (incumbent best mass flow vs evaluation number)</p><div class="img-label">Optimisation Convergence History</div></div>
+          <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 31 from report &mdash; Baseline vs optimised parametrised wall profiles overlaid</p><div class="img-label">Baseline vs Optimised Wall Profiles</div></div>
+        </div>
+      </div>
+      <div class="three-col-img" style="margin-top: 32px;">
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 32 &mdash; Velocity magnitude contours (a) baseline (b) optimised</p><div class="img-label">Velocity Magnitude &mdash; Baseline vs Optimised</div></div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 33 &mdash; Static pressure contours (a) baseline (b) optimised</p><div class="img-label">Static Pressure &mdash; Baseline vs Optimised</div></div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 34 &mdash; Turbulent kinetic energy contours (a) baseline (b) optimised</p><div class="img-label">Turbulent Kinetic Energy &mdash; Baseline vs Optimised</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 FINAL UAV SIMULATIONS -->
+  <section id="final" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; Final UAV Simulations</div>
+    <h2 class="section-title reveal">Mission performance <em>assessment</em></h2>
+    <div class="two-col reveal">
+      <div>
+        <h3 class="sub-title">Mission 1 &mdash; Interception UAV</h3>
+        <div class="prose">
+          <p>The final Mission 1 design was simulated with the EDF at four RPM settings (20,000, 40,000, 60,000, and 75,600 RPM) at a freestream velocity of 70&nbsp;m/s. An unstructured tetrahedral mesh of approximately 5 million cells was used with the MRF approach, refined around the EDF blades and UAV body. At 75,600&nbsp;RPM, the EDF produces 72.47&nbsp;N of thrust. Body drag at 70&nbsp;m/s is 9.44&nbsp;N, giving a predicted top speed of 193.98&nbsp;m/s &mdash; far exceeding the 100&nbsp;m/s design requirement.</p>
+        </div>
+        <table class="result-table">
+          <thead><tr><th>RPM</th><th>Thrust (N)</th></tr></thead>
+          <tbody>
+            <tr><td>20,000</td><td>2.336</td></tr>
+            <tr><td>40,000</td><td>7.059</td></tr>
+            <tr><td>60,000</td><td>22.972</td></tr>
+            <tr><td>75,600</td><td class="accent">72.474</td></tr>
+          </tbody>
+        </table>
+        <div class="two-col-img" style="margin-top: 16px;">
+          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 37 &mdash; Mission 1 midplane + Q-criterion, velocity capped at 200 m/s</p><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
+          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 38 &mdash; Static pressure contour of Mission 1 UAV</p><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-title">Mission 2 &mdash; Endurance UAV</h3>
+        <div class="prose">
+          <p>The Mission 2 configuration uses four APC 11&times;6 propellers simulated at 12,000&nbsp;RPM with a 3&nbsp;m/s inlet velocity. A semi-cylindrical domain exploiting the symmetry plane reduced computational cost to 3 million cells. Rear propellers produce 7.7&nbsp;N thrust each; front propellers produce 7.3&nbsp;N due to wake interaction from blade overlap. Total vertical thrust of 30.1&nbsp;N was recorded &mdash; insufficient for stable hover with the full 3&nbsp;kg payload. A payload reduction to 1&ndash;2&nbsp;kg, or larger propellers, would be required to meet the full Mission 2 specification.</p>
+        </div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 39 &mdash; Mission 2 iso-surface contours of velocity magnitude and static pressure</p><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 07 FLIGHT DYNAMICS -->
+  <section id="flight" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Flight Dynamics</div>
+    <h2 class="section-title reveal">Trim, stability <em>&amp; control analysis</em></h2>
+    <div class="prose reveal">
+      <p>A MATLAB/Simulink six-degree-of-freedom flight simulation model was assembled to evaluate whether the CFD-derived aerodynamic and propulsion data could support steady flight and manoeuvring across the operating envelope. The model assembles aerodynamic lookup tables from the CFD database into a rigid-body 6-DOF formulation in a forward-right-down body-axis convention, with a Newton-style trim solver and local linearisation at each operating point.</p>
+    </div>
+    <div class="two-col reveal" style="margin-top: 48px;">
+      <div>
+        <h3 class="sub-title">Trim Campaign</h3>
+        <div class="prose">
+          <p>A batch trim campaign covered four study types: baseline cruise (Nz = 1.0g), overload sweep (Nz = 1.0, 1.5, 2.0g), sideslip sweep (&beta; = 0&deg;, 5&deg;, 10&deg;), and linear stability analysis &mdash; all over 40&ndash;105&nbsp;m/s. All 70 operating points converged with a maximum trim residual of 8.6&times;10&#8315;&sup1;&sup0;, confirming the solver met the imposed targets to numerical precision.</p>
+          <p>Baseline cruise requires only moderate thrust variation across the speed range but consistently high pitch command and large trimmed angles of attack, indicating significant pitch authority is needed to hold steady conditions. At low speed with Nz = 2.0, angles of attack approach 69&deg; &mdash; well outside an attached-flow cruise regime. Sideslip cases show the 10&deg; case consumes a substantial fraction of yaw authority and should be treated as a disturbance-rejection condition rather than nominal cruise.</p>
+        </div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 40 &mdash; Longitudinal trim response for cruise and overload cases (thrust, pitch command, alpha, Nz)</p><div class="img-label">Longitudinal Trim Response &mdash; Cruise &amp; Overload</div></div>
+      </div>
+      <div>
+        <h3 class="sub-title">Stability Analysis</h3>
+        <div class="prose">
+          <p>Local state-space matrices were generated at every trim point by finite-difference linearisation of the nonlinear Simulink model. Open-loop eigenvalue analysis shows the configuration is not passively stable across the speed range &mdash; the maximum real part of the eigenvalues is positive and increases with airspeed, ranging from 8.64 to 25.83 for the baseline Nz = 1.0 cruise case.</p>
+          <p>This does not render the design unflyable. It confirms that active feedback control is required for a practical implementation. The linear models provide the stability and control derivatives needed to guide pitch, yaw, and thrust scheduling for a flight controller.</p>
+        </div>
+        <div class="highlight-box">
+          <p>A practical flight implementation would require a <strong>scheduled feedback control system</strong> with pitch, yaw, and thrust scheduling based on the trimmed operating point. The linear models generated here provide the compact input needed to begin controller design.</p>
+        </div>
+        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 43 &mdash; Open-loop eigenvalue trends for sideslip and overload sweeps</p><div class="img-label">Open-Loop Eigenvalue Trends</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 ML SURROGATE -->
+  <section id="ml" style="background: var(--bg);">
+    <div class="section-label">08 &mdash; Machine Learning Surrogate</div>
+    <h2 class="section-title reveal">Physics-informed <em>aerodynamic surrogate</em></h2>
+    <div class="prose reveal">
+      <p>To accelerate future design iteration, a physics-informed machine learning surrogate was developed &mdash; a Dynamic Graph Convolutional Neural Network (DGCNN) combined with a FiLM-conditioned SIREN field head (PIDGCNN), trained to predict aerodynamic scalar forces and full mid-plane flow fields from surface point cloud geometry and operating condition inputs.</p>
+    </div>
+
+    <div class="card-grid-3 reveal">
+      <div class="content-card">
+        <h4>DGCNN Geometry Encoder</h4>
+        <p>Three EdgeConv blocks process the input surface point cloud (4,096 points, 8 features each) with a dynamically recomputed k-nearest-neighbour graph (k&nbsp;=&nbsp;20) at each block. Dynamic re-graphing in feature space allows the encoder to handle parametric geometry inputs without remeshing. Both max-pooling and mean-pooling are applied and concatenated to capture salient local regions and the global flow state.</p>
+      </div>
+      <div class="content-card">
+        <h4>FiLM-SIREN Field Head</h4>
+        <p>A Fourier positional encoder lifts mid-plane query coordinates into a 63-dimensional representation to break spectral bias. The global geometry-condition embedding modulates each SIREN layer via learned additive FiLM shifts, leaving the SIREN weight initialisation intact. This avoids the initialisation dilution failure mode caused by naively concatenating high-dimensional global embeddings with low-dimensional spatial encodings.</p>
+      </div>
+      <div class="content-card">
+        <h4>Two-Phase Training</h4>
+        <p>Phase 1 trains the full model end-to-end. The scalar head converges reliably while the field head stalls at the mean-field attractor. Phase 2 freezes the encoder and scalar head, re-initialises the FiLM-SIREN field head, and fine-tunes with a spatially weighted loss upweighting query points in the high-gradient EDF jet region. Field loss decreases by three orders of magnitude during Phase 2.</p>
+      </div>
+    </div>
+
+    <div class="two-col reveal" style="margin-top: 48px;">
+      <div>
+        <h3 class="sub-title">Scalar Force Predictions</h3>
+        <div class="prose">
+          <p>On the 20-sample proof-of-concept dataset, the scalar head achieves near-perfect accuracy &mdash; MAE of 4.24&times;10&#8315;&sup3;&nbsp;N (0.46%) for thrust and 1.80&times;10&#8315;&sup2;&nbsp;N (0.47%) for drag. R&sup2;&nbsp;=&nbsp;1.0000 for both channels.</p>
+        </div>
+        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 49 &mdash; Predicted vs ground-truth drag (left) and thrust (right) parity plots over all 20 samples</p><div class="img-label">Scalar Force Prediction Accuracy</div></div>
+      </div>
+      <div>
+        <h3 class="sub-title">Flow Field Predictions</h3>
+        <div class="prose">
+          <p>The surrogate recovers the dominant pressure topology with R&sup2;&nbsp;=&nbsp;0.896 (nRMSE&nbsp;=&nbsp;5.40%). Velocity magnitude achieves R&sup2;&nbsp;=&nbsp;0.874 (nRMSE&nbsp;=&nbsp;7.64%). The high-speed EDF jet core, fuselage recirculation zones, and quiescent far-field are faithfully reproduced. Residual errors concentrate along the jet shear layer and in the aft fuselage wake.</p>
+        </div>
+        <table class="result-table">
+          <thead><tr><th>Output</th><th>nRMSE (%)</th><th>R&sup2;</th></tr></thead>
+          <tbody>
+            <tr><td>Static pressure</td><td>5.40</td><td>0.896</td></tr>
+            <tr><td>Streamwise velocity u</td><td>7.17</td><td>0.823</td></tr>
+            <tr><td>Lateral velocity v</td><td>4.85</td><td class="accent">0.939</td></tr>
+            <tr><td>Vertical velocity w</td><td>8.91</td><td>0.694</td></tr>
+            <tr><td>Velocity magnitude</td><td>7.64</td><td>0.874</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="two-col-img reveal" style="margin-top: 32px;">
+      <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 50 &mdash; Mid-plane static pressure: (a) CFD reference (b) surrogate prediction (c) signed residual</p><div class="img-label">Mid-Plane Static Pressure &mdash; CFD vs Surrogate</div></div>
+      <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 51 &mdash; Mid-plane velocity magnitude: (a) CFD reference (b) surrogate prediction (c) signed residual</p><div class="img-label">Mid-Plane Velocity Magnitude &mdash; CFD vs Surrogate</div></div>
+    </div>
+  </section>
+
+  <!-- 09 CONCLUSIONS -->
+  <section id="conclusions" style="background: var(--bg2);">
+    <div class="section-label">09 &mdash; Conclusions</div>
+    <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
+    <div class="card-grid-3 reveal">
+      <div class="content-card">
+        <h4>Propulsion &amp; Design</h4>
+        <p>While solid propellant offers substantially higher peak thrust, the EDF configuration better satisfies manoeuvrability and mission robustness. The hybrid modular design concept successfully served both missions with manageable compromises. Mission 2 requires a payload reduction or larger propellers to achieve stable hover with the full 3&nbsp;kg payload.</p>
+      </div>
+      <div class="content-card">
+        <h4>Automated CFD Optimisation</h4>
+        <p>The automated duct optimisation framework demonstrated that CFD can serve as a design tool rather than only an analysis method. The parametrised coordinate search delivered a 14.7% increase in fan-face mass flow and a 27.2% improvement in total pressure recovery without gradient information or manual iteration.</p>
+      </div>
+      <div class="content-card">
+        <h4>Flight Dynamics &amp; ML</h4>
+        <p>The trim campaign confirmed the design is mathematically flyable across the full envelope but requires active feedback control. The PIDGCNN surrogate achieved single-digit normalised RMSE on flow field prediction, demonstrating the feasibility of physics-informed ML as a design accelerator, with multi-geometry training as the next step.</p>
+      </div>
+    </div>
+    <div class="highlight-box reveal" style="margin-top: 40px;">
+      <p>The project demonstrated the feasibility of the pod-deployable UAV concept and highlighted how <strong>integrating CFD, flight dynamics, and machine learning within a unified design framework</strong> enables multidisciplinary design assessment that would be impractical through any single discipline alone.</p>
+    </div>
+  </section>
+
+  <!-- 10 TEAM -->
+  <section id="team" style="background: var(--bg);">
+    <div class="section-label">10 &mdash; The Team</div>
+    <h2 class="section-title reveal">Five engineers, <em>one platform</em></h2>
+    <div class="team-grid reveal">
+      <div class="team-card mine">
+        <div class="team-initial">TB</div>
+        <div class="team-name">Thomas Bainbridge</div>
+      </div>
+      <div class="team-card">
+        <div class="team-initial">JB</div>
+        <div class="team-name">James Bowie</div>
+      </div>
+      <div class="team-card">
+        <div class="team-initial">KO</div>
+        <div class="team-name">Konstantinos Ontiomoume</div>
+      </div>
+      <div class="team-card">
+        <div class="team-initial">TB</div>
+        <div class="team-name">Thato Baruti</div>
+      </div>
+      <div class="team-card">
+        <div class="team-initial">YQ</div>
+        <div class="team-name">Yunxiao Qu</div>
+      </div>
+    </div>
+    <div class="tag-row reveal">
+      <span class="tag">ANSYS Fluent</span><span class="tag">PyFluent</span><span class="tag">Python</span>
+      <span class="tag">MATLAB/Simulink</span><span class="tag">PyTorch</span><span class="tag">CFD</span>
+      <span class="tag">MRF Simulation</span><span class="tag">Duct Optimisation</span><span class="tag">RANS</span>
+      <span class="tag">k-&omega; SST</span><span class="tag">GNN</span><span class="tag">SIREN</span>
+      <span class="tag">6-DOF Flight Dynamics</span><span class="tag">Bernstein Parametrisation</span>
+      <span class="tag">Cranfield MSc</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Thomas Bainbridge</span>
+    <span>Cranfield University &mdash; MSc Computational Fluid Dynamics Group Project</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("nav");
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 60);
+    });
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add("visible"), i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
