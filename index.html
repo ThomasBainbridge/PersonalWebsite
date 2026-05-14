@@ -50,6 +50,17 @@
       z-index: 1000;
     }
 
+    /* Scroll progress bar */
+    .progress-bar {
+      position: fixed;
+      top: 0; left: 0;
+      height: 2px;
+      background: var(--accent);
+      z-index: 200;
+      width: 0%;
+      transition: width 0.1s linear;
+    }
+
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       display: flex; justify-content: space-between; align-items: center;
@@ -120,10 +131,7 @@
       margin-bottom: 8px;
       opacity: 0; animation: fadeUp 0.7s ease 0.2s forwards;
     }
-    .hero-name em {
-      font-style: italic;
-      color: var(--accent);
-    }
+    .hero-name em { font-style: italic; color: var(--accent); }
     .hero-role {
       font-family: var(--mono);
       font-size: 14px;
@@ -179,10 +187,7 @@
       display: flex; justify-content: center; align-items: center;
       opacity: 0; animation: fadeIn 1s ease 0.6s forwards;
     }
-    .hero-visual {
-      width: 360px; height: 360px;
-      position: relative;
-    }
+    .hero-visual { width: 360px; height: 360px; position: relative; }
     .hero-circle {
       width: 100%; height: 100%;
       border-radius: 50%;
@@ -218,17 +223,8 @@
       gap: 4px;
       background: var(--bg2);
     }
-    .hero-center-box span {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .hero-center-box strong {
-      font-family: var(--mono);
-      font-size: 22px;
-      font-weight: 500;
-      color: var(--accent);
-    }
+    .hero-center-box span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .hero-center-box strong { font-family: var(--mono); font-size: 22px; font-weight: 500; color: var(--accent); }
     .status-dot {
       position: absolute;
       bottom: 32px; right: 32px;
@@ -252,16 +248,8 @@
       text-transform: uppercase;
       margin-bottom: 48px;
     }
-    .section-label::before {
-      content: '';
-      display: block; width: 32px; height: 1px;
-      background: var(--accent);
-    }
-    .section-label::after {
-      content: '';
-      flex: 1; height: 1px;
-      background: var(--line);
-    }
+    .section-label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--accent); }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--line); }
     h2.section-title {
       font-family: var(--serif);
       font-size: clamp(36px, 5vw, 56px);
@@ -273,48 +261,17 @@
     h2.section-title em { font-style: italic; color: var(--accent); }
 
     #about { background: var(--bg2); }
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: start;
-    }
-    .about-text p {
-      font-size: 17px;
-      font-weight: 300;
-      color: #b5b2aa;
-      line-height: 1.8;
-      margin-bottom: 20px;
-    }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .about-text p { font-size: 17px; font-weight: 300; color: #b5b2aa; line-height: 1.8; margin-bottom: 20px; }
     .about-text p:last-child { margin-bottom: 0; }
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-    }
-    .stat-box {
-      background: var(--bg3);
-      border: 1px solid var(--line);
-      padding: 28px 24px;
-    }
+    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
     .stat-box:first-child { border-radius: 6px 0 0 0; }
     .stat-box:nth-child(2) { border-radius: 0 6px 0 0; }
     .stat-box:nth-child(3) { border-radius: 0 0 0 6px; }
     .stat-box:last-child { border-radius: 0 0 6px 0; }
-    .stat-num {
-      font-family: var(--serif);
-      font-size: 40px;
-      color: var(--accent);
-      line-height: 1;
-      margin-bottom: 6px;
-    }
-    .stat-label {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
+    .stat-num { font-family: var(--serif); font-size: 40px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
     #skills { background: var(--bg); }
     .skills-grid {
@@ -327,34 +284,17 @@
     .skill-card {
       background: var(--bg);
       padding: 36px 32px;
-      transition: background 0.2s;
+      border: 1px solid transparent;
+      transition: background 0.2s, border-color 0.2s;
     }
-    .skill-card:hover { background: var(--bg2); }
-    .skill-card-icon {
-      font-size: 28px;
-      margin-bottom: 16px;
-      display: block;
+    .skill-card:hover {
+      background: var(--bg2);
+      border-color: var(--accent);
     }
-    .skill-card h3 {
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text);
-      letter-spacing: 0.04em;
-      margin-bottom: 12px;
-    }
-    .skill-tags {
-      display: flex; flex-wrap: wrap; gap: 6px;
-    }
-    .tag {
-      font-family: var(--mono);
-      font-size: 10px;
-      color: var(--muted);
-      border: 1px solid var(--line);
-      padding: 3px 8px;
-      border-radius: 2px;
-      letter-spacing: 0.04em;
-    }
+    .skill-card-icon { font-size: 28px; margin-bottom: 16px; display: block; }
+    .skill-card h3 { font-family: var(--mono); font-size: 13px; font-weight: 500; color: var(--text); letter-spacing: 0.04em; margin-bottom: 12px; }
+    .skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line); padding: 3px 8px; border-radius: 2px; letter-spacing: 0.04em; }
 
     #projects { background: var(--bg2); }
     .projects-list { display: flex; flex-direction: column; gap: 2px; }
@@ -371,64 +311,21 @@
       text-decoration: none;
       color: inherit;
     }
-    .project-item:hover {
-      border-color: var(--accent);
-      background: var(--bg2);
-    }
-    .project-num {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      margin-bottom: 10px;
-      letter-spacing: 0.06em;
-    }
-    .project-item h3 {
-      font-family: var(--serif);
-      font-size: 26px;
-      font-weight: 400;
-      margin-bottom: 10px;
-      transition: color 0.2s;
-    }
+    .project-item:hover { border-color: var(--accent); background: var(--bg2); }
+    .project-num { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-bottom: 10px; letter-spacing: 0.06em; }
+    .project-item h3 { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 10px; transition: color 0.2s; }
     .project-item:hover h3 { color: var(--accent); }
-    .project-item p {
-      font-size: 15px;
-      color: var(--muted);
-      max-width: 560px;
-      line-height: 1.65;
-    }
-    .project-meta {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    .project-year {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
-    .project-arrow {
-      font-size: 20px;
-      color: var(--line);
-      transition: color 0.2s, transform 0.2s;
-    }
-    .project-item:hover .project-arrow {
-      color: var(--accent);
-      transform: translate(3px, -3px);
-    }
+    .project-item p { font-size: 15px; color: var(--muted); line-height: 1.65; }
+    .project-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+    .project-year { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+    .project-arrow { font-size: 20px; color: var(--line); transition: color 0.2s, transform 0.2s; }
+    .project-item:hover .project-arrow { color: var(--accent); transform: translate(3px, -3px); }
     .project-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 14px; }
 
     #experience { background: var(--bg); }
     .timeline { position: relative; padding-left: 32px; }
-    .timeline::before {
-      content: ''; position: absolute;
-      left: 0; top: 8px; bottom: 0;
-      width: 1px; background: var(--line);
-    }
-    .timeline-item {
-      position: relative;
-      margin-bottom: 52px;
-    }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 0; width: 1px; background: var(--line); }
+    .timeline-item { position: relative; margin-bottom: 52px; }
     .timeline-item::before {
       content: '';
       position: absolute;
@@ -438,35 +335,12 @@
       border-radius: 50%;
       background: var(--bg);
     }
-    .timeline-date {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.08em;
-      margin-bottom: 6px;
-    }
-    .timeline-item h3 {
-      font-size: 19px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-    .timeline-org {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-    .timeline-item p {
-      font-size: 15px;
-      color: #8a8880;
-      line-height: 1.7;
-      max-width: 600px;
-    }
+    .timeline-date { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 0.08em; margin-bottom: 6px; }
+    .timeline-item h3 { font-size: 19px; font-weight: 500; margin-bottom: 4px; }
+    .timeline-org { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .timeline-item p { font-size: 15px; color: #8a8880; line-height: 1.7; max-width: 600px; }
 
-    #contact {
-      background: var(--bg2);
-      text-align: center;
-    }
+    #contact { background: var(--bg2); text-align: center; }
     .contact-inner { max-width: 700px; margin: 0 auto; }
     .contact-inner .section-label { justify-content: center; }
     .contact-inner .section-label::before,
@@ -482,61 +356,20 @@
       word-break: break-word;
     }
     .contact-email:hover { color: var(--accent); }
-    .social-links {
-      display: flex; justify-content: center;
-      gap: 24px; list-style: none;
-      margin-top: 40px;
-      flex-wrap: wrap;
-    }
-    .social-links a {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
+    .social-links { display: flex; justify-content: center; gap: 24px; list-style: none; margin-top: 40px; flex-wrap: wrap; }
+    .social-links a { font-family: var(--mono); font-size: 11px; color: var(--muted); text-decoration: none; letter-spacing: 0.1em; text-transform: uppercase; transition: color 0.2s; }
     .social-links a:hover { color: var(--accent); }
 
-    footer {
-      border-top: 1px solid var(--line);
-      padding: 24px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    footer span {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--muted);
-    }
+    footer { border-top: 1px solid var(--line); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to   { opacity: 1; }
-    }
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
 
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
 
     @media (max-width: 900px) {
       nav { padding: 16px 24px; }
@@ -557,6 +390,8 @@
   </style>
 </head>
 <body>
+
+  <div class="progress-bar" id="progress"></div>
 
   <!-- NAV -->
   <nav id="nav">
@@ -628,347 +463,336 @@
         </p>
       </div>
       <div class="about-stats reveal">
-        <div class="stat-box">
-          <div class="stat-num">CFD</div>
-          <div class="stat-label">Simulation focus</div>
+        <div class="stat-box"><div class="stat-num">CFD</div><div class="stat-label">Simulation focus</div></div>
+        <div class="stat-box"><div class="stat-num">Automotive/Motorsport</div><div class="stat-label">Mechanical Background</div></div>
+        <div class="stat-box"><div class="stat-num">MSc</div><div class="stat-label">Postgraduate study</div></div>
+        <div class="stat-box"><div class="stat-num">BEng</div><div class="stat-label">Undergraduate Study</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-label">02 — Skills</div>
+    <h2 class="section-title reveal">Technical<br><em>skills</em></h2>
+    <div class="skills-grid reveal">
+      <div class="skill-card">
+        <span class="skill-card-icon">⚙️</span>
+        <h3>Software</h3>
+        <div class="skill-tags">
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">Star CCM+</span>
+          <span class="tag">OpenFOAM</span>
+          <span class="tag">Pointwise</span>
+          <span class="tag">ParaView</span>
+          <span class="tag">Tecplot 360</span>
+          <span class="tag">CATIA V5</span>
+          <span class="tag">SOLIDWORKS</span>
+          <span class="tag">Fusion 360</span>
+          <span class="tag">OpenVSP</span>
+          <span class="tag">FreeCAD</span>
+          <span class="tag">Pi Toolbox</span>
+          <span class="tag">Linux</span>
+          <span class="tag">Microsoft Office</span>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">Automotive/Motorsport</div>
-          <div class="stat-label">Mechanical Background</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-card-icon">💻</span>
+        <h3>Programming</h3>
+        <div class="skill-tags">
+          <span class="tag">Fortran</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">Simulink</span>
+          <span class="tag">Python</span>
+          <span class="tag">PyTorch</span>
+          <span class="tag">PyFluent</span>
+          <span class="tag">C++</span>
+          <span class="tag">Julia</span>
+          <span class="tag">HTML</span>
         </div>
-        <div class="stat-box">
-          <div class="stat-num">MSc</div>
-          <div class="stat-label">Postgraduate study</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">BEng</div>
-          <div class="stat-label">Undergraduate Study</div>
+      </div>
+      <div class="skill-card">
+        <span class="skill-card-icon">📐</span>
+        <h3>Engineering Focus</h3>
+        <div class="skill-tags">
+          <span class="tag">CFD</span>
+          <span class="tag">Mechanical Engineering</span>
+          <span class="tag">Automotive/Motorsports Engineering</span>
+          <span class="tag">Simulation</span>
+          <span class="tag">Data Acquisition/Analysis</span>
+          <span class="tag">Computational Modelling</span>
+          <span class="tag">Numerical Modelling/Methods</span>
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Artificial Intelligence</span>
         </div>
       </div>
     </div>
   </section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-label">02 — Skills</div>
-  <h2 class="section-title reveal">Techinical<br><em>skills</em></h2>
-  <div class="skills-grid reveal">
-    <div class="skill-card">
-      <span class="skill-card-icon">⚙️</span>
-      <h3>Software</h3>
-      <div class="skill-tags">
-        <span class="tag">ANSYS Fluent</span>
-        <span class="tag">Star CCM+</span>
-        <span class="tag">OpenFOAM</span>
-        <span class="tag">Pointwise</span>
-        <span class="tag">ParaView</span>
-        <span class="tag">Tecplot 360</span>
-        <span class="tag">CATIA V5</span>
-        <span class="tag">SOLIDWORKS</span>
-        <span class="tag">Fusion 360</span>
-        <span class="tag">OpenVSP</span>
-        <span class="tag">FreeCAD</span>
-        <span class="tag">Pi Toolbox</span>
-        <span class="tag">Linux</span>
-        <span class="tag">Microsoft Office</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <span class="skill-card-icon">💻</span>
-      <h3>Programming</h3>
-      <div class="skill-tags">
-        <span class="tag">Fortran</span>
-        <span class="tag">MATLAB</span>
-        <span class="tag">Simulink</span>
-        <span class="tag">Python</span>
-        <span class="tag">PyTorch</span>
-        <span class="tag">PyFluent</span>
-        <span class="tag">C++</span>
-        <span class="tag">Julia</span>
-        <span class="tag">HTML</span>
-      </div>
-    </div>
-    <div class="skill-card">
-      <span class="skill-card-icon">📐</span>
-      <h3>Engineering Focus</h3>
-      <div class="skill-tags">
-        <span class="tag">CFD</span>
-        <span class="tag">Mechanical Engineering</span>
-        <span class="tag">Automotive/Motorsports Engineering</span>
-        <span class="tag">Simulation</span>
-        <span class="tag">Data Acquisition/Analysis</span>
-        <span class="tag">Computational Modelling</span>
-        <span class="tag">Numerical Modelling/Methods</span>
-        <span class="tag">Machine Learning</span>
-        <span class="tag">Artificial Intelligence</span>
-      </div>
-    </div>
-  </div>
-</section>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-label">03 — Projects</div>
+    <h2 class="section-title reveal">Personal <em>projects</em></h2>
+    <div class="projects-list">
 
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-label">03 — Projects</div>
-  <h2 class="section-title reveal">Personal <em>projects</em></h2>
-  <div class="projects-list">
+      <a href="https://github.com/ThomasBainbridge/bearing-condition-monitor" target="_blank" rel="noopener" class="project-item reveal">
+        <div>
+          <div class="project-num">001</div>
+          <h3>Bearing Condition Monitor</h3>
+          <p>
+            A vibration-based machine learning pipeline for bearing fault diagnosis and
+            severity assessment using the CWRU dataset. Raw .mat vibration signals are
+            ingested, segmented into fixed windows, and passed through an engineered
+            feature extraction stage covering time-domain statistics and frequency-domain
+            descriptors. A hierarchical classifier then outputs both fault type (normal,
+            inner race, ball, outer race) and fault severity, combining them into a final
+            condition label. Models are validated across unseen operating loads using
+            leave-one-load-out cross-validation, with a command-line interface for
+            assessing individual vibration files.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Signal Processing</span>
+            <span class="tag">Random Forest</span>
+            <span class="tag">XGBoost</span>
+            <span class="tag">CWRU Dataset</span>
+            <span class="tag">Condition Monitoring</span>
+          </div>
+        </div>
+        <div class="project-meta">
+          <span class="project-year">2026</span>
+          <span class="project-arrow">↗</span>
+        </div>
+      </a>
 
-    <a href="https://github.com/ThomasBainbridge/bearing-condition-monitor" target="_blank" rel="noopener" class="project-item reveal">
-      <div>
-        <div class="project-num">001</div>
-        <h3>Bearing Condition Monitor</h3>
-        <p>
-          A vibration-based machine learning pipeline for bearing fault diagnosis and
-          severity assessment using the CWRU dataset. Raw .mat vibration signals are
-          ingested, segmented into fixed windows, and passed through an engineered
-          feature extraction stage covering time-domain statistics and frequency-domain
-          descriptors. A hierarchical classifier then outputs both fault type (normal,
-          inner race, ball, outer race) and fault severity, combining them into a final
-          condition label. Models are validated across unseen operating loads using
-          leave-one-load-out cross-validation, with a command-line interface for
-          assessing individual vibration files.
+      <a href="https://github.com/ThomasBainbridge/uav-performance-and-mission-analysis" target="_blank" rel="noopener" class="project-item reveal">
+        <div>
+          <div class="project-num">002</div>
+          <h3>UAV Performance &amp; Mission Analysis Tool</h3>
+          <p>
+            A browser-based engineering application for fixed-wing UAV preliminary performance and
+            segmented mission analysis. Built as a static HTML, CSS, and JavaScript web app, it
+            runs entirely client-side and evaluates stall speed, drag, power, endurance, range,
+            and mission feasibility using simplified aerodynamic, propulsion, atmospheric, and
+            battery models. The tool supports climb, outbound, loiter, return, and descent
+            segments, electrical energy accounting across propulsion, hotel, and payload loads,
+            and interactive 1D/2D trade studies, scenario comparison, shareable configurations,
+            and CSV export.
+          </p>
+          <div class="project-tags">
+            <span class="tag">HTML</span>
+            <span class="tag">CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">UAV</span>
+            <span class="tag">Mission Analysis</span>
+            <span class="tag">Trade Studies</span>
+            <span class="tag">Energy Modelling</span>
+          </div>
+        </div>
+        <div class="project-meta">
+          <span class="project-year">2026</span>
+          <span class="project-arrow">↗</span>
+        </div>
+      </a>
+
+      <a href="https://github.com/ThomasBainbridge/motorsport-lap-performance-analyser" target="_blank" rel="noopener" class="project-item reveal">
+        <div>
+          <div class="project-num">003</div>
+          <h3>Motorsport Lap Performance Analyser</h3>
+          <p>
+            A Python tool for analysing Formula 1 lap telemetry that combines data-driven
+            comparison with a first-principles vehicle dynamics model. Laps are aligned
+            over a common distance basis and automatically segmented into braking zones
+            and corners, with time-loss attribution broken down to phase level and a
+            machine learning pipeline extracting features, clustering corner archetypes,
+            and running cross-validated regression. A separate physics stage reconstructs
+            the track from position data, solves a quasi-steady-state lap-time envelope
+            with friction ellipse and aerodynamic downforce, and quantifies how close
+            each driver got to the car's theoretical limit. A single command produces
+            aligned traces, segment rankings, cluster maps, envelope overlays, g-g
+            diagrams, and a summary report — all driven by YAML config files.
+          </p>
+          <div class="project-tags">
+            <span class="tag">Python</span>
+            <span class="tag">FastF1</span>
+            <span class="tag">Telemetry Analysis</span>
+            <span class="tag">Machine Learning</span>
+            <span class="tag">Clustering</span>
+            <span class="tag">Motorsport</span>
+            <span class="tag">YAML</span>
+          </div>
+        </div>
+        <div class="project-meta">
+          <span class="project-year">2026</span>
+          <span class="project-arrow">↗</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- UNIVERSITY PROJECTS -->
+  <section id="university">
+    <div class="section-label">04 — University Projects</div>
+    <h2 class="section-title reveal">Academic <em>work</em></h2>
+    <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 600px; margin-bottom: 48px;">
+      A selection of projects and assignments completed during my undergraduate and postgraduate studies.
+    </p>
+    <div class="skills-grid reveal">
+
+      <div class="skill-card">
+        <h3>Laminar Channel Flow — CFD vs Analytical Study</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          Comparative study of analytical and numerical solutions for fully developed laminar
+          flow in a 2D channel. An analytical velocity profile was derived from the Navier–Stokes
+          equations and implemented in MATLAB as a benchmark. ANSYS Fluent simulations were
+          then run across three structured mesh densities, two outlet boundary conditions, and
+          first vs second order discretisation schemes. A non-isothermal case was also conducted
+          to examine thermal behaviour within the flow field.
         </p>
-        <div class="project-tags">
-          <span class="tag">Python</span>
-          <span class="tag">Machine Learning</span>
-          <span class="tag">Signal Processing</span>
-          <span class="tag">Random Forest</span>
-          <span class="tag">XGBoost</span>
-          <span class="tag">CWRU Dataset</span>
-          <span class="tag">Condition Monitoring</span>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">MATLAB</span>
+          <span class="tag">CFD</span>
+          <span class="tag">Mesh Refinement</span>
+          <span class="tag">Heat Transfer</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">80%</span>
         </div>
       </div>
-      <div class="project-meta">
-        <span class="project-year">2026</span>
-        <span class="project-arrow">↗</span>
+
+      <div class="skill-card">
+        <h3>Numerical Methods for PDEs &amp; High Performance Computing</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          Two-part assignment covering finite difference schemes and HPC performance analysis.
+          A Fortran solver was developed to apply four explicit schemes (FTCS, Upwind,
+          Lax-Friedrichs, Lax-Wendroff) to a 1D linear advection equation across two initial
+          value problems, with error norm analysis and CFL number investigation. The second
+          part analysed the UCNS3D CFD solver on the Taylor–Green vortex problem using
+          2–64 MPI processes, assessing parallel speed-up, efficiency, task breakdowns, and
+          CO&#8322; footprint for both second and third order schemes.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">Fortran</span>
+          <span class="tag">Numerical Methods</span>
+          <span class="tag">MPI</span>
+          <span class="tag">HPC</span>
+          <span class="tag">PDEs</span>
+          <span class="tag">CFD</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">84%</span>
+        </div>
       </div>
-    </a>
 
-    <a href="https://github.com/ThomasBainbridge/uav-performance-and-mission-analysis" target="_blank" rel="noopener" class="project-item reveal">
-  <div>
-    <div class="project-num">002</div>
-    <h3>UAV Performance &amp; Mission Analysis Tool</h3>
-    <p>
-      A browser-based engineering application for fixed-wing UAV preliminary performance and
-      segmented mission analysis. Built as a static HTML, CSS, and JavaScript web app, it
-      runs entirely client-side and evaluates stall speed, drag, power, endurance, range,
-      and mission feasibility using simplified aerodynamic, propulsion, atmospheric, and
-      battery models. The tool supports climb, outbound, loiter, return, and descent
-      segments, electrical energy accounting across propulsion, hotel, and payload loads,
-      and interactive 1D/2D trade studies, scenario comparison, shareable configurations,
-      and CSV export.
-    </p>
-    <div class="project-tags">
-      <span class="tag">HTML</span>
-      <span class="tag">CSS</span>
-      <span class="tag">JavaScript</span>
-      <span class="tag">UAV</span>
-      <span class="tag">Mission Analysis</span>
-      <span class="tag">Trade Studies</span>
-      <span class="tag">Energy Modelling</span>
+      <div class="skill-card">
+        <h3>Hybrid Grid Generation — NASA HiLiftPW-1 Trap Wing</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          Generation and assessment of a coarse RANS-suitable hybrid unstructured grid for
+          the NASA HiLiftPW-1 trapezoidal wing configuration at Re = 8.5 million, following
+          official workshop gridding guidelines. The surface mesh was built in Pointwise using
+          an advancing front algorithm with targeted edge length clustering around high-curvature
+          regions. Near-wall resolution was achieved using T-Rex prism layer meshing with a
+          y&#8314; &#8776; 1 target, producing 38 prism layers at a growth rate of 1.2. The final grid
+          totalled ~15.9 million cells and was assessed against skewness, aspect ratio, and
+          orthogonal quality metrics before import into ANSYS Fluent.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">Pointwise</span>
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">Grid Generation</span>
+          <span class="tag">RANS</span>
+          <span class="tag">High-Lift Aerodynamics</span>
+          <span class="tag">Boundary Layer Meshing</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">82%</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Data Analysis &amp; Uncertainty — Turbulent Channel Flow</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          Processed DNS time-series data from a turbulent channel flow to compute mean and RMS velocity profiles, benchmarked against the Lee &amp; Moser reference dataset. Spectral analysis was performed using FFT with rectangular, Hann, and Blackman windowing strategies, alongside a moving average filter, to investigate spectral leakage and frequency content. Statistical characterisation of velocity fluctuations was carried out through skewness, kurtosis, PDF estimation, and Pearson correlation analysis, with flow visualisation completed in ParaView using Q-criterion iso-surfaces.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">MATLAB</span>
+          <span class="tag">ParaView</span>
+          <span class="tag">DNS</span>
+          <span class="tag">Signal Processing</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">73%</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Turbulence Modelling — Virginia Tech Stability Wind Tunnel</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          A group RANS study simulating turbulent airflow through the high-speed leg of the Virginia Tech Stability Wind Tunnel using ANSYS Fluent, with reference conditions derived from experimental operating points across three Mach numbers. Multiple turbulence closures were compared — including k-&#603; RNG, k-&#969; BSL, k-kL-&#969;, and k-&#969; SST — alongside curvature correction, corner correction, and energy equation effects to assess their influence on secondary flow features. Grid convergence was quantified using Roache's GCI framework across four mesh refinement levels, and turbulence intensity and Reynolds shear stress profiles were benchmarked against DNS reference data.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">RANS</span>
+          <span class="tag">k-&#969; SST</span>
+          <span class="tag">GCI / Mesh Convergence</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">71%</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Numerical Modelling for Compressible Flows</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          A Godunov-type finite-volume solver for the compressible Euler equations was extended in Fortran to implement HLL and HLLC approximate Riemann solvers alongside second-order piecewise-linear reconstruction with a minmod limiter, verified against a reference solution across three grid resolutions. Multidimensional benchmark problems — the 2D Riemann problem, Mach 3 forward-facing step, and double Mach reflection — were analysed using UCNS3D, with density, Mach number, and pressure contours used to identify wave structures and limiter activation contours used to compare CWENOZ scheme orders and reconstruction strategies.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">Fortran</span>
+          <span class="tag">UCNS3D</span>
+          <span class="tag">Finite Volume Methods</span>
+          <span class="tag">HLLC / HLL / WENO</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">85%</span>
+        </div>
+      </div>
+
+      <div class="skill-card">
+        <h3>Numerical Modelling for Incompressible Flows</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow configuration to solve the benchmark lid-driven cavity problem, with physically correct boundary conditions implemented and channel-specific flow scaling removed. A grid convergence study across five mesh resolutions established an adequate cell count, with non-dimensionalised centreline velocity profiles validated against published datasets at Reynolds numbers 400, 1000, and 3200. Comparative simulations in ANSYS Fluent and OpenFOAM were used to assess the in-house solver against commercial CFD packages, with the assigned Reynolds number of 100 analysed through streamlines and velocity contours.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">SIMPLE-TDMA</span>
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">OpenFOAM</span>
+          <span class="tag">Finite Volume Methods</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">Not Yet Marked</span>
+        </div>
+      </div>
+
+      <a href="group-project.html" class="skill-card" style="text-decoration: none; display: block;">
+        <h3 style="color: var(--accent);">Group Project — Design Optimisation of a Pod Deployable UAV</h3>
+        <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
+          Multidisciplinary MSc group project covering CFD aerodynamics, propulsion analysis,
+          automated duct geometry optimisation, flight dynamics simulation, and a
+          physics-informed machine learning surrogate model for a dual-mission pod-deployable UAV.
+        </p>
+        <div class="skill-tags" style="margin-top: 16px;">
+          <span class="tag">ANSYS Fluent</span>
+          <span class="tag">Python</span>
+          <span class="tag">CFD Optimisation</span>
+          <span class="tag">Flight Dynamics</span>
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Cranfield MSc</span>
+          <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
+        </div>
+      </a>
+
     </div>
-  </div>
-  <div class="project-meta">
-    <span class="project-year">2026</span>
-    <span class="project-arrow">↗</span>
-  </div>
-</a>
+  </section>
 
-    <a href="https://github.com/ThomasBainbridge/motorsport-lap-performance-analyser" target="_blank" rel="noopener" class="project-item reveal">
-  <div>
-    <div class="project-num">003</div>
-    <h3>Motorsport Lap Performance Analyser</h3>
-    <p>
-        A Python tool for analysing Formula 1 lap telemetry that combines data-driven
-        comparison with a first-principles vehicle dynamics model. Laps are aligned
-        over a common distance basis and automatically segmented into braking zones
-        and corners, with time-loss attribution broken down to phase level and a
-        machine learning pipeline extracting features, clustering corner archetypes,
-        and running cross-validated regression. A separate physics stage reconstructs
-        the track from position data, solves a quasi-steady-state lap-time envelope
-        with friction ellipse and aerodynamic downforce, and quantifies how close
-        each driver got to the car's theoretical limit. A single command produces
-        aligned traces, segment rankings, cluster maps, envelope overlays, g-g
-        diagrams, and a summary report — all driven by YAML config files.
-    </p>
-    <div class="project-tags">
-      <span class="tag">Python</span>
-      <span class="tag">FastF1</span>
-      <span class="tag">Telemetry Analysis</span>
-      <span class="tag">Machine Learning</span>
-      <span class="tag">Clustering</span>
-      <span class="tag">Motorsport</span>
-      <span class="tag">YAML</span>
-    </div>
-  </div>
-  <div class="project-meta">
-    <span class="project-year">2026</span>
-    <span class="project-arrow">↗</span>
-  </div>
-</a>
-
-  </div>
-</section>
-
-<!-- UNIVERSITY PROJECTS -->
-<section id="university">
-  <div class="section-label">04 — University Projects</div>
-  <h2 class="section-title reveal">Academic <em>work</em></h2>
-  <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 600px; margin-bottom: 48px;">
-    A selection of projects and assingments completed during my undergraduate and postgraduate studies.
-  </p>
-  <div class="skills-grid reveal">
-
-  <div class="skill-card">
-  <h3>Laminar Channel Flow — CFD vs Analytical Study</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    Comparative study of analytical and numerical solutions for fully developed laminar
-    flow in a 2D channel. An analytical velocity profile was derived from the Navier–Stokes
-    equations and implemented in MATLAB as a benchmark. ANSYS Fluent simulations were
-    then run across three structured mesh densities, two outlet boundary conditions, and
-    first vs second order discretisation schemes. A non-isothermal case was also conducted
-    to examine thermal behaviour within the flow field.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">ANSYS Fluent</span>
-    <span class="tag">MATLAB</span>
-    <span class="tag">CFD</span>
-    <span class="tag">Mesh Refinement</span>
-    <span class="tag">Heat Transfer</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">80%</span>
-  </div>
-</div>
-
-   <div class="skill-card">
-  <h3>Numerical Methods for PDEs & High Performance Computing</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    Two-part assignment covering finite difference schemes and HPC performance analysis.
-    A Fortran solver was developed to apply four explicit schemes (FTCS, Upwind,
-    Lax-Friedrichs, Lax-Wendroff) to a 1D linear advection equation across two initial
-    value problems, with error norm analysis and CFL number investigation. The second
-    part analysed the UCNS3D CFD solver on the Taylor–Green vortex problem using
-    2–64 MPI processes, assessing parallel speed-up, efficiency, task breakdowns, and
-    CO₂ footprint for both second and third order schemes.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">Fortran</span>
-    <span class="tag">Numerical Methods</span>
-    <span class="tag">MPI</span>
-    <span class="tag">HPC</span>
-    <span class="tag">PDEs</span>
-    <span class="tag">CFD</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">84%</span>
-  </div>
-</div>
-
-   <div class="skill-card">
-  <h3>Hybrid Grid Generation — NASA HiLiftPW-1 Trap Wing</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    Generation and assessment of a coarse RANS-suitable hybrid unstructured grid for
-    the NASA HiLiftPW-1 trapezoidal wing configuration at Re = 8.5 million, following
-    official workshop gridding guidelines. The surface mesh was built in Pointwise using
-    an advancing front algorithm with targeted edge length clustering around high-curvature
-    regions. Near-wall resolution was achieved using T-Rex prism layer meshing with a
-    y⁺ ≈ 1 target, producing 38 prism layers at a growth rate of 1.2. The final grid
-    totalled ~15.9 million cells and was assessed against skewness, aspect ratio, and
-    orthogonal quality metrics before import into ANSYS Fluent.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">Pointwise</span>
-    <span class="tag">ANSYS Fluent</span>
-    <span class="tag">Grid Generation</span>
-    <span class="tag">RANS</span>
-    <span class="tag">High-Lift Aerodynamics</span>
-    <span class="tag">Boundary Layer Meshing</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">82%</span>
-  </div>
-</div>
-
-<div class="skill-card">
-  <h3>Data Analysis & Uncertainty — Turbulent Channel Flow</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    Processed DNS time-series data from a turbulent channel flow to compute mean and RMS velocity profiles, benchmarked against the Lee & Moser reference dataset. Spectral analysis was performed using FFT with rectangular, Hann, and Blackman windowing strategies, alongside a moving average filter, to investigate spectral leakage and frequency content. Statistical characterisation of velocity fluctuations was carried out through skewness, kurtosis, PDF estimation, and Pearson correlation analysis, with flow visualisation completed in ParaView using Q-criterion iso-surfaces.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">MATLAB</span>
-    <span class="tag">ParaView</span>
-    <span class="tag">DNS</span>
-    <span class="tag">Signal Processing</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">73%</span>
-  </div>
-</div>
-
-<div class="skill-card">
-  <h3>Turbulence Modelling — Virginia Tech Stability Wind Tunnel</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    A group RANS study simulating turbulent airflow through the high-speed leg of the Virginia Tech Stability Wind Tunnel using ANSYS Fluent, with reference conditions derived from experimental operating points across three Mach numbers. Multiple turbulence closures were compared — including k-ε RNG, k-ω BSL, k-kL-ω, and k-ω SST — alongside curvature correction, corner correction, and energy equation effects to assess their influence on secondary flow features. Grid convergence was quantified using Roache's GCI framework across four mesh refinement levels, and turbulence intensity and Reynolds shear stress profiles were benchmarked against DNS reference data.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">ANSYS Fluent</span>
-    <span class="tag">RANS</span>
-    <span class="tag">k-ω SST</span>
-    <span class="tag">GCI / Mesh Convergence</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">71%</span>
-  </div>
-</div>
-
-<div class="skill-card">
-  <h3>Numerical Modelling for Compressible Flows</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    A Godunov-type finite-volume solver for the compressible Euler equations was extended in Fortran to implement HLL and HLLC approximate Riemann solvers alongside second-order piecewise-linear reconstruction with a minmod limiter, verified against a reference solution across three grid resolutions. Multidimensional benchmark problems — the 2D Riemann problem, Mach 3 forward-facing step, and double Mach reflection — were analysed using UCNS3D, with density, Mach number, and pressure contours used to identify wave structures and limiter activation contours used to compare CWENOZ scheme orders and reconstruction strategies.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">Fortran</span>
-    <span class="tag">UCNS3D</span>
-    <span class="tag">Finite Volume Methods</span>
-    <span class="tag">HLLC / HLL / WENO</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">85%</span>
-  </div>
-</div>
-
-<div class="skill-card">
-  <h3>Numerical Modelling for Incompressible Flows</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow configuration to solve the benchmark lid-driven cavity problem, with physically correct boundary conditions implemented and channel-specific flow scaling removed. A grid convergence study across five mesh resolutions established an adequate cell count, with non-dimensionalised centreline velocity profiles validated against published datasets at Reynolds numbers 400, 1000, and 3200. Comparative simulations in ANSYS Fluent and OpenFOAM were used to assess the in-house solver against commercial CFD packages, with the assigned Reynolds number of 100 analysed through streamlines and velocity contours.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">SIMPLE-TDMA</span>
-    <span class="tag">ANSYS Fluent</span>
-    <span class="tag">OpenFOAM</span>
-    <span class="tag">Finite Volume Methods</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">Not Yet Marked</span>
-  </div>
-</div>
-
-  <a href="group-project.html" class="skill-card" style="text-decoration: none; display: block;">
-  <h3 style="color: var(--accent);">Group Project — Design Optimisation of a Pod Deployable UAV</h3>
-  <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-    Multidisciplinary MSc group project covering CFD aerodynamics, propulsion analysis,
-    automated duct geometry optimisation, flight dynamics simulation, and a
-    physics-informed machine learning surrogate model for a dual-mission pod-deployable UAV.
-  </p>
-  <div class="skill-tags" style="margin-top: 16px;">
-    <span class="tag">ANSYS Fluent</span>
-    <span class="tag">Python</span>
-    <span class="tag">CFD Optimisation</span>
-    <span class="tag">Flight Dynamics</span>
-    <span class="tag">Machine Learning</span>
-    <span class="tag">Cranfield MSc</span>
-    <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project →</span>
-  </div>
-</a>
-
-  </div>
-</section>
-
-   <section id="experience">
-    <div class="section-label">04 — Experience</div>
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <div class="section-label">05 — Experience</div>
     <h2 class="section-title reveal">Where I've <em>been</em></h2>
     <div class="timeline reveal">
       <div class="timeline-item">
@@ -979,7 +803,7 @@
       </div>
       <div class="timeline-item">
         <div class="timeline-date">2021 — 2025</div>
-        <h3>BEng Automotive Engineering with Motorsport </h3>
+        <h3>BEng Automotive Engineering with Motorsport</h3>
         <div class="timeline-org">University of Hertfordshire · Full-time</div>
         <p>This is where my engineering ability was properly formed, giving me a strong grounding in design, analysis, and the way performance, function, and manufacturability have to work together in real engineering decisions.</p>
       </div>
@@ -990,10 +814,10 @@
         <p>This experience developed my understanding of engineering in a more hands-on, team-based environment, where I contributed to a performance-focused project and gained practical insight into collaboration, design, and real-world problem-solving.</p>
       </div>
       <div class="timeline-item">
-        <div class="timeline-date">2017-2021</div>
+        <div class="timeline-date">2017 — 2021</div>
         <h3>Samuel Whitbread Racing Team Member</h3>
         <div class="timeline-org">Team Scooby · Part-time</div>
-        <p>This was where I was first introduced to engineering, giving me an early foundation in how ideas are developed into real components and products. It sparked my interest in the field and taught me the fundamentals of design, problem-solving, and practical engineering thinking</p>
+        <p>This was where I was first introduced to engineering, giving me an early foundation in how ideas are developed into real components and products. It sparked my interest in the field and taught me the fundamentals of design, problem-solving, and practical engineering thinking.</p>
       </div>
     </div>
   </section>
@@ -1001,16 +825,16 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="contact-inner">
-      <div class="section-label">05 — Contact</div>
+      <div class="section-label">06 — Contact</div>
       <h2 class="section-title reveal">Find me <em>online</em></h2>
       <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 520px; margin: 0 auto;">
-        Open to job opportunities, internships and intresting engineering problems/research
+        Open to job opportunities, internships and interesting engineering problems and research.
       </p>
       <a href="mailto:tb.engineering.uk@gmail.com" class="contact-email reveal" target="_blank" rel="noopener">
         tb.engineering.uk@gmail.com
       </a>
       <ul class="social-links reveal">
-        <li><a href="cv/Thomas_Bainbridge_CV.pdf" target="_blank" rel="noopener">CV / Resume ↓</a></li>
+        <li><a href="cv/Thomas_Bainbridge_CV.pdf" target="_blank" rel="noopener">CV / Resume &#8595;</a></li>
         <li><a href="https://github.com/ThomasBainbridge" target="_blank" rel="noopener">GitHub</a></li>
         <li><a href="https://www.linkedin.com/in/thomasbainbridge14/">LinkedIn</a></li>
       </ul>
@@ -1019,14 +843,19 @@
 
   <!-- FOOTER -->
   <footer>
-    <span>© 2026 Thomas Bainbridge</span>
+    <span>&#169; 2026 Thomas Bainbridge</span>
     <span>Built with HTML · Hosted on GitHub Pages</span>
   </footer>
 
   <script>
     const nav = document.getElementById('nav');
+    const progress = document.getElementById('progress');
+
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 60);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (scrollTop / docHeight * 100) + '%';
     });
 
     const reveals = document.querySelectorAll('.reveal');
