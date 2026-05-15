@@ -411,33 +411,97 @@
 
 </section>
 
-  <!-- 03 AEROFOIL -->
-  <section id="aerofoil" style="background: var(--bg2);">
-    <div class="section-label">03 &mdash; Aerofoil Selection &amp; Validation</div>
-    <h2 class="section-title reveal">NACA optimisation <em>framework</em></h2>
-    <div class="two-col reveal">
-      <div>
-        <div class="prose">
-          <p>Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.</p>
-          <p>Four optimisation algorithms were compared for identifying the peak lift-to-drag ratio across the NACA 4412 polar &mdash; Newton-Raphson, Golden Section Search (GSS), Adjoint with Barzilai-Borwein steps, and Newton-Krylov. All four converged to an optimal angle of attack in the range 7.01&deg;&ndash;7.36&deg;. GSS was selected as the preferred algorithm &mdash; it identified the global best CL/CD&nbsp;=&nbsp;63.854 at &alpha;&nbsp;=&nbsp;7.047&deg; using only 15 solver evaluations, with no gradient information required.</p>
-          <p>Five NACA profiles were then evaluated using the validated GSS framework. The <strong>NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform.</p>
-        </div>
-      </div>
-      <div>
-        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 21 from report &mdash; NACA 4412 CFD vs XFoil validation</p><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
-        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 25 from report &mdash; NACA aerofoil comparison</p><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
-        <table class="result-table" style="margin-top: 24px;">
-          <thead><tr><th>Algorithm</th><th>&alpha;* [&deg;]</th><th>CL/CD*</th><th>Evals</th></tr></thead>
-          <tbody>
-            <tr><td>Newton-Raphson</td><td>7.10</td><td>63.768</td><td>6</td></tr>
-            <tr><td class="accent">Golden Section Search</td><td class="accent">7.047</td><td class="accent">63.854</td><td class="accent">15</td></tr>
-            <tr><td>Adjoint (BB + Armijo)</td><td>7.01</td><td>63.852</td><td>22</td></tr>
-            <tr><td>Newton-Krylov</td><td>7.36</td><td>63.778</td><td>12</td></tr>
-          </tbody>
-        </table>
+<!-- 03 AEROFOIL -->
+<section id="aerofoil" style="background: var(--bg2);">
+  <div class="section-label">03 &mdash; Aerofoil Selection &amp; Validation</div>
+
+  <h2 class="section-title reveal">
+    NACA optimisation <em>framework</em>
+  </h2>
+
+  <div class="two-col reveal">
+
+    <div>
+      <div class="prose">
+        <p>
+          Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.
+        </p>
+
+        <p>
+          Four optimisation algorithms were compared for identifying the peak lift-to-drag ratio across the NACA 4412 polar &mdash; Newton-Raphson, Golden Section Search (GSS), Adjoint with Barzilai-Borwein steps, and Newton-Krylov. All four converged to an optimal angle of attack in the range 7.01&deg;&ndash;7.36&deg;. GSS was selected as the preferred algorithm &mdash; it identified the global best CL/CD&nbsp;=&nbsp;63.854 at &alpha;&nbsp;=&nbsp;7.047&deg; using only 15 solver evaluations, with no gradient information required.
+        </p>
+
+        <p>
+          Five NACA profiles were then evaluated using the validated GSS framework. The <strong>NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform.
+        </p>
       </div>
     </div>
-  </section>
+
+    <div>
+
+      <div class="img-block">
+        <img src="images/figure-7-NACA_AIRFOIL_VALIDATION_LIFT_DRAG_RATIO.png"
+             alt="NACA 4412 CFD vs XFoil validation">
+
+        <div class="img-label">
+          NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;
+        </div>
+      </div>
+
+      <div class="img-block" style="margin-top: 16px;">
+        <img src="images/figure-8-AIRFOIL_POLAR_COMPARISON.png"
+             alt="NACA aerofoil comparison">
+
+        <div class="img-label">
+          NACA Aerofoil Comparison &mdash; All Profiles
+        </div>
+      </div>
+
+      <table class="result-table" style="margin-top: 24px;">
+        <thead>
+          <tr>
+            <th>Algorithm</th>
+            <th>&alpha;* [&deg;]</th>
+            <th>CL/CD*</th>
+            <th>Evals</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr>
+            <td>Newton-Raphson</td>
+            <td>7.10</td>
+            <td>63.768</td>
+            <td>6</td>
+          </tr>
+
+          <tr>
+            <td class="accent">Golden Section Search</td>
+            <td class="accent">7.047</td>
+            <td class="accent">63.854</td>
+            <td class="accent">15</td>
+          </tr>
+
+          <tr>
+            <td>Adjoint (BB + Armijo)</td>
+            <td>7.01</td>
+            <td>63.852</td>
+            <td>22</td>
+          </tr>
+
+          <tr>
+            <td>Newton-Krylov</td>
+            <td>7.36</td>
+            <td>63.778</td>
+            <td>12</td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+
+  </div>
+</section>
 
   <!-- 04 PROPULSION -->
   <section id="propulsion" style="background: var(--bg);">
