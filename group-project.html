@@ -714,34 +714,47 @@
   </div>
 </section>
 
-  <!-- 07 FLIGHT DYNAMICS -->
-  <section id="flight" style="background: var(--bg2);">
-    <div class="section-label">07 &mdash; Flight Dynamics</div>
-    <h2 class="section-title reveal">Trim, stability <em>&amp; control analysis</em></h2>
-    <div class="prose reveal">
-      <p>A MATLAB/Simulink six-degree-of-freedom flight simulation model was assembled to evaluate whether the CFD-derived aerodynamic and propulsion data could support steady flight and manoeuvring across the operating envelope. The model assembles aerodynamic lookup tables into a rigid-body 6-DOF formulation with a Newton-style trim solver and local linearisation at each operating point.</p>
-    </div>
-    <div class="two-col reveal" style="margin-top: 48px;">
-      <div>
-        <h3 class="sub-title">Trim Campaign</h3>
-        <div class="prose">
-          <p>A batch trim campaign covered four study types: baseline cruise (Nz = 1.0g), overload sweep (Nz = 1.0, 1.5, 2.0g), sideslip sweep (&beta; = 0&deg;, 5&deg;, 10&deg;), and linear stability analysis &mdash; all over 40&ndash;105&nbsp;m/s. All 70 operating points converged with a maximum trim residual of 8.6&times;10&#8315;&sup1;&sup0;. Baseline cruise requires consistently high pitch command and large trimmed angles of attack. At low speed with Nz = 2.0, angles of attack approach 69&deg;.</p>
-        </div>
-        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 40 &mdash; Longitudinal trim response for cruise and overload cases</p><div class="img-label">Longitudinal Trim Response</div></div>
-      </div>
-      <div>
-        <h3 class="sub-title">Stability Analysis</h3>
-        <div class="prose">
-          <p>Local state-space matrices were generated at every trim point by finite-difference linearisation of the nonlinear Simulink model. Open-loop eigenvalue analysis shows the configuration is not passively stable &mdash; the maximum real part of the eigenvalues ranges from 8.64 to 25.83 for the baseline cruise case. Active feedback control is required for a practical implementation.</p>
-        </div>
-        <div class="highlight-box">
-          <p>A practical flight implementation would require a <strong>scheduled feedback control system</strong> with pitch, yaw, and thrust scheduling based on the trimmed operating point.</p>
-        </div>
-        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 43 &mdash; Open-loop eigenvalue trends</p><div class="img-label">Open-Loop Eigenvalue Trends</div></div>
-      </div>
-    </div>
-  </section>
+ <!-- 07 FLIGHT DYNAMICS -->
+<section id="flight" style="background: var(--bg2);">
+  <div class="section-label">07 &mdash; Flight Dynamics</div>
+  <h2 class="section-title reveal">Trim, stability <em>&amp; control analysis</em></h2>
 
+  <div class="prose reveal">
+    <p>A MATLAB/Simulink six-degree-of-freedom flight simulation model was assembled to evaluate whether the CFD-derived aerodynamic and propulsion data could support steady flight and manoeuvring across the operating envelope. The model assembles aerodynamic lookup tables into a rigid-body 6-DOF formulation with a Newton-style trim solver and local linearisation at each operating point.</p>
+  </div>
+
+  <div class="two-col reveal" style="margin-top: 48px;">
+    <div>
+      <h3 class="sub-title">Trim Campaign</h3>
+
+      <div class="prose">
+        <p>A batch trim campaign covered four study types: baseline cruise (Nz = 1.0g), overload sweep (Nz = 1.0, 1.5, 2.0g), sideslip sweep (&beta; = 0&deg;, 5&deg;, 10&deg;), and linear stability analysis &mdash; all over 40&ndash;105&nbsp;m/s. All 70 operating points converged with a maximum trim residual of 8.6&times;10&#8315;&sup1;&sup0;. Baseline cruise requires consistently high pitch command and large trimmed angles of attack. At low speed with Nz = 2.0, angles of attack approach 69&deg;.</p>
+      </div>
+
+      <div class="img-block">
+        <img src="images/figure-23-longitudinal.png" alt="Longitudinal trim response for cruise and overload cases">
+        <div class="img-label">Longitudinal Trim Response</div>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="sub-title">Stability Analysis</h3>
+
+      <div class="prose">
+        <p>Local state-space matrices were generated at every trim point by finite-difference linearisation of the nonlinear Simulink model. Open-loop eigenvalue analysis shows the configuration is not passively stable &mdash; the maximum real part of the eigenvalues ranges from 8.64 to 25.83 for the baseline cruise case. Active feedback control is required for a practical implementation.</p>
+      </div>
+
+      <div class="highlight-box">
+        <p>A practical flight implementation would require a <strong>scheduled feedback control system</strong> with pitch, yaw, and thrust scheduling based on the trimmed operating point.</p>
+      </div>
+
+      <div class="img-block" style="margin-top: 16px;">
+        <img src="images/figure-24-eigen.png" alt="Open-loop eigenvalue trends">
+        <div class="img-label">Open-Loop Eigenvalue Trends</div>
+      </div>
+    </div>
+  </div>
+</section>
   <!-- 08 ML SURROGATE -->
   <section id="ml" style="background: var(--bg);">
     <div class="section-label">08 &mdash; Machine Learning Surrogate</div>
