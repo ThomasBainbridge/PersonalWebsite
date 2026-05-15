@@ -659,38 +659,60 @@
 </section>
 
   <!-- 06 FINAL UAV -->
-  <section id="final" style="background: var(--bg);">
-    <div class="section-label">06 &mdash; Final UAV Simulations</div>
-    <h2 class="section-title reveal">Mission performance <em>assessment</em></h2>
-    <div class="two-col reveal">
-      <div>
-        <h3 class="sub-title">Mission 1 &mdash; Interception UAV</h3>
-        <div class="prose">
-          <p>The final Mission 1 design was simulated with the EDF at four RPM settings (20,000, 40,000, 60,000, and 75,600 RPM) at a freestream velocity of 70&nbsp;m/s. At 75,600&nbsp;RPM, the EDF produces 72.47&nbsp;N of thrust. Body drag at 70&nbsp;m/s is 9.44&nbsp;N, giving a predicted top speed of 193.98&nbsp;m/s &mdash; far exceeding the 100&nbsp;m/s design requirement.</p>
-        </div>
-        <table class="result-table">
-          <thead><tr><th>RPM</th><th>Thrust (N)</th></tr></thead>
-          <tbody>
-            <tr><td>20,000</td><td>2.336</td></tr>
-            <tr><td>40,000</td><td>7.059</td></tr>
-            <tr><td>60,000</td><td>22.972</td></tr>
-            <tr><td>75,600</td><td class="accent">72.474</td></tr>
-          </tbody>
-        </table>
-        <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 37 &mdash; Mission 1 midplane + Q-criterion flow field</p><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
-          <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 38 &mdash; Static pressure contour Mission 1</p><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
-        </div>
+<section id="final" style="background: var(--bg);">
+  <div class="section-label">06 &mdash; Final UAV Simulations</div>
+  <h2 class="section-title reveal">Mission performance <em>assessment</em></h2>
+
+  <div class="two-col reveal">
+    <div>
+      <h3 class="sub-title">Mission 1 &mdash; Interception UAV</h3>
+
+      <div class="prose">
+        <p>The final Mission 1 design was simulated with the EDF at four RPM settings (20,000, 40,000, 60,000, and 75,600 RPM) at a freestream velocity of 70&nbsp;m/s. At 75,600&nbsp;RPM, the EDF produces 72.47&nbsp;N of thrust. Body drag at 70&nbsp;m/s is 9.44&nbsp;N, giving a predicted top speed of 193.98&nbsp;m/s &mdash; far exceeding the 100&nbsp;m/s design requirement.</p>
       </div>
-      <div>
-        <h3 class="sub-title">Mission 2 &mdash; Endurance UAV</h3>
-        <div class="prose">
-          <p>The Mission 2 configuration uses four APC 11&times;6 propellers simulated at 12,000&nbsp;RPM with a 3&nbsp;m/s inlet velocity. Rear propellers produce 7.7&nbsp;N thrust each; front propellers produce 7.3&nbsp;N due to wake interaction. Total vertical thrust of 30.1&nbsp;N was recorded &mdash; insufficient for stable hover with the full 3&nbsp;kg payload. A payload reduction to 1&ndash;2&nbsp;kg, or larger propellers, would be required to meet the full Mission 2 specification.</p>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>RPM</th>
+            <th>Thrust (N)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>20,000</td><td>2.336</td></tr>
+          <tr><td>40,000</td><td>7.059</td></tr>
+          <tr><td>60,000</td><td>22.972</td></tr>
+          <tr><td>75,600</td><td class="accent">72.474</td></tr>
+        </tbody>
+      </table>
+
+      <div class="two-col-img" style="margin-top: 16px;">
+        <div class="img-block">
+          <img src="images/figure-20-midplaneslice.png" alt="Mission 1 midplane and Q-criterion flow field">
+          <div class="img-label">Mission 1 &mdash; Flow Field</div>
         </div>
-        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 39 &mdash; Mission 2 velocity and pressure iso-surfaces</p><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
+
+        <div class="img-block">
+          <img src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure contour">
+          <div class="img-label">Mission 1 &mdash; Static Pressure</div>
+        </div>
       </div>
     </div>
-  </section>
+
+    <div>
+      <h3 class="sub-title">Mission 2 &mdash; Endurance UAV</h3>
+
+      <div class="prose">
+        <p>The Mission 2 configuration uses four APC 11&times;6 propellers simulated at 12,000&nbsp;RPM with a 3&nbsp;m/s inlet velocity. Rear propellers produce 7.7&nbsp;N thrust each; front propellers produce 7.3&nbsp;N due to wake interaction. Total vertical thrust of 30.1&nbsp;N was recorded &mdash; insufficient for stable hover with the full 3&nbsp;kg payload. A payload reduction to 1&ndash;2&nbsp;kg, or larger propellers, would be required to meet the full Mission 2 specification.</p>
+      </div>
+
+      <div class="img-block">
+        <img src="images/figure-22-surface-contours.png" alt="Mission 2 velocity and pressure iso-surfaces">
+        <div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div>
+      </div>
+    </div>
+  </div>
+</section>
 
   <!-- 07 FLIGHT DYNAMICS -->
   <section id="flight" style="background: var(--bg2);">
