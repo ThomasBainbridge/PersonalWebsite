@@ -440,7 +440,7 @@
     <div>
 
       <div class="img-block">
-        <img src="images/figure-7-validation.png"
+        <img src="images/figure-7-NACA_AIRFOIL_VALIDATION_LIFT_DRAG_RATIO.png"
              alt="NACA 4412 CFD vs XFoil validation">
 
         <div class="img-label">
@@ -449,7 +449,7 @@
       </div>
 
       <div class="img-block" style="margin-top: 16px;">
-        <img src="images/figure-8-comparison.png"
+        <img src="images/figure-8-AIRFOIL_POLAR_COMPARISON.png"
              alt="NACA aerofoil comparison">
 
         <div class="img-label">
@@ -503,33 +503,48 @@
   </div>
 </section>
 
-  <!-- 04 PROPULSION -->
-  <section id="propulsion" style="background: var(--bg);">
-    <div class="section-label">04 &mdash; Propulsion Analysis</div>
-    <h2 class="section-title reveal">EDF vs <em>solid propellant</em></h2>
-    <div class="two-col reveal">
-      <div>
-        <div class="prose">
-          <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
-          <p>Solid propellant offered substantially higher thrust at every burn stage, with predicted maximum velocities exceeding 300&nbsp;m/s. However, critical limitations were identified: no throttle control after ignition, extreme thermal loads approaching 3000&nbsp;K requiring sacrificial liner materials, and recirculating stagnant air causing instability near the nozzle exit.</p>
-          <p>Despite the performance advantage, the EDF configuration was selected for the final design &mdash; it better satisfies manoeuvrability, operational flexibility, and mission robustness, with ESC throttle control enabling course correction after launch.</p>
-        </div>
-        <table class="result-table">
-          <thead><tr><th>Burn Stage</th><th>Thrust (N)</th><th>Predicted Vmax (m/s)</th></tr></thead>
-          <tbody>
-            <tr><td>Beginning</td><td>30.91</td><td>133.4</td></tr>
-            <tr><td>Middle</td><td>101.97</td><td>219.6</td></tr>
-            <tr><td>End</td><td>174.64</td><td class="accent">301.1</td></tr>
-          </tbody>
-        </table>
+ <!-- 04 PROPULSION -->
+<section id="propulsion" style="background: var(--bg);">
+  <div class="section-label">04 &mdash; Propulsion Analysis</div>
+  <h2 class="section-title reveal">EDF vs <em>solid propellant</em></h2>
+
+  <div class="two-col reveal">
+    <div>
+      <div class="prose">
+        <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
+        <p>Solid propellant offered substantially higher thrust at every burn stage, with predicted maximum velocities exceeding 300&nbsp;m/s. However, critical limitations were identified: no throttle control after ignition, extreme thermal loads approaching 3000&nbsp;K requiring sacrificial liner materials, and recirculating stagnant air causing instability near the nozzle exit.</p>
+        <p>Despite the performance advantage, the EDF configuration was selected for the final design &mdash; it better satisfies manoeuvrability, operational flexibility, and mission robustness, with ESC throttle control enabling course correction after launch.</p>
       </div>
-      <div>
-        <div class="img-block"><p class="img-placeholder-text">IMAGE: Figure 44 from report &mdash; Velocity contours at beginning, middle, and end burn stages</p><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
-        <div class="img-block" style="margin-top: 16px;"><p class="img-placeholder-text">IMAGE: Figure 45 from report &mdash; Temperature contours at beginning, middle, and end burn stages</p><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
+
+      <table class="result-table">
+        <thead>
+          <tr>
+            <th>Burn Stage</th>
+            <th>Thrust (N)</th>
+            <th>Predicted Vmax (m/s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Beginning</td><td>30.91</td><td>133.4</td></tr>
+          <tr><td>Middle</td><td>101.97</td><td>219.6</td></tr>
+          <tr><td>End</td><td>174.64</td><td class="accent">301.1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div>
+      <div class="img-block">
+        <img src="images/figure-9-apcp-velocity.png" alt="Solid propellant velocity contours across burn stages">
+        <div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div>
+      </div>
+
+      <div class="img-block" style="margin-top: 16px;">
+        <img src="images/figure-10-apcp-temperature.png" alt="Solid propellant temperature contours across burn stages">
+        <div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div>
       </div>
     </div>
-  </section>
-
+  </div>
+</section>
   <!-- 05 DUCT OPTIMISATION -->
   <section id="duct" style="background: var(--bg2);">
     <div class="section-label">05 &mdash; Duct Geometry Optimisation</div>
