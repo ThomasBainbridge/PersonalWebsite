@@ -58,7 +58,6 @@
     .prose p { margin-bottom: 16px; }
     .prose p:last-child { margin-bottom: 0; }
 
-    /* ── IMAGE BLOCKS ── */
     .img-block {
       background: var(--bg3);
       border-radius: 4px;
@@ -80,35 +79,13 @@
       display: block;
       margin: 0 auto;
     }
-    .design-card .img-block {
-      height: auto;
-      min-height: 200px;
-      margin-top: 0;
-      padding: 16px;
-    }
-    .design-card .img-block img {
-      height: auto;
-      max-height: 280px;
-      width: 100%;
-      object-fit: contain;
-    }
+    .design-card .img-block { height: auto; min-height: 200px; margin-top: 0; padding: 16px; }
+    .design-card .img-block img { height: auto; max-height: 280px; width: 100%; object-fit: contain; }
     .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
-    .img-placeholder-text { font-family: var(--mono); font-size: 12px; color: var(--line); }
 
-    /* ── LAYOUT ── */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-
-    .two-col-img {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      align-items: stretch;
-    }
-    .two-col-img .img-block {
-      margin-top: 0;
-      height: 100%;
-    }
-
+    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .two-col-img .img-block { margin-top: 0; height: 100%; }
     .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
 
     .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
@@ -239,6 +216,7 @@
     </div>
   </section>
 
+  <!-- 01 MISSIONS -->
   <section id="missions" style="background: var(--bg2);">
     <div class="section-label">01 &mdash; Mission Requirements</div>
     <h2 class="section-title reveal">Two <em>competing missions</em></h2>
@@ -269,6 +247,7 @@
     </div>
   </section>
 
+  <!-- 02 INITIAL DESIGN -->
   <section id="design" style="background: var(--bg);">
     <div class="section-label">02 &mdash; Initial Design &amp; Selection</div>
     <h2 class="section-title reveal">Four concepts, <em>one hybrid</em></h2>
@@ -298,43 +277,41 @@
     </div>
   </section>
 
+  <!-- 03 AEROFOIL — text full-width, images below -->
   <section id="aerofoil" style="background: var(--bg2);">
     <div class="section-label">03 &mdash; Aerofoil Selection &amp; Validation</div>
     <h2 class="section-title reveal">NACA optimisation <em>framework</em></h2>
-    <div class="two-col reveal">
-      <div>
-        <div class="prose">
-          <p>Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.</p>
-          <p>Four optimisation algorithms were compared for identifying the peak lift-to-drag ratio across the NACA 4412 polar &mdash; Newton-Raphson, Golden Section Search (GSS), Adjoint with Barzilai-Borwein steps, and Newton-Krylov. All four converged to an optimal angle of attack in the range 7.01&deg;&ndash;7.36&deg;. GSS was selected as the preferred algorithm &mdash; it identified the global best CL/CD&nbsp;=&nbsp;63.854 at &alpha;&nbsp;=&nbsp;7.047&deg; using only 15 solver evaluations, with no gradient information required.</p>
-          <p>Five NACA profiles were then evaluated using the validated GSS framework. The <strong>NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform.</p>
-        </div>
-      </div>
-      <div>
-        <div class="img-block"><img src="images/figure-7-validation.png" alt="NACA 4412 CFD vs XFoil validation"><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-8-comparison.png" alt="NACA aerofoil comparison"><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
-        <table class="result-table" style="margin-top: 24px;">
-          <thead><tr><th>Algorithm</th><th>&alpha;* [&deg;]</th><th>CL/CD*</th><th>Evals</th></tr></thead>
-          <tbody>
-            <tr><td>Newton-Raphson</td><td>7.10</td><td>63.768</td><td>6</td></tr>
-            <tr><td class="accent">Golden Section Search</td><td class="accent">7.047</td><td class="accent">63.854</td><td class="accent">15</td></tr>
-            <tr><td>Adjoint (BB + Armijo)</td><td>7.01</td><td>63.852</td><td>22</td></tr>
-            <tr><td>Newton-Krylov</td><td>7.36</td><td>63.778</td><td>12</td></tr>
-          </tbody>
-        </table>
-      </div>
+    <div class="prose reveal">
+      <p>Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.</p>
+      <p>Four optimisation algorithms were compared for identifying the peak lift-to-drag ratio &mdash; Newton-Raphson, Golden Section Search (GSS), Adjoint with Barzilai-Borwein steps, and Newton-Krylov. All four converged to an optimal angle of attack in the range 7.01&deg;&ndash;7.36&deg;. GSS was selected as the preferred algorithm &mdash; it identified the global best CL/CD&nbsp;=&nbsp;63.854 at &alpha;&nbsp;=&nbsp;7.047&deg; using only 15 solver evaluations, with no gradient information required.</p>
+      <p>Five NACA profiles were then evaluated using the validated GSS framework. The <strong style="color: var(--accent); font-weight: 500;">NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform.</p>
     </div>
+    <div class="two-col-img reveal" style="margin-top: 32px;">
+      <div class="img-block"><img src="images/figure-7-validation.png" alt="NACA 4412 CFD vs XFoil validation"><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
+      <div class="img-block"><img src="images/figure-8-comparison.png" alt="NACA aerofoil comparison"><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
+    </div>
+    <table class="result-table reveal" style="margin-top: 32px;">
+      <thead><tr><th>Algorithm</th><th>&alpha;* [&deg;]</th><th>CL/CD*</th><th>Evaluations</th></tr></thead>
+      <tbody>
+        <tr><td>Newton-Raphson</td><td>7.10</td><td>63.768</td><td>6</td></tr>
+        <tr><td class="accent">Golden Section Search</td><td class="accent">7.047</td><td class="accent">63.854</td><td class="accent">15</td></tr>
+        <tr><td>Adjoint (BB + Armijo)</td><td>7.01</td><td>63.852</td><td>22</td></tr>
+        <tr><td>Newton-Krylov</td><td>7.36</td><td>63.778</td><td>12</td></tr>
+      </tbody>
+    </table>
   </section>
 
+  <!-- 04 PROPULSION — text full-width, table + images below -->
   <section id="propulsion" style="background: var(--bg);">
     <div class="section-label">04 &mdash; Propulsion Analysis</div>
     <h2 class="section-title reveal">EDF vs <em>solid propellant</em></h2>
-    <div class="two-col reveal">
+    <div class="prose reveal">
+      <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
+      <p>Solid propellant offered substantially higher thrust at every burn stage, with predicted maximum velocities exceeding 300&nbsp;m/s. However, critical limitations were identified: no throttle control after ignition, extreme thermal loads approaching 3000&nbsp;K requiring sacrificial liner materials, and recirculating stagnant air causing instability near the nozzle exit.</p>
+      <p>Despite the performance advantage, the EDF configuration was selected for the final design &mdash; it better satisfies manoeuvrability, operational flexibility, and mission robustness, with ESC throttle control enabling course correction after launch.</p>
+    </div>
+    <div class="two-col reveal" style="margin-top: 40px;">
       <div>
-        <div class="prose">
-          <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
-          <p>Solid propellant offered substantially higher thrust at every burn stage, with predicted maximum velocities exceeding 300&nbsp;m/s. However, critical limitations were identified: no throttle control after ignition, extreme thermal loads approaching 3000&nbsp;K requiring sacrificial liner materials, and recirculating stagnant air causing instability near the nozzle exit.</p>
-          <p>Despite the performance advantage, the EDF configuration was selected for the final design &mdash; it better satisfies manoeuvrability, operational flexibility, and mission robustness, with ESC throttle control enabling course correction after launch.</p>
-        </div>
         <table class="result-table">
           <thead><tr><th>Burn Stage</th><th>Thrust (N)</th><th>Predicted Vmax (m/s)</th></tr></thead>
           <tbody>
@@ -351,6 +328,7 @@
     </div>
   </section>
 
+  <!-- 05 DUCT OPTIMISATION -->
   <section id="duct" style="background: var(--bg2);">
     <div class="section-label">05 &mdash; Duct Geometry Optimisation</div>
     <h2 class="section-title reveal">Automated CFD-driven <em>design loop</em></h2>
@@ -368,12 +346,12 @@
           <p>Six design variables were defined &mdash; three for the upper internal wall and three for the lower wall, corresponding to fore, mid, and aft regions of the duct passage. Each variable represents a local wall displacement relative to the baseline geometry. Wall perturbations are imposed using Bernstein-based shape functions that vanish identically at the segment endpoints, guaranteeing the perturbed wall meets the unmodified geometry continuously at its boundaries.</p>
           <p>The perturbed wall profile is defined as y(t)&nbsp;=&nbsp;y&#8320;(t)&nbsp;+&nbsp;x_fore&middot;b&#8321;(t)&nbsp;+&nbsp;x_mid&middot;b&#8322;(t)&nbsp;+&nbsp;x_aft&middot;b&#8323;(t), where t is the normalised arc-length parameter. Positive values open the wall outward; negative values move it inward.</p>
         </div>
-        <div class="img-block"><img src="images/figure-11-cross-section.png" alt="Cross-sectional view of duct and EDF area"><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
+        <div class="img-block"><img src="images/figure-11-cross-section.png" alt="Duct cross-section"><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-12-identified.png" alt="Baseline duct with regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
+          <div class="img-block"><img src="images/figure-12-identified.png" alt="Baseline with regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
           <div class="img-block"><img src="images/figure-13-variables.png" alt="Design variables labelled"><div class="img-label">Design Variables Identified</div></div>
         </div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-14-mesh.png" alt="Generated 2D mesh on baseline"><div class="img-label">Baseline 2D Mesh</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-14-mesh.png" alt="Baseline 2D mesh"><div class="img-label">Baseline 2D Mesh</div></div>
       </div>
       <div>
         <h3 class="sub-title">Automated Python Workflow</h3>
@@ -423,6 +401,7 @@
     </div>
   </section>
 
+  <!-- 06 FINAL UAV -->
   <section id="final" style="background: var(--bg);">
     <div class="section-label">06 &mdash; Final UAV Simulations</div>
     <h2 class="section-title reveal">Mission performance <em>assessment</em></h2>
@@ -440,8 +419,8 @@
           </tbody>
         </table>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-20-midplaneslice.png" alt="Mission 1 midplane flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
-          <div class="img-block"><img src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure contour"><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
+          <div class="img-block"><img src="images/figure-20-midplaneslice.png" alt="Mission 1 flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
+          <div class="img-block"><img src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure"><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
         </div>
       </div>
       <div>
@@ -452,6 +431,7 @@
     </div>
   </section>
 
+  <!-- 07 FLIGHT DYNAMICS -->
   <section id="flight" style="background: var(--bg2);">
     <div class="section-label">07 &mdash; Flight Dynamics</div>
     <h2 class="section-title reveal">Trim, stability <em>&amp; control analysis</em></h2>
@@ -471,6 +451,7 @@
     </div>
   </section>
 
+  <!-- 08 ML SURROGATE -->
   <section id="ml" style="background: var(--bg);">
     <div class="section-label">08 &mdash; Machine Learning Surrogate</div>
     <h2 class="section-title reveal">Physics-informed <em>aerodynamic surrogate</em></h2>
@@ -502,11 +483,12 @@
       </div>
     </div>
     <div class="two-col-img reveal" style="margin-top: 32px;">
-      <div class="img-block"><img src="images/figure-26-midplane-pressure.png" alt="Mid-plane static pressure CFD vs surrogate"><div class="img-label">Mid-Plane Static Pressure &mdash; CFD vs Surrogate</div></div>
-      <div class="img-block"><img src="images/figure-27-midplane-velocity.png" alt="Mid-plane velocity magnitude CFD vs surrogate"><div class="img-label">Mid-Plane Velocity Magnitude &mdash; CFD vs Surrogate</div></div>
+      <div class="img-block"><img src="images/figure-26-midplane-pressure.png" alt="Mid-plane static pressure"><div class="img-label">Mid-Plane Static Pressure &mdash; CFD vs Surrogate</div></div>
+      <div class="img-block"><img src="images/figure-27-midplane-velocity.png" alt="Mid-plane velocity magnitude"><div class="img-label">Mid-Plane Velocity Magnitude &mdash; CFD vs Surrogate</div></div>
     </div>
   </section>
 
+  <!-- 09 CONCLUSIONS -->
   <section id="conclusions" style="background: var(--bg2);">
     <div class="section-label">09 &mdash; Conclusions</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
@@ -518,6 +500,7 @@
     <div class="highlight-box reveal" style="margin-top: 40px;"><p>The project demonstrated the feasibility of the pod-deployable UAV concept and highlighted how <strong>integrating CFD, flight dynamics, and machine learning within a unified design framework</strong> enables multidisciplinary design assessment that would be impractical through any single discipline alone.</p></div>
   </section>
 
+  <!-- 10 TEAM -->
   <section id="team" style="background: var(--bg);">
     <div class="section-label">10 &mdash; The Team</div>
     <h2 class="section-title reveal">Five engineers, <em>one platform</em></h2>
