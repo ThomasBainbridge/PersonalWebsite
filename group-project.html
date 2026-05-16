@@ -61,7 +61,6 @@
     /* ── IMAGE BLOCKS ── */
     .img-block {
       background: var(--bg3);
-      border: 1px dashed var(--line);
       border-radius: 4px;
       padding: 16px;
       text-align: center;
@@ -96,8 +95,20 @@
     .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
     .img-placeholder-text { font-family: var(--mono); font-size: 12px; color: var(--line); }
 
+    /* ── LAYOUT ── */
     .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
-    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+    .two-col-img {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .two-col-img .img-block {
+      margin-top: 0;
+      height: 100%;
+    }
+
     .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
 
     .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
@@ -176,6 +187,7 @@
       section { padding: 64px 24px; }
       .two-col { grid-template-columns: 1fr; gap: 40px; }
       .two-col-img { grid-template-columns: 1fr; }
+      .two-col-img .img-block { height: auto; }
       .three-col-img { grid-template-columns: 1fr; }
       .card-grid-3 { grid-template-columns: 1fr; }
       .mission-grid { grid-template-columns: 1fr; }
@@ -333,8 +345,8 @@
         </table>
       </div>
       <div>
-        <div class="img-block"><img src="images/figure-9-apcp-velocity.png" alt="Solid propellant velocity contours across burn stages"><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-10-apcp-temperature.png" alt="Solid propellant temperature contours across burn stages"><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
+        <div class="img-block"><img src="images/figure-9-apcp-velocity.png" alt="Solid propellant velocity contours"><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-10-apcp-temperature.png" alt="Solid propellant temperature contours"><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
       </div>
     </div>
   </section>
@@ -358,10 +370,10 @@
         </div>
         <div class="img-block"><img src="images/figure-11-cross-section.png" alt="Cross-sectional view of duct and EDF area"><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-12-identified.png" alt="Baseline duct cross-section with optimisation regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
-          <div class="img-block"><img src="images/figure-13-variables.png" alt="Duct design variables labelled"><div class="img-label">Design Variables Identified</div></div>
+          <div class="img-block"><img src="images/figure-12-identified.png" alt="Baseline duct with regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
+          <div class="img-block"><img src="images/figure-13-variables.png" alt="Design variables labelled"><div class="img-label">Design Variables Identified</div></div>
         </div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-14-mesh.png" alt="Generated 2D mesh on baseline duct cross-section"><div class="img-label">Baseline 2D Mesh</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-14-mesh.png" alt="Generated 2D mesh on baseline"><div class="img-label">Baseline 2D Mesh</div></div>
       </div>
       <div>
         <h3 class="sub-title">Automated Python Workflow</h3>
@@ -428,14 +440,14 @@
           </tbody>
         </table>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-20-midplaneslice.png" alt="Mission 1 midplane and Q-criterion flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
+          <div class="img-block"><img src="images/figure-20-midplaneslice.png" alt="Mission 1 midplane flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
           <div class="img-block"><img src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure contour"><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
         </div>
       </div>
       <div>
         <h3 class="sub-title">Mission 2 &mdash; Endurance UAV</h3>
         <div class="prose"><p>The Mission 2 configuration uses four APC 11&times;6 propellers simulated at 12,000&nbsp;RPM with a 3&nbsp;m/s inlet velocity. Rear propellers produce 7.7&nbsp;N thrust each; front propellers produce 7.3&nbsp;N due to wake interaction. Total vertical thrust of 30.1&nbsp;N was recorded &mdash; insufficient for stable hover with the full 3&nbsp;kg payload. A payload reduction to 1&ndash;2&nbsp;kg, or larger propellers, would be required to meet the full Mission 2 specification.</p></div>
-        <div class="img-block"><img src="images/figure-22-surface-contours.png" alt="Mission 2 velocity and pressure iso-surfaces"><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
+        <div class="img-block"><img src="images/figure-22-surface-contours.png" alt="Mission 2 iso-surfaces"><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
       </div>
     </div>
   </section>
