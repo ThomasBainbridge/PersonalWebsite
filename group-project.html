@@ -206,6 +206,17 @@
       .stat-row { grid-template-columns: 1fr 1fr; }
       .hero-meta { gap: 14px; }
     }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
   </style>
 </head>
 <body>
@@ -271,19 +282,19 @@
     <div class="prose reveal"><p>Four initial UAV configurations were developed and evaluated in ANSYS Fluent to assess external aerodynamics, flow separation, and EDF airflow delivery. A decision matrix combining drag force, manoeuvrability, and ease of manufacture identified the most promising baseline for further iteration. Elements from all four designs were then combined into a final modular hybrid geometry.</p></div>
     <div class="design-grid reveal">
       <div class="design-card">
-        <div class="img-block"><img src="images/figure-1-initial-design-1.png" alt="Initial Design 1 CAD render"></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-1-initial-design-1.png" alt="Initial Design 1 CAD render"></div>
         <div class="design-card-body"><h4>Initial Design 1</h4><div class="drag">5.03 N</div><div class="drag-label">Drag Force</div><p>Central inflow duct feeding an EDF at the rear. Lowest drag of all four designs. Foldable wings with control surfaces. Limited to Mission 1 &mdash; any payload would be ingested by the EDF airflow.</p></div>
       </div>
       <div class="design-card">
-        <div class="img-block"><img src="images/figure-2-initial-design-2.png" alt="Initial Design 2 CAD render"></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-2-initial-design-2.png" alt="Initial Design 2 CAD render"></div>
         <div class="design-card-body"><h4>Initial Design 2</h4><div class="drag">7.41 N</div><div class="drag-label">Drag Force</div><p>Four large spring-deployable wings with coaxial propeller propulsion. High manoeuvrability and hover capability. Top speed limited by the coaxial configuration &mdash; not suited to Mission 1.</p></div>
       </div>
       <div class="design-card">
-        <div class="img-block"><img src="images/figure-3-initial-design-3.png" alt="Initial Design 3 CAD render"></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-3-initial-design-3.png" alt="Initial Design 3 CAD render"></div>
         <div class="design-card-body"><h4>Initial Design 3</h4><div class="drag">35.8 N</div><div class="drag-label">Drag Force</div><p>Two-part segmented body with NACA 0010 folding wings and rear EDF. Electronics forward, EDF aft. Blunt nose caused significant flow separation &mdash; highest drag of all four configurations.</p></div>
       </div>
       <div class="design-card">
-        <div class="img-block"><img src="images/figure-4-initial-design-4.png" alt="Initial Design 4 CAD render"></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-4-initial-design-4.png" alt="Initial Design 4 CAD render"></div>
         <div class="design-card-body"><h4>Initial Design 4</h4><div class="drag">9.57 N</div><div class="drag-label">Drag Force</div><p>Modular design with swappable front and rear sections for dual-mission use. Four tilting fan-wings in an X configuration. Complex ducts introduced separation and poor airflow delivery to the EDF.</p></div>
       </div>
     </div>
@@ -294,15 +305,15 @@
         <p>The initial concepts were also screened using CFD to compare external flow behaviour, pressure distribution, separation features, and wake structure. This provided aerodynamic evidence for the design selection process before the final hybrid configuration was assembled.</p>
       </div>
       <div class="two-col-img" style="margin-top: 24px;">
-        <div class="img-block"><img src="images/figure-28-inital-screening.png" alt="Initial design velocity and static pressure screening contours"><div class="img-label">Initial Designs &mdash; Velocity and Static Pressure Screening</div></div>
-        <div class="img-block"><img src="images/figure-29-inital-screening-q.png" alt="Initial design Q-criterion and iso-surface screening visualisations"><div class="img-label">Initial Designs &mdash; Q-Criterion and Iso-Surface Screening</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-28-inital-screening.png" alt="Initial design velocity and static pressure screening contours"><div class="img-label">Initial Designs &mdash; Velocity and Static Pressure Screening</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-29-inital-screening-q.png" alt="Initial design Q-criterion and iso-surface screening visualisations"><div class="img-label">Initial Designs &mdash; Q-Criterion and Iso-Surface Screening</div></div>
       </div>
     </div>
 
     <div class="highlight-box reveal"><p>Using Design 3 as the template and incorporating effective elements from all concepts, a <strong>final hybrid design</strong> was developed. Mission 1 uses a streamlined converging body with a central semi-circular inflow duct feeding an EDF. Mission 2 swaps the EDF section for a payload module and uses four APC 11x6 folding propellers for hover and cruise. Both configurations share the same core structure and fold within the pod deployment diameter constraint.</p></div>
     <div class="two-col-img reveal" style="margin-top: 32px;">
-      <div class="img-block"><img src="images/figure-5-final-design-1.png" alt="Mission 1 final hybrid UAV design"><div class="img-label">Mission 1 &mdash; Interception Configuration</div></div>
-      <div class="img-block"><img src="images/figure-6-final-design-2.png" alt="Mission 2 final hybrid UAV design"><div class="img-label">Mission 2 &mdash; Endurance Configuration</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-5-final-design-1.png" alt="Mission 1 final hybrid UAV design"><div class="img-label">Mission 1 &mdash; Interception Configuration</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-6-final-design-2.png" alt="Mission 2 final hybrid UAV design"><div class="img-label">Mission 2 &mdash; Endurance Configuration</div></div>
     </div>
   </section>
 
@@ -316,8 +327,8 @@
       <p>Five NACA profiles were then evaluated using the validated GSS framework. The <strong style="color: var(--accent); font-weight: 500;">NACA 4412</strong> was selected for the main wing &mdash; highest CL/CD of all profiles, with 4% camber producing a favourable pressure gradient and the most desirable stall characteristics for a manoeuvrable platform.</p>
     </div>
     <div class="two-col-img reveal" style="margin-top: 32px;">
-      <div class="img-block"><img src="images/figure-7-validation.png" alt="NACA 4412 CFD vs XFoil validation"><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
-      <div class="img-block"><img src="images/figure-8-comparison.png" alt="NACA aerofoil comparison"><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-7-validation.png" alt="NACA 4412 CFD vs XFoil validation"><div class="img-label">NACA 4412 &mdash; CFD Validation vs XFoil at Re = 1&times;10&sup6;</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-8-comparison.png" alt="NACA aerofoil comparison"><div class="img-label">NACA Aerofoil Comparison &mdash; All Profiles</div></div>
     </div>
     <table class="result-table reveal" style="margin-top: 32px;">
       <thead><tr><th>Algorithm</th><th>&alpha;* [&deg;]</th><th>CL/CD*</th><th>Evaluations</th></tr></thead>
@@ -351,8 +362,8 @@
         </table>
       </div>
       <div>
-        <div class="img-block"><img src="images/figure-9-apcp-velocity.png" alt="Solid propellant velocity contours"><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-10-apcp-temperature.png" alt="Solid propellant temperature contours"><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-9-apcp-velocity.png" alt="Solid propellant velocity contours"><div class="img-label">Solid Propellant &mdash; Velocity Contours by Burn Stage</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img loading="lazy" src="images/figure-10-apcp-temperature.png" alt="Solid propellant temperature contours"><div class="img-label">Solid Propellant &mdash; Temperature Contours by Burn Stage</div></div>
       </div>
     </div>
   </section>
@@ -375,12 +386,12 @@
           <p>Six design variables were defined &mdash; three for the upper internal wall and three for the lower wall, corresponding to fore, mid, and aft regions of the duct passage. Each variable represents a local wall displacement relative to the baseline geometry. Wall perturbations are imposed using Bernstein-based shape functions that vanish identically at the segment endpoints, guaranteeing the perturbed wall meets the unmodified geometry continuously at its boundaries.</p>
           <p>The perturbed wall profile is defined as y(t)&nbsp;=&nbsp;y&#8320;(t)&nbsp;+&nbsp;x_fore&middot;b&#8321;(t)&nbsp;+&nbsp;x_mid&middot;b&#8322;(t)&nbsp;+&nbsp;x_aft&middot;b&#8323;(t), where t is the normalised arc-length parameter. Positive values open the wall outward; negative values move it inward.</p>
         </div>
-        <div class="img-block"><img src="images/figure-11-cross-section.png" alt="Duct cross-section"><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-11-cross-section.png" alt="Duct cross-section"><div class="img-label">Duct Cross-Section &mdash; Optimisation Region</div></div>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-12-identified.png" alt="Baseline with regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
-          <div class="img-block"><img src="images/figure-13-variables.png" alt="Design variables labelled"><div class="img-label">Design Variables Identified</div></div>
+          <div class="img-block"><img loading="lazy" src="images/figure-12-identified.png" alt="Baseline with regions highlighted"><div class="img-label">Baseline with Regions Identified</div></div>
+          <div class="img-block"><img loading="lazy" src="images/figure-13-variables.png" alt="Design variables labelled"><div class="img-label">Design Variables Identified</div></div>
         </div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-14-mesh.png" alt="Baseline 2D mesh"><div class="img-label">Baseline 2D Mesh</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img loading="lazy" src="images/figure-14-mesh.png" alt="Baseline 2D mesh"><div class="img-label">Baseline 2D Mesh</div></div>
       </div>
       <div>
         <h3 class="sub-title">Automated Python Workflow</h3>
@@ -418,14 +429,14 @@
           </table>
         </div>
         <div>
-          <div class="img-block"><img src="images/figure-15-convergance.png" alt="Optimisation convergence history"><div class="img-label">Optimisation Convergence History</div></div>
-          <div class="img-block" style="margin-top: 16px;"><img src="images/figure-16-vs.png" alt="Baseline vs optimised wall profiles"><div class="img-label">Baseline vs Optimised Wall Profiles</div></div>
+          <div class="img-block"><img loading="lazy" src="images/figure-15-convergance.png" alt="Optimisation convergence history"><div class="img-label">Optimisation Convergence History</div></div>
+          <div class="img-block" style="margin-top: 16px;"><img loading="lazy" src="images/figure-16-vs.png" alt="Baseline vs optimised wall profiles"><div class="img-label">Baseline vs Optimised Wall Profiles</div></div>
         </div>
       </div>
       <div class="three-col-img" style="margin-top: 32px;">
-        <div class="img-block"><img src="images/figure-17-vel-contour.png" alt="Velocity magnitude contours"><div class="img-label">Velocity Magnitude &mdash; Baseline vs Optimised</div></div>
-        <div class="img-block"><img src="images/figure-18-pre-contour.png" alt="Static pressure contours"><div class="img-label">Static Pressure &mdash; Baseline vs Optimised</div></div>
-        <div class="img-block"><img src="images/figure-19-tke-contour.png" alt="Turbulent kinetic energy contours"><div class="img-label">Turbulent Kinetic Energy &mdash; Baseline vs Optimised</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-17-vel-contour.png" alt="Velocity magnitude contours"><div class="img-label">Velocity Magnitude &mdash; Baseline vs Optimised</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-18-pre-contour.png" alt="Static pressure contours"><div class="img-label">Static Pressure &mdash; Baseline vs Optimised</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-19-tke-contour.png" alt="Turbulent kinetic energy contours"><div class="img-label">Turbulent Kinetic Energy &mdash; Baseline vs Optimised</div></div>
       </div>
     </div>
   </section>
@@ -448,14 +459,14 @@
           </tbody>
         </table>
         <div class="two-col-img" style="margin-top: 16px;">
-          <div class="img-block"><img src="images/figure-20-midplaneslice.png" alt="Mission 1 flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
-          <div class="img-block"><img src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure"><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
+          <div class="img-block"><img loading="lazy" src="images/figure-20-midplaneslice.png" alt="Mission 1 flow field"><div class="img-label">Mission 1 &mdash; Flow Field</div></div>
+          <div class="img-block"><img loading="lazy" src="images/figure-21-pressure-mission-1.png" alt="Mission 1 static pressure"><div class="img-label">Mission 1 &mdash; Static Pressure</div></div>
         </div>
       </div>
       <div>
         <h3 class="sub-title">Mission 2 &mdash; Endurance UAV</h3>
         <div class="prose"><p>The Mission 2 configuration uses four APC 11&times;6 propellers simulated at 12,000&nbsp;RPM with a 3&nbsp;m/s inlet velocity. Rear propellers produce 7.7&nbsp;N thrust each; front propellers produce 7.3&nbsp;N due to wake interaction. Total vertical thrust of 30.1&nbsp;N was recorded &mdash; insufficient for stable hover with the full 3&nbsp;kg payload. A payload reduction to 1&ndash;2&nbsp;kg, or larger propellers, would be required to meet the full Mission 2 specification.</p></div>
-        <div class="img-block"><img src="images/figure-22-surface-contours.png" alt="Mission 2 iso-surfaces"><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-22-surface-contours.png" alt="Mission 2 iso-surfaces"><div class="img-label">Mission 2 &mdash; Velocity &amp; Pressure Iso-Surfaces</div></div>
       </div>
     </div>
 
@@ -465,8 +476,8 @@
         <p>The final configurations were also assessed from a packaging perspective, with internal component layouts developed for both mission variants. This connected the aerodynamic and propulsion analysis to a physically realisable UAV architecture, including battery placement, propulsion hardware, and internal electronics packaging.</p>
       </div>
       <div class="two-col-img" style="margin-top: 24px;">
-        <div class="img-block"><img src="images/figure-30-mission-1.png" alt="Mission 1 internal component layout"><div class="img-label">Mission 1 &mdash; Internal Component Layout</div></div>
-        <div class="img-block"><img src="images/figure-31-mission-2.png" alt="Mission 2 internal component layout"><div class="img-label">Mission 2 &mdash; Internal Component Layout</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-30-mission-1.png" alt="Mission 1 internal component layout"><div class="img-label">Mission 1 &mdash; Internal Component Layout</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-31-mission-2.png" alt="Mission 2 internal component layout"><div class="img-label">Mission 2 &mdash; Internal Component Layout</div></div>
       </div>
     </div>
   </section>
@@ -480,13 +491,13 @@
       <div>
         <h3 class="sub-title">Trim Campaign</h3>
         <div class="prose"><p>A batch trim campaign covered four study types: baseline cruise (Nz = 1.0g), overload sweep (Nz = 1.0, 1.5, 2.0g), sideslip sweep (&beta; = 0&deg;, 5&deg;, 10&deg;), and linear stability analysis &mdash; all over 40&ndash;105&nbsp;m/s. All 70 operating points converged with a maximum trim residual of 8.6&times;10&#8315;&sup1;&sup0;. Baseline cruise requires consistently high pitch command and large trimmed angles of attack. At low speed with Nz = 2.0, angles of attack approach 69&deg;.</p></div>
-        <div class="img-block"><img src="images/figure-23-longitudinal.png" alt="Longitudinal trim response"><div class="img-label">Longitudinal Trim Response</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-23-longitudinal.png" alt="Longitudinal trim response"><div class="img-label">Longitudinal Trim Response</div></div>
       </div>
       <div>
         <h3 class="sub-title">Stability Analysis</h3>
         <div class="prose"><p>Local state-space matrices were generated at every trim point by finite-difference linearisation of the nonlinear Simulink model. Open-loop eigenvalue analysis shows the configuration is not passively stable &mdash; the maximum real part of the eigenvalues ranges from 8.64 to 25.83 for the baseline cruise case. Active feedback control is required for a practical implementation.</p></div>
         <div class="highlight-box"><p>A practical flight implementation would require a <strong>scheduled feedback control system</strong> with pitch, yaw, and thrust scheduling based on the trimmed operating point.</p></div>
-        <div class="img-block" style="margin-top: 16px;"><img src="images/figure-24-eigen.png" alt="Open-loop eigenvalue trends"><div class="img-label">Open-Loop Eigenvalue Trends</div></div>
+        <div class="img-block" style="margin-top: 16px;"><img loading="lazy" src="images/figure-24-eigen.png" alt="Open-loop eigenvalue trends"><div class="img-label">Open-Loop Eigenvalue Trends</div></div>
       </div>
     </div>
   </section>
@@ -505,7 +516,7 @@
       <div>
         <h3 class="sub-title">Scalar Force Predictions</h3>
         <div class="prose"><p>On the 20-sample proof-of-concept dataset, the scalar head achieves near-perfect accuracy &mdash; MAE of 4.24&times;10&#8315;&sup3;&nbsp;N (0.46%) for thrust and 1.80&times;10&#8315;&sup2;&nbsp;N (0.47%) for drag. R&sup2;&nbsp;=&nbsp;1.0000 for both channels.</p></div>
-        <div class="img-block"><img src="images/figure-25-pred.png" alt="Drag and thrust parity plots"><div class="img-label">Scalar Force Prediction Accuracy</div></div>
+        <div class="img-block"><img loading="lazy" src="images/figure-25-pred.png" alt="Drag and thrust parity plots"><div class="img-label">Scalar Force Prediction Accuracy</div></div>
       </div>
       <div>
         <h3 class="sub-title">Flow Field Predictions</h3>
@@ -523,8 +534,8 @@
       </div>
     </div>
     <div class="two-col-img reveal" style="margin-top: 32px;">
-      <div class="img-block"><img src="images/figure-26-midplane-pressure.png" alt="Mid-plane static pressure"><div class="img-label">Mid-Plane Static Pressure &mdash; CFD vs Surrogate</div></div>
-      <div class="img-block"><img src="images/figure-27-midplane-velocity.png" alt="Mid-plane velocity magnitude"><div class="img-label">Mid-Plane Velocity Magnitude &mdash; CFD vs Surrogate</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-26-midplane-pressure.png" alt="Mid-plane static pressure"><div class="img-label">Mid-Plane Static Pressure &mdash; CFD vs Surrogate</div></div>
+      <div class="img-block"><img loading="lazy" src="images/figure-27-midplane-velocity.png" alt="Mid-plane velocity magnitude"><div class="img-label">Mid-Plane Velocity Magnitude &mdash; CFD vs Surrogate</div></div>
     </div>
   </section>
 
