@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OpenFOAM Dam-Break CFD &amp; Surrogate Modelling — Thomas Bainbridge</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0f; --bg2: #161618; --bg3: #1e1e21; --line: #2a2a2e;
+      --accent: #c8f060; --accent2: #60d4f0; --text: #e8e6df; --muted: #7a786f;
+      --serif: "DM Serif Display", serif; --mono: "DM Mono", monospace; --sans: "DM Sans", sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03; pointer-events: none; z-index: 1000;
+    }
+
+    .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; border-bottom: 1px solid transparent; transition: border-color .3s, background .3s, backdrop-filter .3s; }
+    nav.scrolled { background: rgba(14,14,15,.85); backdrop-filter: blur(16px); border-color: var(--line); }
+    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: .05em; text-decoration: none; }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; padding: 8px 0; }
+    .nav-back::before { content: "\2190  "; }
+    .nav-back:hover { color: var(--text); }
+
+    #hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 48px 80px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 60% 80% at 100% 100%, black, transparent); opacity: .35; }
+    .hero-inner { position: relative; z-index: 2; max-width: 960px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 24px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    .hero-tag::before { content: ""; display: block; width: 24px; height: 1px; background: var(--accent); }
+    .hero-title { font-family: var(--serif); font-size: clamp(36px, 5.5vw, 70px); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 32px; opacity: 0; animation: fadeUp .7s ease .2s forwards; }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; opacity: 0; animation: fadeUp .7s ease .3s forwards; }
+    .hero-meta-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+    .hero-meta-value { font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .hero-desc { font-size: 17px; font-weight: 300; color: #b5b2aa; max-width: 760px; line-height: 1.75; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+
+    section { padding: 96px 48px; }
+    .section-label { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 48px; }
+    .section-label::before { content: ""; display: block; width: 32px; height: 1px; background: var(--accent); }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.5vw, 52px); font-weight: 400; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 24px; }
+    h2.section-title em { font-style: italic; color: var(--accent); }
+    h3.sub-title { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 16px; }
+    .prose { font-size: 16px; font-weight: 300; color: #b5b2aa; line-height: 1.8; }
+    .prose p { margin-bottom: 16px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .img-block {
+      background: var(--bg3);
+      border-radius: 4px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-block img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
+    }
+    .design-card .img-block { height: auto; min-height: 200px; margin-top: 0; padding: 16px; }
+    .design-card .img-block img { height: auto; max-height: 280px; width: 100%; object-fit: contain; }
+    .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .two-col-img .img-block { margin-top: 0; height: 100%; }
+    .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
+    .mission-card { background: var(--bg3); border: 1px solid var(--line); padding: 40px; }
+    .mission-card:first-child { border-radius: 4px 0 0 4px; }
+    .mission-card:last-child { border-radius: 0 4px 4px 0; }
+    .mission-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .mission-card h3 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 20px; }
+    .spec-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 16px; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; flex-shrink: 0; }
+    .spec-val { font-family: var(--mono); font-size: 13px; color: var(--text); text-align: right; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 48px; }
+    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
+    .stat-box:first-child { border-radius: 4px 0 0 4px; }
+    .stat-box:last-child { border-radius: 0 4px 4px 0; }
+    .stat-num { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+    .highlight-box { background: var(--bg2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 28px 32px; margin-top: 32px; border-radius: 0 4px 4px 0; }
+    .highlight-box p { font-size: 15px; color: #b5b2aa; line-height: 1.7; margin-bottom: 0; }
+    .highlight-box strong { color: var(--accent); font-weight: 500; }
+
+    .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 32px; }
+    .design-card { background: var(--bg2); border: 1px solid var(--line); padding: 0; overflow: hidden; }
+    .design-card-body { padding: 24px; }
+    .design-card h4 { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .design-card .drag { font-family: var(--mono); font-size: 20px; color: var(--text); margin: 8px 0 2px; }
+    .design-card .drag-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .design-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .workflow { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .workflow-step { background: var(--bg2); border: 1px solid var(--line); padding: 20px 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; }
+    .workflow-step:first-child { border-radius: 4px 4px 0 0; }
+    .workflow-step:last-child { border-radius: 0 0 4px 4px; }
+    .step-num { font-family: var(--serif); font-size: 26px; color: var(--accent); line-height: 1; padding-top: 2px; }
+    .step-content h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: .04em; }
+    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 24px; overflow-x: auto; display: block; }
+    .result-table th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg3); white-space: nowrap; }
+    .result-table td { font-family: var(--mono); font-size: 13px; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table .accent { color: var(--accent); font-weight: 500; }
+
+    .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+    .content-card { background: var(--bg2); padding: 32px 28px; }
+    .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
+    .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
+    .team-card.mine { border-color: var(--accent); }
+    .team-initial { font-family: var(--serif); font-size: 30px; color: var(--accent); margin-bottom: 12px; }
+    .team-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .tag { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line); padding: 4px 10px; border-radius: 2px; letter-spacing: .04em; }
+
+    footer { border-top: 1px solid var(--line); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-back { font-size: 11px; }
+      #hero { padding: 100px 24px 56px; min-height: auto; }
+      .hero-title { font-size: clamp(32px, 9vw, 52px); margin-bottom: 24px; }
+      .hero-meta { gap: 20px; margin-bottom: 28px; }
+      .hero-meta-value { font-size: 12px; }
+      .hero-desc { font-size: 15px; }
+      section { padding: 64px 24px; }
+      .two-col { grid-template-columns: 1fr; gap: 40px; }
+      .two-col-img { grid-template-columns: 1fr; }
+      .two-col-img .img-block { height: auto; }
+      .three-col-img { grid-template-columns: 1fr; }
+      .card-grid-3 { grid-template-columns: 1fr; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .mission-card { padding: 28px 24px; }
+      .mission-card:first-child { border-radius: 4px 4px 0 0; }
+      .mission-card:last-child { border-radius: 0 0 4px 4px; }
+      .design-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .stat-box:first-child { border-radius: 4px 0 0 0; }
+      .stat-box:nth-child(2) { border-radius: 0 4px 0 0; }
+      .stat-box:nth-child(3) { border-radius: 0 0 0 4px; }
+      .stat-box:last-child { border-radius: 0 0 4px 0; }
+      .stat-num { font-size: 28px; }
+      .team-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .team-card { padding: 24px 12px; }
+      .team-initial { font-size: 24px; }
+      .team-name { font-size: 11px; }
+      .img-block { padding: 12px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 560px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .hero-meta { gap: 14px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">TB.dev</a>
+    <a href="index.html#projects" class="nav-back">Back to portfolio</a>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">Personal Project &mdash; CFD &amp; Surrogate Modelling &mdash; 2026</div>
+      <h1 class="hero-title">OpenFOAM Dam-Break CFD<br><em>&amp; Surrogate Modelling</em></h1>
+      <div class="hero-meta">
+        <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
+        <div><div class="hero-meta-label">Solver</div><div class="hero-meta-value">OpenFOAM v2312 &middot; interFoam</div></div>
+        <div><div class="hero-meta-label">Method</div><div class="hero-meta-value">VOF (two-phase, laminar)</div></div>
+        <div><div class="hero-meta-label">Database</div><div class="hero-meta-value">403 CFD simulations</div></div>
+        <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
+      </div>
+      <p class="hero-desc">A CFD and data-driven surrogate modelling study. Starting from the standard OpenFOAM <em>interFoam</em> laminar dam-break tutorial, this project builds a fully automated 403-case 2D VOF simulation database, extracts robust impact-pressure and wetting metrics, trains scalar surrogate models for design-space exploration, and develops a POD reduced-order field surrogate that reconstructs the free surface on unseen validation cases.</p>
+      <div style="margin-top: 36px;">
+        <a href="https://github.com/ThomasBainbridge/openfoam-dambreak-surrogate" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 PROBLEM -->
+  <section id="problem" style="background: var(--bg2);">
+    <div class="section-label">01 &mdash; The Problem</div>
+    <h2 class="section-title reveal">Dam-break <em>impact loads</em></h2>
+    <div class="prose reveal">
+      <p>A dam-break releases a column of water that accelerates across a channel floor and impacts an obstacle. The transient hydraulic load on the obstacle &mdash; peak pressure, pressure impulse, and wetting time &mdash; depends on the geometry of the water column and the obstacle. The goal of this project is to map that dependence efficiently using high-fidelity CFD data and fast surrogate models that can stand in for the solver during design exploration.</p>
+      <p>The flow is a gravity-driven, two-phase water&ndash;air problem solved with the Volume of Fluid (VOF) method, tracking the <em>alpha.water</em> volume fraction through the OpenFOAM <em>interFoam</em> solver in a laminar, 2D configuration with an end time of 1.5&nbsp;s per simulation.</p>
+    </div>
+    <div class="img-block reveal" style="margin-top:32px;">
+      <img src="images/dambreak/cfd-vs-pod-surrogate.gif" alt="CFD vs POD surrogate free-surface reconstruction">
+      <div class="img-label">CFD vs POD Surrogate &mdash; Free-Surface Reconstruction on an Unseen Validation Case</div>
+    </div>
+  </section>
+
+  <!-- 02 GOVERNING EQUATIONS -->
+  <section id="physics" style="background: var(--bg);">
+    <div class="section-label">02 &mdash; Governing Equations</div>
+    <h2 class="section-title reveal">The <em>VOF formulation</em></h2>
+    <div class="prose reveal">
+      <p>The <em>interFoam</em> solver uses a Volume of Fluid method to track the water&ndash;air interface. A single momentum equation is solved for the mixture, with density and viscosity blended by the local water volume fraction &alpha;. Interface sharpness is maintained by an artificial compression term that is active only within the interface region.</p>
+    </div>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Volume Fraction Transport</h4><p>&part;&alpha;/&part;t&nbsp;+&nbsp;&nabla;&middot;(&alpha;<strong>U</strong>)&nbsp;+&nbsp;&nabla;&middot;[&alpha;(1&minus;&alpha;)<strong>U</strong><sub>r</sub>]&nbsp;=&nbsp;0. The third term is the interface-compression term that keeps the interface sharp without explicit reconstruction; <strong>U</strong><sub>r</sub> acts only where &alpha;(1&minus;&alpha;)&nbsp;&ne;&nbsp;0.</p></div>
+      <div class="content-card"><h4>Mixture Properties</h4><p>&rho;&nbsp;=&nbsp;&alpha;&rho;<sub>w</sub>&nbsp;+&nbsp;(1&minus;&alpha;)&rho;<sub>a</sub> and &mu;&nbsp;=&nbsp;&alpha;&mu;<sub>w</sub>&nbsp;+&nbsp;(1&minus;&alpha;)&mu;<sub>a</sub>. Density and dynamic viscosity are linearly blended between water and air by the local volume fraction.</p></div>
+      <div class="content-card"><h4>Continuity &amp; Momentum</h4><p>&nabla;&middot;<strong>U</strong>&nbsp;=&nbsp;0, with a single mixture momentum equation balancing pressure, viscous, gravity and surface-tension forces. OpenFOAM solves for the modified pressure p<sub>rgh</sub>&nbsp;=&nbsp;p&nbsp;&minus;&nbsp;&rho;<strong>g</strong>&middot;<strong>x</strong>, removing the hydrostatic part to improve conditioning.</p></div>
+    </div>
+    <div class="highlight-box reveal"><p>Surface tension is applied through the <strong>Continuum Surface Force</strong> model (Brackbill et&nbsp;al. 1992), <strong>f</strong><sub>&sigma;</sub>&nbsp;=&nbsp;&sigma;&kappa;&nabla;&alpha;, where &kappa; is the interface curvature. The system is closed with water/air material properties and integrated transiently to 1.5&nbsp;s.</p></div>
+  </section>
+
+  <!-- 03 PARAMETER SPACE -->
+  <section id="parameters" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; Parameter Space &amp; DoE</div>
+    <h2 class="section-title reveal">Three geometric <em>design variables</em></h2>
+    <div class="prose reveal"><p>Three geometric parameters were varied while the obstacle width was held fixed. A structured design-of-experiments grid provided the training data, and a completely held-out Latin hypercube sample provided unbiased validation cases that the surrogates never saw during training.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Parameter</th><th>Symbol</th><th>Range</th></tr></thead>
+          <tbody>
+            <tr><td>Initial water-column height</td><td>H</td><td>0.240 &ndash; 0.365 m</td></tr>
+            <tr><td>Obstacle height</td><td>h</td><td>0.030 &ndash; 0.072 m</td></tr>
+            <tr><td>Obstacle front position</td><td>x</td><td>0.220 &ndash; 0.380 m</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="prose">
+        <p><strong style="color:var(--accent);font-weight:500;">343 structured training cases</strong> were generated on a regular grid using a design-of-experiments approach.</p>
+        <p><strong style="color:var(--accent);font-weight:500;">60 off-grid validation cases</strong> were sampled with Latin hypercube sampling (LHS) and held out completely from training.</p>
+      </div>
+    </div>
+    <div class="stat-row reveal">
+      <div class="stat-box"><div class="stat-num">403</div><div class="stat-label">interFoam runs</div></div>
+      <div class="stat-box"><div class="stat-num">343</div><div class="stat-label">Training cases</div></div>
+      <div class="stat-box"><div class="stat-num">60</div><div class="stat-label">LHS validation cases</div></div>
+      <div class="stat-box"><div class="stat-num">~27 GB</div><div class="stat-label">Simulation database</div></div>
+    </div>
+  </section>
+
+  <!-- 04 WORKFLOW -->
+  <section id="workflow" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; Automated Pipeline</div>
+    <h2 class="section-title reveal">From case generation to <em>validated surrogate</em></h2>
+    <div class="prose reveal"><p>The entire study &mdash; case setup, simulation, metric extraction, surrogate training, and validation &mdash; was automated in Python and Bash so that hundreds of CFD cases could be processed without manual intervention.</p></div>
+    <div class="workflow reveal">
+      <div class="workflow-step"><div class="step-num">1</div><div class="step-content"><h4>Case Generation</h4><p>OpenFOAM cases are written automatically from each parameter combination, applying the water-column height, obstacle height, and obstacle position to the mesh and initial conditions.</p></div></div>
+      <div class="workflow-step"><div class="step-num">2</div><div class="step-content"><h4>Simulation</h4><p>403 interFoam VOF runs to 1.5&nbsp;s, with fields written every 0.025&nbsp;s and function-object impact data sampled every 0.005&nbsp;s.</p></div></div>
+      <div class="workflow-step"><div class="step-num">3</div><div class="step-content"><h4>Metric Extraction</h4><p>Obstacle pressure history (area-average and point-maximum), pressure impulse, and distributed wetting time are extracted per case, then aggregated into robust time-windowed impact metrics.</p></div></div>
+      <div class="workflow-step"><div class="step-num">4</div><div class="step-content"><h4>Scalar Surrogate Training</h4><p>Ten model families are screened per target; the best is selected purely by validation nRMSE on the 60 unseen LHS cases.</p></div></div>
+      <div class="workflow-step"><div class="step-num">5</div><div class="step-content"><h4>Field Dataset Assembly</h4><p>alpha.water fields are interpolated onto a common 96&times;96 grid and stored as a memory-mapped snapshot array &mdash; 20,923 training snapshots in total.</p></div></div>
+      <div class="workflow-step"><div class="step-num">6</div><div class="step-content"><h4>POD Field Surrogate</h4><p>A 200-mode incremental PCA basis is trained on the training snapshots, with a per-time-slice KNN regressor mapping design parameters to POD coefficients.</p></div></div>
+      <div class="workflow-step"><div class="step-num">7</div><div class="step-content"><h4>Validation</h4><p>Every surrogate is evaluated on the 60 unseen cases / 3,660 unseen snapshots, with R&sup2;, nRMSE, interface-front error, and phase-mask IoU reported honestly.</p></div></div>
+      <div class="workflow-step"><div class="step-num">8</div><div class="step-content"><h4>Visualisation</h4><p>Response-surface plots, parity plots, and animated GIFs are generated for design-space exploration and CFD-vs-surrogate comparison.</p></div></div>
+    </div>
+  </section>
+
+  <!-- 05 SCALAR SURROGATE -->
+  <section id="scalar" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; Scalar Surrogate Results</div>
+    <h2 class="section-title reveal">Predicting <em>impact metrics</em></h2>
+    <div class="prose reveal"><p>Robust time-aggregated metrics proved to be strong surrogate targets. Raw instantaneous peak pressure was deliberately not pursued as a primary target &mdash; it is governed by short-duration transient events and is inherently difficult to predict with a single global scalar surrogate. All scores below are on the 60 off-grid LHS cases held out from every stage of training.</p></div>
+    <table class="result-table reveal" style="margin-top:24px;">
+      <thead><tr><th>Target</th><th>Best Model</th><th>Validation R&sup2;</th><th>Validation nRMSE</th></tr></thead>
+      <tbody>
+        <tr><td>Local max 0.050&nbsp;s rolling peak pressure</td><td>poly3 ridge</td><td class="accent">0.997</td><td>1.49%</td></tr>
+        <tr><td>Local max 0.025&nbsp;s rolling peak pressure</td><td>poly3 ridge</td><td class="accent">0.984</td><td>3.22%</td></tr>
+        <tr><td>Area-average pressure impulse</td><td>poly3 ridge</td><td class="accent">0.980</td><td>3.67%</td></tr>
+        <tr><td>Maximum-pressure impulse</td><td>KNN</td><td class="accent">0.967</td><td>4.15%</td></tr>
+        <tr><td>First distributed wetting time</td><td>Gaussian process</td><td class="accent">0.974</td><td>5.29%</td></tr>
+        <tr><td>Area-average 0.050&nbsp;s rolling peak pressure</td><td>RBF SVR</td><td class="accent">0.938</td><td>6.17%</td></tr>
+      </tbody>
+    </table>
+    <div class="two-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img src="images/dambreak/validation-r2.png" alt="Surrogate validation R-squared"><div class="img-label">Selected Surrogates &mdash; Validation R&sup2;</div></div>
+      <div class="img-block"><img src="images/dambreak/validation-nrmse.png" alt="Surrogate validation nRMSE"><div class="img-label">Selected Surrogates &mdash; Validation nRMSE</div></div>
+    </div>
+    <div class="reveal" style="margin-top:48px;">
+      <h3 class="sub-title">Design-space exploration</h3>
+      <div class="prose"><p>Because the scalar surrogates evaluate instantly, they can be swept across the full parameter space to produce response surfaces and to search for designs that minimise or maximise a chosen impact metric &mdash; turning the static CFD database into an interactive design tool.</p></div>
+      <div class="two-col-img" style="margin-top:24px;">
+        <div class="img-block"><img src="images/dambreak/response-surface-dashboard.gif" alt="Surrogate response surface dashboard"><div class="img-label">Response Surfaces Across Obstacle Positions</div></div>
+        <div class="img-block"><img src="images/dambreak/best-design-explorer.gif" alt="Surrogate best design explorer"><div class="img-label">Surrogate-Guided Best-Design Explorer</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 POD FIELD SURROGATE -->
+  <section id="pod" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; POD Field Surrogate</div>
+    <h2 class="section-title reveal">Reduced-order <em>free-surface reconstruction</em></h2>
+    <div class="prose reveal"><p>Beyond scalar metrics, a time-sliced POD (proper orthogonal decomposition) surrogate reconstructs the full <em>alpha.water</em> free-surface field. A 200-mode incremental-PCA basis was trained on 20,923 snapshots from the 343 training cases and validated on 3,660 snapshots from the 60 unseen cases.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>POD modes</td><td>200</td></tr>
+            <tr><td>Common grid</td><td>96 &times; 96</td></tr>
+            <tr><td>Explained variance (200 modes)</td><td class="accent">93.6%</td></tr>
+            <tr><td>Mean validation RMSE in &alpha;</td><td>0.091</td></tr>
+            <tr><td>Mean validation MAE in &alpha;</td><td>0.029</td></tr>
+            <tr><td>Mean phase-mask IoU</td><td class="accent">0.851</td></tr>
+            <tr><td>Mean interface-front MAE</td><td>0.084 m</td></tr>
+            <tr><td>Mean relative water-volume error</td><td>1.8%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="img-block"><img src="images/dambreak/pod-explained-variance.png" alt="POD explained variance"><div class="img-label">POD Mode Explained Variance</div></div>
+        <div class="img-block" style="margin-top:16px;"><img src="images/dambreak/pod-rmse-distribution.png" alt="POD RMSE distribution"><div class="img-label">Validation RMSE Distribution</div></div>
+      </div>
+    </div>
+    <div class="three-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img src="images/dambreak/pod-error-over-time.png" alt="POD field error over time"><div class="img-label">Field RMSE Over Time</div></div>
+      <div class="img-block"><img src="images/dambreak/pod-interface-error.png" alt="POD interface-front error over time"><div class="img-label">Interface-Front Error Over Time</div></div>
+      <div class="img-block"><img src="images/dambreak/pod-phase-mask-iou.png" alt="POD phase-mask IoU over time"><div class="img-label">Phase-Mask IoU Over Time</div></div>
+    </div>
+    <div class="highlight-box reveal"><p>The POD surrogate captures the dominant free-surface evolution but is an <strong>approximate reduced-order reconstruction, not a CFD replacement</strong>. Sharp moving VOF interfaces are difficult to represent with a linear POD basis &mdash; particularly near the obstacle face, wall-contact regions, and thin-film contact lines &mdash; and the error panel in the comparison above shows this honestly.</p></div>
+  </section>
+
+  <!-- 07 TAKEAWAYS -->
+  <section id="takeaways" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Key Takeaways</div>
+    <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Automation at Scale</h4><p>A fully automated pipeline generated, ran, and post-processed a 403-case, ~27&nbsp;GB OpenFOAM VOF database end-to-end, turning a single tutorial case into a structured engineering dataset.</p></div>
+      <div class="content-card"><h4>Accurate Scalar Surrogates</h4><p>Robust time-aggregated impact metrics were predicted to within a few percent nRMSE on completely unseen cases &mdash; up to R&sup2;&nbsp;=&nbsp;0.997 &mdash; fast enough to drive interactive design-space exploration.</p></div>
+      <div class="content-card"><h4>Honest Reduced-Order Modelling</h4><p>A 200-mode POD field surrogate reconstructs the free surface from design parameters alone, while transparently reporting where a linear basis struggles with sharp moving interfaces.</p></div>
+    </div>
+    <div class="highlight-box reveal" style="margin-top:40px;"><p>Future work focuses on improving the field surrogate using <strong>local POD, Gaussian-process coefficient models, or autoencoder-based reconstruction</strong>, while keeping the workflow physically interpretable and validated against CFD.</p></div>
+    <div class="tag-row reveal">
+      <span class="tag">OpenFOAM v2312</span><span class="tag">interFoam</span><span class="tag">VOF</span>
+      <span class="tag">Two-Phase Flow</span><span class="tag">Python</span><span class="tag">Bash</span>
+      <span class="tag">scikit-learn</span><span class="tag">IncrementalPCA / POD</span><span class="tag">Gaussian Process</span>
+      <span class="tag">RBF SVR</span><span class="tag">KNN</span><span class="tag">NumPy / SciPy</span>
+      <span class="tag">Matplotlib</span><span class="tag">Surrogate Modelling</span><span class="tag">Reduced-Order Modelling</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Thomas Bainbridge</span>
+    <span>OpenFOAM Dam-Break CFD &amp; Surrogate Modelling</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("nav");
+    const progress = document.getElementById("progress");
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 60);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (scrollTop / docHeight * 100) + "%";
+    });
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add("visible"), i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
