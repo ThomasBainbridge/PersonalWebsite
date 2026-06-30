@@ -607,31 +607,30 @@
         </div>
       </a>
 
-      <a href="https://github.com/ThomasBainbridge/motorsport-lap-performance-analyser" target="_blank" rel="noopener" class="project-item reveal">
+      <a href="particle-flow-project.html" class="project-item reveal">
         <div>
           <div class="project-num">003</div>
-          <h3>Motorsport Lap Performance Analyser</h3>
+          <h3>Reduced-Order Forecasting of Particle-Laden Flow</h3>
           <p>
-            A Python tool for analysing Formula 1 lap telemetry that combines data-driven
-            comparison with a first-principles vehicle dynamics model. Laps are aligned
-            over a common distance basis and automatically segmented into braking zones
-            and corners, with time-loss attribution broken down to phase level and a
-            machine learning pipeline extracting features, clustering corner archetypes,
-            and running cross-validated regression. A separate physics stage reconstructs
-            the track from position data, solves a quasi-steady-state lap-time envelope
-            with friction ellipse and aerodynamic downforce, and quantifies how close
-            each driver got to the car's theoretical limit. A single command produces
-            aligned traces, segment rankings, cluster maps, envelope overlays, g-g
-            diagrams, and a summary report — all driven by YAML config files.
+            A scientific-machine-learning testbed that generates a controlled 2D inertial-particle
+            dataset, converts Lagrangian particle motion into Eulerian concentration fields, and
+            trains reduced-order PyTorch models to reconstruct and forecast the field evolution.
+            Inertial particles are driven through an unsteady Taylor&ndash;Green vortex, reproducing
+            textbook preferential concentration, with four diagnostics confirming St&nbsp;&approx;&nbsp;1
+            as the strongest-clustering regime. POD and a convolutional autoencoder compress the
+            fields to a 16-dimensional latent space, and a residual latent forecaster &mdash; plus a
+            Stokes-conditioned Neural-ODE variant &mdash; rolls the dynamics forward in time, beating
+            the persistence baseline at every Stokes number.
           </p>
           <div class="project-tags">
             <span class="tag">Python</span>
-            <span class="tag">FastF1</span>
-            <span class="tag">Telemetry Analysis</span>
-            <span class="tag">Machine Learning</span>
-            <span class="tag">Clustering</span>
-            <span class="tag">Motorsport</span>
-            <span class="tag">YAML</span>
+            <span class="tag">PyTorch</span>
+            <span class="tag">Scientific ML</span>
+            <span class="tag">Reduced-Order Modelling</span>
+            <span class="tag">POD / Autoencoder</span>
+            <span class="tag">Neural ODE</span>
+            <span class="tag">Latent Forecasting</span>
+            <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
           </div>
         </div>
         <div class="project-meta">

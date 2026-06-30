@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reduced-Order Forecasting of Particle-Laden Flow — Thomas Bainbridge</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- SEO / Social preview -->
+  <meta name="description" content="A scientific-machine-learning testbed for particle-laden flow: a controlled 2D inertial-particle dataset, POD and convolutional-autoencoder reduced-order models, and latent-space / Neural-ODE forecasting of the concentration-field evolution.">
+  <meta name="author" content="Thomas Bainbridge">
+  <meta name="theme-color" content="#0e0e0f">
+  <link rel="canonical" href="https://thomasbainbridge.github.io/PersonalWebsite/particle-flow-project.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Thomas Bainbridge — Engineering Portfolio">
+  <meta property="og:title" content="Reduced-Order Forecasting of Particle-Laden Flow">
+  <meta property="og:description" content="A controlled inertial-particle dataset with POD / autoencoder reduced-order models and latent-space / Neural-ODE forecasting of the concentration-field evolution.">
+  <meta property="og:url" content="https://thomasbainbridge.github.io/PersonalWebsite/particle-flow-project.html">
+  <meta property="og:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/ropf/og-particle-flow.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Reduced-Order Forecasting of Particle-Laden Flow">
+  <meta name="twitter:description" content="A controlled inertial-particle dataset with POD / autoencoder ROMs and latent-space / Neural-ODE forecasting.">
+  <meta name="twitter:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/ropf/og-particle-flow.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0f; --bg2: #161618; --bg3: #1e1e21; --line: #2a2a2e;
+      --accent: #c8f060; --accent2: #60d4f0; --text: #e8e6df; --muted: #7a786f;
+      --serif: "DM Serif Display", serif; --mono: "DM Mono", monospace; --sans: "DM Sans", sans-serif;
+    }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03; pointer-events: none; z-index: 1000;
+    }
+
+    .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; border-bottom: 1px solid transparent; transition: border-color .3s, background .3s, backdrop-filter .3s; }
+    nav.scrolled { background: rgba(14,14,15,.85); backdrop-filter: blur(16px); border-color: var(--line); }
+    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: .05em; text-decoration: none; }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; padding: 8px 0; }
+    .nav-back::before { content: "\2190  "; }
+    .nav-back:hover { color: var(--text); }
+
+    #hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 48px 80px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 60% 80% at 100% 100%, black, transparent); opacity: .35; }
+    .hero-inner { position: relative; z-index: 2; max-width: 960px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 24px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    .hero-tag::before { content: ""; display: block; width: 24px; height: 1px; background: var(--accent); }
+    .hero-title { font-family: var(--serif); font-size: clamp(36px, 5.5vw, 70px); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 32px; opacity: 0; animation: fadeUp .7s ease .2s forwards; }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; opacity: 0; animation: fadeUp .7s ease .3s forwards; }
+    .hero-meta-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+    .hero-meta-value { font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .hero-desc { font-size: 17px; font-weight: 300; color: #b5b2aa; max-width: 760px; line-height: 1.75; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+
+    section { padding: 96px 48px; }
+    .section-label { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 48px; }
+    .section-label::before { content: ""; display: block; width: 32px; height: 1px; background: var(--accent); }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.5vw, 52px); font-weight: 400; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 24px; }
+    h2.section-title em { font-style: italic; color: var(--accent); }
+    h3.sub-title { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 16px; }
+    .prose { font-size: 16px; font-weight: 300; color: #b5b2aa; line-height: 1.8; }
+    .prose p { margin-bottom: 16px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .img-block {
+      background: var(--bg3);
+      border-radius: 4px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-block img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
+    }
+    .design-card .img-block { height: auto; min-height: 200px; margin-top: 0; padding: 16px; }
+    .design-card .img-block img { height: auto; max-height: 280px; width: 100%; object-fit: contain; }
+    .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .two-col-img .img-block { margin-top: 0; height: 100%; }
+    .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
+    .mission-card { background: var(--bg3); border: 1px solid var(--line); padding: 40px; }
+    .mission-card:first-child { border-radius: 4px 0 0 4px; }
+    .mission-card:last-child { border-radius: 0 4px 4px 0; }
+    .mission-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .mission-card h3 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 20px; }
+    .spec-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 16px; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; flex-shrink: 0; }
+    .spec-val { font-family: var(--mono); font-size: 13px; color: var(--text); text-align: right; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 48px; }
+    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
+    .stat-box:first-child { border-radius: 4px 0 0 4px; }
+    .stat-box:last-child { border-radius: 0 4px 4px 0; }
+    .stat-num { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+    .highlight-box { background: var(--bg2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 28px 32px; margin-top: 32px; border-radius: 0 4px 4px 0; }
+    .highlight-box p { font-size: 15px; color: #b5b2aa; line-height: 1.7; margin-bottom: 0; }
+    .highlight-box strong { color: var(--accent); font-weight: 500; }
+
+    .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 32px; }
+    .design-card { background: var(--bg2); border: 1px solid var(--line); padding: 0; overflow: hidden; }
+    .design-card-body { padding: 24px; }
+    .design-card h4 { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .design-card .drag { font-family: var(--mono); font-size: 20px; color: var(--text); margin: 8px 0 2px; }
+    .design-card .drag-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .design-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .workflow { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .workflow-step { background: var(--bg2); border: 1px solid var(--line); padding: 20px 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; }
+    .workflow-step:first-child { border-radius: 4px 4px 0 0; }
+    .workflow-step:last-child { border-radius: 0 0 4px 4px; }
+    .step-num { font-family: var(--serif); font-size: 26px; color: var(--accent); line-height: 1; padding-top: 2px; }
+    .step-content h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: .04em; }
+    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 24px; overflow-x: auto; display: block; }
+    .result-table th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg3); white-space: nowrap; }
+    .result-table td { font-family: var(--mono); font-size: 13px; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table .accent { color: var(--accent); font-weight: 500; }
+
+    .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+    .content-card { background: var(--bg2); padding: 32px 28px; }
+    .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
+    .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
+    .team-card.mine { border-color: var(--accent); }
+    .team-initial { font-family: var(--serif); font-size: 30px; color: var(--accent); margin-bottom: 12px; }
+    .team-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .tag { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line); padding: 4px 10px; border-radius: 2px; letter-spacing: .04em; }
+
+    footer { border-top: 1px solid var(--line); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-back { font-size: 11px; }
+      #hero { padding: 100px 24px 56px; min-height: auto; }
+      .hero-title { font-size: clamp(32px, 9vw, 52px); margin-bottom: 24px; }
+      .hero-meta { gap: 20px; margin-bottom: 28px; }
+      .hero-meta-value { font-size: 12px; }
+      .hero-desc { font-size: 15px; }
+      section { padding: 64px 24px; }
+      .two-col { grid-template-columns: 1fr; gap: 40px; }
+      .two-col-img { grid-template-columns: 1fr; }
+      .two-col-img .img-block { height: auto; }
+      .three-col-img { grid-template-columns: 1fr; }
+      .card-grid-3 { grid-template-columns: 1fr; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .mission-card { padding: 28px 24px; }
+      .mission-card:first-child { border-radius: 4px 4px 0 0; }
+      .mission-card:last-child { border-radius: 0 0 4px 4px; }
+      .design-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .stat-box:first-child { border-radius: 4px 0 0 0; }
+      .stat-box:nth-child(2) { border-radius: 0 4px 0 0; }
+      .stat-box:nth-child(3) { border-radius: 0 0 0 4px; }
+      .stat-box:last-child { border-radius: 0 0 4px 0; }
+      .stat-num { font-size: 28px; }
+      .team-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .team-card { padding: 24px 12px; }
+      .team-initial { font-size: 24px; }
+      .team-name { font-size: 11px; }
+      .img-block { padding: 12px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 560px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .hero-meta { gap: 14px; }
+    }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">TB.dev</a>
+    <a href="index.html#projects" class="nav-back">Back to portfolio</a>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">Personal Project &mdash; Scientific Machine Learning &mdash; 2026</div>
+      <h1 class="hero-title">Reduced-Order Forecasting of<br><em>Particle-Laden Flow</em></h1>
+      <div class="hero-meta">
+        <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
+        <div><div class="hero-meta-label">Physics</div><div class="hero-meta-value">Inertial particles &middot; Taylor&ndash;Green vortex</div></div>
+        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">POD &middot; Conv-Autoencoder &middot; Latent forecasting</div></div>
+        <div><div class="hero-meta-label">Stack</div><div class="hero-meta-value">PyTorch</div></div>
+        <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
+      </div>
+      <p class="hero-desc">A scientific-machine-learning testbed that generates a controlled 2D inertial-particle dataset, converts Lagrangian particle motion into Eulerian concentration fields, and trains reduced-order PyTorch models to reconstruct and forecast the concentration-field evolution &mdash; from POD and convolutional-autoencoder reduced representations through to latent-space and Neural-ODE forecasting, with physically interpretable error analysis.</p>
+      <div style="margin-top: 36px;">
+        <a href="https://github.com/ThomasBainbridge/Reduced-Order-Particle-Flow" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 PROBLEM -->
+  <section id="problem" style="background: var(--bg2);">
+    <div class="section-label">01 &mdash; The Problem</div>
+    <h2 class="section-title reveal">Forecasting <em>preferential concentration</em></h2>
+    <div class="prose reveal">
+      <p>Inertial particles suspended in an unsteady vortical flow do not follow the fluid &mdash; they are centrifuged out of the vortex cores and accumulate along the strain regions between cells, a phenomenon known as <em>preferential concentration</em>. This project asks whether the evolution of that clustering field can be compressed into a low-dimensional latent space and <em>forecast</em> forward in time with data-driven models.</p>
+      <p>It is deliberately <strong>not</strong> a high-fidelity turbulent DNS. The carrier flow is prescribed analytically so that the data-generation, reduced-order-modelling, and forecasting machinery can be developed and validated against clean, reproducible physics. The full pipeline runs end-to-end on a laptop CPU.</p>
+    </div>
+    <div class="img-block reveal" style="margin-top:32px;">
+      <img loading="lazy" src="images/ropf/particle-evolution.gif" alt="St=1 inertial particles clustering in a Taylor-Green vortex and the resulting concentration field">
+      <div class="img-label">St = 1 Inertial Particles Centrifuged Into Strain Regions (left) &amp; the 64&times;64 Concentration Field the Models Learn (right)</div>
+    </div>
+  </section>
+
+  <!-- 02 PHYSICS -->
+  <section id="physics" style="background: var(--bg);">
+    <div class="section-label">02 &mdash; The Physics</div>
+    <h2 class="section-title reveal">From Lagrangian particles to <em>Eulerian fields</em></h2>
+    <div class="prose reveal"><p>A prescribed, divergence-free Taylor&ndash;Green carrier flow drives inertial point particles under linear Stokes drag; their positions are binned into a normalised concentration field that conserves mass. The single governing parameter is the Stokes number.</p></div>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Carrier Flow</h4><p>An unsteady Taylor&ndash;Green vortex on a periodic 2&pi;&times;2&pi; square, u = A(t)(sin&thinsp;x cos&thinsp;y, &minus;cos&thinsp;x sin&thinsp;y) with A(t) = 1 + 0.25&thinsp;sin(&omega;t). Analytically incompressible, so no CFD solver is needed &mdash; velocity is evaluated directly at each particle.</p></div>
+      <div class="content-card"><h4>Inertial Particles</h4><p>Each particle obeys dv/dt = (u &minus; v)/&tau;<sub>p</sub>, integrated with vectorised RK4. With a unit flow time scale the Stokes number is simply St = &tau;<sub>p</sub> &mdash; the ratio of particle response time to flow time controlling how strongly particles cluster.</p></div>
+      <div class="content-card"><h4>Lagrangian &rarr; Eulerian</h4><p>At each saved time, 5,000 particle positions are binned onto a 64&times;64 grid and normalised to a concentration field that sums to one (discrete mass conservation), stored channel-first ready for PyTorch.</p></div>
+    </div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <h3 class="sub-title">Stokes-number regimes</h3>
+        <table class="result-table">
+          <thead><tr><th>Stokes number</th><th>Behaviour</th></tr></thead>
+          <tbody>
+            <tr><td>St = 0.1</td><td>Near-tracer &mdash; particles almost follow the fluid</td></tr>
+            <tr><td class="accent">St = 1</td><td class="accent">Resonant &mdash; strongest, fastest clustering</td></tr>
+            <tr><td>St = 5</td><td>Particles significantly lag the flow</td></tr>
+            <tr><td>St = 10</td><td>Highly inertial &mdash; weakly follow the instantaneous flow</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/stokes-comparison.png" alt="Concentration fields versus Stokes number and time"><div class="img-label">Concentration Fields vs Stokes Number and Time</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 DATASET -->
+  <section id="dataset" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; Dataset &amp; Diagnostics</div>
+    <h2 class="section-title reveal">A controlled, <em>reproducible</em> database</h2>
+    <div class="prose reveal"><p>The canonical sweep covers four Stokes numbers across five random seeds, each integrated to t = 20 and saved every 0.1 &mdash; fully reproducible from the seeds and stored as a single compressed array.</p></div>
+    <div class="stat-row reveal">
+      <div class="stat-box"><div class="stat-num">20</div><div class="stat-label">Cases (4 St &times; 5 seeds)</div></div>
+      <div class="stat-box"><div class="stat-num">201</div><div class="stat-label">Snapshots / case</div></div>
+      <div class="stat-box"><div class="stat-num">5,000</div><div class="stat-label">Particles / case</div></div>
+      <div class="stat-box"><div class="stat-num">64&times;64</div><div class="stat-label">Concentration grid</div></div>
+    </div>
+    <div class="reveal" style="margin-top:48px;">
+      <h3 class="sub-title">Four diagnostics confirm St &approx; 1 clusters hardest</h3>
+      <div class="prose"><p>Four independent physical diagnostics &mdash; clustering index, spatial entropy, peak concentration, and field variance &mdash; all identify St &approx; 1 as the strongest-clustering regime, with the clustering index D peaking near 1.85. This validates the physics before any machine learning is applied.</p></div>
+      <div class="img-block" style="margin-top:24px;"><img loading="lazy" src="images/ropf/physical-diagnostics.png" alt="Physical diagnostics versus time"><div class="img-label">Physical Diagnostics vs Time &mdash; Clustering Index, Entropy, Peak, Variance</div></div>
+    </div>
+  </section>
+
+  <!-- 04 RECONSTRUCTION -->
+  <section id="reconstruction" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; Reduced-Order Reconstruction</div>
+    <h2 class="section-title reveal">POD vs <em>convolutional autoencoder</em></h2>
+    <div class="prose reveal"><p>Both a linear POD/PCA basis and a 16-dimensional convolutional autoencoder were trained to compress and reconstruct the concentration fields. All numbers are on a held-out seed (seed 4), with models trained only on seeds 0&ndash;3.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Model</th><th>Test reconstruction RMSE</th></tr></thead>
+          <tbody>
+            <tr><td>POD / PCA, 16 modes</td><td>2.35&times;10&#8315;&#8308;</td></tr>
+            <tr><td>Conv. autoencoder, 16-dim latent</td><td>2.38&times;10&#8315;&#8308;</td></tr>
+          </tbody>
+        </table>
+        <div class="prose" style="margin-top:16px;"><p>The two are essentially tied &mdash; and both sit near the histogram <strong>shot-noise floor</strong> (~2.2&times;10&#8315;&#8308;). The raw fields need ~930 POD modes for 90% energy, because the per-cell Poisson noise is high-dimensional and incompressible. Both ROMs instead recover the smooth <em>coherent</em> clustering structure and discard the noise &mdash; the key physical insight of the study.</p></div>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/pod-energy-smooth.png" alt="POD energy spectrum (smoothed)"><div class="img-label">POD Energy Spectrum &mdash; Denoised Fields</div></div>
+      </div>
+    </div>
+    <div class="highlight-box reveal"><p>On Gaussian-KDE-<strong>denoised</strong> fields the picture changes: they become nearly low-rank (24 modes &rarr; 90% energy) and POD reconstructs the clustering almost perfectly by r = 16 &mdash; a ~3&times; lower reconstruction floor.</p></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/ropf/pod-panel-smooth.png" alt="POD reconstruction versus number of modes (smoothed)"><div class="img-label">POD Reconstruction vs Number of Modes &mdash; Denoised Fields</div></div>
+  </section>
+
+  <!-- 05 FORECASTING -->
+  <section id="forecasting" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; Latent-Space Forecasting</div>
+    <h2 class="section-title reveal">Rolling the latent map <em>forward in time</em></h2>
+    <div class="prose reveal"><p>A residual forecaster z<sub>t+1</sub> = z<sub>t</sub> + f(z<sub>t</sub>) is trained on the frozen autoencoder latent space, then rolled out recursively from t = 0 to t = 20 and decoded back to fields. It beats the persistence baseline at every Stokes number on final-time field RMSE.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>St</th><th>Persistence</th><th>Forecaster</th><th>Improvement</th></tr></thead>
+          <tbody>
+            <tr><td>0.1</td><td>6.26&times;10&#8315;&#8308;</td><td>5.75&times;10&#8315;&#8308;</td><td class="accent">8%</td></tr>
+            <tr><td>1</td><td>7.15&times;10&#8315;&#8308;</td><td>6.72&times;10&#8315;&#8308;</td><td class="accent">6%</td></tr>
+            <tr><td>5</td><td>3.26&times;10&#8315;&#8308;</td><td>2.82&times;10&#8315;&#8308;</td><td class="accent">13%</td></tr>
+            <tr><td>10</td><td>3.19&times;10&#8315;&#8308;</td><td>2.39&times;10&#8315;&#8308;</td><td class="accent">25%</td></tr>
+            <tr><td class="accent">mean</td><td>4.97&times;10&#8315;&#8308;</td><td>4.42&times;10&#8315;&#8308;</td><td class="accent">11%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/forecast-raw.png" alt="Latent forecast vs persistence error versus horizon"><div class="img-label">Forecast vs Persistence &mdash; Error vs Horizon</div></div>
+      </div>
+    </div>
+    <div class="highlight-box reveal"><p>On the denoised data, a <strong>Stokes-conditioned, multi-step-trained</strong> forecaster does substantially better &mdash; roughly <strong>halving</strong> the persistence error at long horizons.</p></div>
+    <div class="two-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-conditioned.png" alt="Conditioned latent forecast vs persistence (smoothed)"><div class="img-label">Stokes-Conditioned Forecaster &mdash; Denoised Data</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-vs-true.gif" alt="True versus latent-forecast concentration evolution at St=1"><div class="img-label">Truth (left) vs Latent-Space Forecast (right) &mdash; St = 1, Held-Out Seed</div></div>
+    </div>
+  </section>
+
+  <!-- 06 STRETCH -->
+  <section id="stretch" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; Nonlinear ROM &amp; Neural-ODE</div>
+    <h2 class="section-title reveal">Where nonlinearity <em>earns its keep</em></h2>
+    <div class="prose reveal"><p>On the smooth single-scale flow, the linear and nonlinear ROMs tie. To expose the advantage of a nonlinear autoencoder, the carrier flow was swapped for a divergence-free <strong>multi-mode Fourier</strong> field with richer, multiscale structure.</p></div>
+    <div class="two-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img loading="lazy" src="images/ropf/rom-comparison-fourier.png" alt="Linear versus nonlinear ROM on the Fourier flow"><div class="img-label">Linear POD vs Nonlinear Autoencoder &mdash; Fourier Flow</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/ae-panel-fourier.png" alt="Autoencoder reconstruction on the Fourier flow"><div class="img-label">Autoencoder Reconstruction &mdash; Fourier Flow</div></div>
+    </div>
+    <div class="highlight-box reveal"><p>On the multiscale Fourier fields the 16-dim autoencoder <strong>beats POD at equal latent size</strong> and matches a ~32-mode POD basis &mdash; while POD needs 1,132 modes for 90% energy. A <strong>Neural-ODE</strong> latent forecaster (dz/dt = f(z, St), the direct Universal-Differential-Equation analogue) was also implemented, stable once Stokes-conditioned and multi-step trained.</p></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/ropf/ode-clustering-index.png" alt="Neural-ODE forecast clustering index over time"><div class="img-label">Neural-ODE Forecast &mdash; Clustering Index Preserved Over Time</div></div>
+  </section>
+
+  <!-- 07 TAKEAWAYS -->
+  <section id="takeaways" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Key Takeaways</div>
+    <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Physics-First ML</h4><p>A controlled inertial-particle dataset reproduces textbook preferential concentration, with four diagnostics validating St &approx; 1 as the resonant clustering regime before any model is trained.</p></div>
+      <div class="content-card"><h4>Reduced-Order Insight</h4><p>POD and a conv-autoencoder tie near the histogram shot-noise floor on raw fields &mdash; both recover coherent structure and reject high-dimensional Poisson noise; denoising makes the fields low-rank and nonlinearity wins on multiscale flow.</p></div>
+      <div class="content-card"><h4>Latent Forecasting</h4><p>A residual latent forecaster beats persistence at every Stokes number, and a Stokes-conditioned, multi-step Neural-ODE variant roughly halves the long-horizon error &mdash; a clean Universal-Differential-Equation demonstration.</p></div>
+    </div>
+    <div class="highlight-box reveal" style="margin-top:40px;"><p>The project mirrors the workflow philosophy of my <a href="dam-break-project.html" style="color:var(--accent);text-decoration:none;">OpenFOAM dam-break surrogate</a> &mdash; generate a physics database, build a reduced-order field surrogate &mdash; but on Lagrangian inertial-particle physics, with the ML focus shifted to <strong>latent-space forecasting of an evolving field</strong> rather than static regression.</p></div>
+    <div class="tag-row reveal">
+      <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Scientific ML</span>
+      <span class="tag">Reduced-Order Modelling</span><span class="tag">POD / PCA</span><span class="tag">Convolutional Autoencoder</span>
+      <span class="tag">Latent Forecasting</span><span class="tag">Neural ODE / UDE</span><span class="tag">Inertial Particles</span>
+      <span class="tag">Preferential Concentration</span><span class="tag">NumPy / SciPy</span><span class="tag">Reproducible Pipeline</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Thomas Bainbridge</span>
+    <span>Reduced-Order Forecasting of Particle-Laden Flow</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("nav");
+    const progress = document.getElementById("progress");
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 60);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (scrollTop / docHeight * 100) + "%";
+    });
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add("visible"), i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
