@@ -45,7 +45,7 @@
       --sans:      'DM Sans', sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; overflow-x: hidden; scroll-padding-top: 80px; }
 
     body {
       background: var(--bg);
@@ -90,6 +90,7 @@
     }
     nav.scrolled {
       background: rgba(14,14,15,0.85);
+      -webkit-backdrop-filter: blur(16px);
       backdrop-filter: blur(16px);
       border-color: var(--line);
     }
@@ -142,6 +143,7 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       background: rgba(14,14,15,0.97);
+      -webkit-backdrop-filter: blur(20px);
       backdrop-filter: blur(20px);
       z-index: 99;
       padding: 80px 32px 40px;
@@ -436,7 +438,7 @@
       }
       .hero-right { display: none; }
       .hero-role { font-size: 12px; }
-      .status-dot { bottom: 20px; right: 20px; font-size: 10px; }
+      .status-dot { position: static; margin-top: 28px; font-size: 10px; }
 
       /* Sections */
       section { padding: 64px 24px; }
