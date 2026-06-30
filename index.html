@@ -210,15 +210,6 @@
       margin-bottom: 32px;
       opacity: 0; animation: fadeUp 0.7s ease 0.3s forwards;
     }
-    .hero-desc {
-      font-size: 17px;
-      font-weight: 300;
-      color: #b5b2aa;
-      max-width: 520px;
-      line-height: 1.75;
-      margin-bottom: 48px;
-      opacity: 0; animation: fadeUp 0.7s ease 0.4s forwards;
-    }
     .hero-ctas {
       display: flex; gap: 16px; align-items: center;
       opacity: 0; animation: fadeUp 0.7s ease 0.5s forwards;
@@ -325,20 +316,6 @@
       margin-bottom: 24px;
     }
     h2.section-title em { font-style: italic; color: var(--accent); }
-
-    /* ── ABOUT ── */
-    #about { background: var(--bg2); }
-    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-    .about-text p { font-size: 17px; font-weight: 300; color: #b5b2aa; line-height: 1.8; margin-bottom: 20px; }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
-    .stat-box:first-child { border-radius: 6px 0 0 0; }
-    .stat-box:nth-child(2) { border-radius: 0 6px 0 0; }
-    .stat-box:nth-child(3) { border-radius: 0 0 0 6px; }
-    .stat-box:last-child { border-radius: 0 0 6px 0; }
-    .stat-num { font-family: var(--serif); font-size: 40px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
-    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
 
     /* ── SKILLS ── */
     #skills { background: var(--bg); }
@@ -459,17 +436,11 @@
         min-height: auto;
       }
       .hero-right { display: none; }
-      .hero-desc { font-size: 15px; }
       .hero-role { font-size: 12px; }
       .status-dot { bottom: 20px; right: 20px; font-size: 10px; }
 
       /* Sections */
       section { padding: 64px 24px; }
-
-      /* About */
-      .about-grid { grid-template-columns: 1fr; gap: 40px; }
-      .about-stats { grid-template-columns: 1fr 1fr; }
-      .stat-num { font-size: 28px; }
 
       /* Skills */
       .skills-grid { grid-template-columns: 1fr; }
@@ -496,7 +467,6 @@
     }
 
     @media (max-width: 560px) {
-      .about-stats { grid-template-columns: 1fr 1fr; }
       .hero-name { font-size: clamp(42px, 12vw, 64px); }
     }
 
@@ -519,7 +489,6 @@
   <!-- Mobile nav drawer -->
   <div class="mobile-nav" id="mobileNav">
     <ul>
-      <li><a href="#about" class="mobile-link">About</a></li>
       <li><a href="#skills" class="mobile-link">Skills</a></li>
       <li><a href="#projects" class="mobile-link">Projects</a></li>
       <li><a href="#university" class="mobile-link">University</a></li>
@@ -532,7 +501,6 @@
   <nav id="nav">
     <a href="#" class="nav-logo">TB.dev</a>
     <ul class="nav-links">
-      <li><a href="#about">About</a></li>
       <li><a href="#skills">Skills</a></li>
       <li><a href="#projects">Projects</a></li>
       <li><a href="#university">University</a></li>
@@ -553,12 +521,6 @@
       <div class="hero-tag">Postgraduate Engineer</div>
       <h1 class="hero-name">Thomas<br><em>Bainbridge</em></h1>
       <p class="hero-role">Computational Fluid Dynamics · Mechanical Engineering · Machine Learning</p>
-      <p class="hero-desc">
-        I build engineering tools and simulation-driven workflows across
-        computational fluid dynamics, mechanical engineering, and computational
-        modelling — with a focus on machine learning, automation, and
-        real-world engineering problems.
-      </p>
       <div class="hero-ctas">
         <a href="#projects" class="btn-primary">View Projects</a>
         <a href="#contact" class="btn-ghost">Get in touch</a>
@@ -578,42 +540,9 @@
     <div class="status-dot">Open to engineering opportunities</div>
   </section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="section-label">01 — About</div>
-    <div class="about-grid">
-      <div class="about-text reveal">
-        <h2 class="section-title">Engineering, simulation,<br>and <em>practical problem solving</em></h2>
-        <p>
-          I'm a postgraduate engineer with a background in mechanical engineering
-          and a current focus on computational fluid dynamics. My work centres on
-          using simulation, coding, and structured analysis to solve engineering
-          problems clearly and rigorously.
-        </p>
-        <p>
-          Alongside academic work, I build engineering software and technical
-          portfolio projects, ranging from performance analysis tools
-          to simulation workflows and data-driven engineering applications.
-        </p>
-        <p>
-          Long term, I'm interested in a career that combines engineering
-          analysis, product development, and technical problem solving — whether
-          that sits within CFD, broader mechanical engineering, or engineering
-          software.
-        </p>
-      </div>
-      <div class="about-stats reveal">
-        <div class="stat-box"><div class="stat-num">CFD</div><div class="stat-label">Simulation focus</div></div>
-        <div class="stat-box"><div class="stat-num">Automotive/Motorsport</div><div class="stat-label">Mechanical Background</div></div>
-        <div class="stat-box"><div class="stat-num">MSc</div><div class="stat-label">Postgraduate study</div></div>
-        <div class="stat-box"><div class="stat-num">BEng</div><div class="stat-label">Undergraduate Study</div></div>
-      </div>
-    </div>
-  </section>
-
   <!-- SKILLS -->
   <section id="skills">
-    <div class="section-label">02 — Skills</div>
+    <div class="section-label">01 — Skills</div>
     <h2 class="section-title reveal">Technical<br><em>skills</em></h2>
     <div class="skills-grid reveal">
       <div class="skill-card">
@@ -671,7 +600,7 @@
 
   <!-- PROJECTS -->
   <section id="projects">
-    <div class="section-label">03 — Projects</div>
+    <div class="section-label">02 — Projects</div>
     <h2 class="section-title reveal">Personal <em>projects</em></h2>
     <div class="projects-list">
 
@@ -777,7 +706,7 @@
 
   <!-- UNIVERSITY PROJECTS -->
   <section id="university">
-    <div class="section-label">04 — University Projects</div>
+    <div class="section-label">03 — University Projects</div>
     <h2 class="section-title reveal">Academic <em>work</em></h2>
     <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 600px; margin-bottom: 48px;">
       A selection of projects and assignments completed during my undergraduate and postgraduate studies.
@@ -935,7 +864,7 @@
 
   <!-- EXPERIENCE -->
   <section id="experience">
-    <div class="section-label">05 — Experience</div>
+    <div class="section-label">04 — Experience</div>
     <h2 class="section-title reveal">Where I've <em>been</em></h2>
     <div class="timeline reveal">
       <div class="timeline-item">
@@ -968,7 +897,7 @@
   <!-- CONTACT -->
   <section id="contact">
     <div class="contact-inner">
-      <div class="section-label">06 — Contact</div>
+      <div class="section-label">05 — Contact</div>
       <h2 class="section-title reveal">Find me <em>online</em></h2>
       <p class="reveal" style="color: var(--muted); font-size: 16px; max-width: 520px; margin: 0 auto;">
         Open to job opportunities, internships and interesting engineering problems and research.
