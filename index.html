@@ -610,29 +610,31 @@
         </div>
       </a>
 
-      <a href="https://github.com/ThomasBainbridge/bearing-condition-monitor" target="_blank" rel="noopener" class="project-item reveal">
+      <a href="ml-rans-project.html" class="project-item reveal">
         <div>
           <div class="project-num">003</div>
-          <h3>Bearing Condition Monitor</h3>
+          <h3>ML-Augmented RANS Modelling of Separated Flow</h3>
           <p>
-            A vibration-based machine learning pipeline for bearing fault diagnosis and
-            severity assessment using the CWRU dataset. Raw .mat vibration signals are
-            ingested, segmented into fixed windows, and passed through an engineered
-            feature extraction stage covering time-domain statistics and frequency-domain
-            descriptors. A hierarchical classifier then outputs both fault type (normal,
-            inner race, ball, outer race) and fault severity, combining them into a final
-            condition label. Models are validated across unseen operating loads using
-            leave-one-load-out cross-validation, with a command-line interface for
-            assessing individual vibration files.
+            A CFD and machine-learning study of whether a lightweight, interpretable
+            data-driven correction can reduce the systematic model-form error of RANS
+            (k&#8209;&omega;&nbsp;SST) for separated turbulent flow over periodic hills, validated
+            against DNS. A baseline OpenFOAM failure map (reattachment x/H&nbsp;&approx;&nbsp;7.5 vs
+            DNS&nbsp;4.5) motivates an interpretable eddy-viscosity and Reynolds-stress-anisotropy
+            correction, learned with ridge / random-forest / gradient-boosting models and a
+            tensor-basis neural network. The correction is coupled back into the solver through
+            two custom-compiled OpenFOAM solvers &mdash; cutting the a-posteriori reattachment
+            error ~78% on an unseen geometry &mdash; then subjected to honest out-of-distribution
+            tests across geometry and completely different separated flows.
           </p>
           <div class="project-tags">
+            <span class="tag">OpenFOAM</span>
+            <span class="tag">CFD</span>
+            <span class="tag">RANS / k-&omega; SST</span>
+            <span class="tag">C++</span>
             <span class="tag">Python</span>
             <span class="tag">Machine Learning</span>
-            <span class="tag">Signal Processing</span>
-            <span class="tag">Random Forest</span>
-            <span class="tag">XGBoost</span>
-            <span class="tag">CWRU Dataset</span>
-            <span class="tag">Condition Monitoring</span>
+            <span class="tag">Turbulence Modelling</span>
+            <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
           </div>
         </div>
         <div class="project-meta">

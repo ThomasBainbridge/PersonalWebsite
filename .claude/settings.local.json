@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -viE '\\\\.\\(pptx?|ppt\\)$')",
+      "Bash(ls -la gifs)",
+      "Bash(ls -la figures)",
+      "Bash(cp __TRACKED_VAR__/gifs/FINAL_cfd_vs_pod_surrogate_alpha_field.gif images/dambreak/cfd-vs-pod-surrogate.gif)",
+      "Bash(cp __TRACKED_VAR__/gifs/surrogate_response_surface_dashboard.gif images/dambreak/response-surface-dashboard.gif)",
+      "Bash(cp __TRACKED_VAR__/gifs/surrogate_best_design_explorer.gif images/dambreak/best-design-explorer.gif)",
+      "Bash(cp __TRACKED_VAR__/figures/final_selected_surrogate_validation_r2.png images/dambreak/validation-r2.png)",
+      "Bash(cp __TRACKED_VAR__/figures/final_selected_surrogate_validation_nrmse.png images/dambreak/validation-nrmse.png)",
+      "Bash(python3 \"/tmp/claude-1000/-mnt-c-Users-thoma-Desktop-PersonalWebsite/fa2963cb-bd06-4225-a721-f54e4f37bb9d/scratchpad/build_dambreak.py\")",
+      "Bash(python3 -c \"import re,sys; h=open\\('dam-break-project.html',encoding='utf-8'\\).read\\(\\); print\\('img refs:', len\\(re.findall\\(r'src=\\\\\"\\(images/dambreak/[^\\\\\"]+\\)\\\\\"',h\\)\\)\\)\")",
+      "Bash(python3 -c ' *)",
+      "Bash(python3 -c \"import PIL; print\\('PIL', PIL.__version__\\)\")",
+      "Bash(command -v ffmpeg)",
+      "Bash(python3 -c \"from PIL import Image; print\\('favicon size', Image.open\\('favicon.png'\\).size\\)\")",
+      "Read(//home/thomasbainbridge/**)",
+      "Bash(fc-list)",
+      "Bash(python3 \"/tmp/claude-1000/-mnt-c-Users-thoma-Desktop-PersonalWebsite/fa2963cb-bd06-4225-a721-f54e4f37bb9d/scratchpad/make_og.py\")",
+      "Bash(python3 -c \"from PIL import Image; [print\\(p, Image.open\\(p\\).size\\) for p in ['images/og-preview.png','images/dambreak/og-dam-break.png']]\")",
+      "Bash(cp __TRACKED_VAR__/gifs/particle_evolution_St1.gif images/ropf/particle-evolution.gif)",
+      "Bash(cp __TRACKED_VAR__/gifs/forecast_vs_true_St1.gif images/ropf/forecast-vs-true.gif)",
+      "Bash(cp __TRACKED_VAR__/figures/stokes_comparison.png images/ropf/stokes-comparison.png)",
+      "Bash(cp __TRACKED_VAR__/figures/physical_diagnostics.png images/ropf/physical-diagnostics.png)",
+      "Bash(cp __TRACKED_VAR__/figures/pod_panel_smooth.png images/ropf/pod-panel-smooth.png)",
+      "Bash(python3 -)",
+      "Bash(python3 -c \"from PIL import Image; print\\('og size', Image.open\\('images/ropf/og-particle-flow.png'\\).size\\)\")",
+      "Bash(python3 \"/tmp/claude-1000/-mnt-c-Users-thoma-Desktop-PersonalWebsite/fa2963cb-bd06-4225-a721-f54e4f37bb9d/scratchpad/build_ropf.py\")",
+      "Bash(awk '/@media/{f=1} f{print NR\": \"$0} /^    }$/{if\\(f\\)c++; if\\(c>=1 && f && /^    }$/\\){}}' index.html)",
+      "Bash(cp __TRACKED_VAR__/flowfield_rans_vs_dns.png images/mlrans/rans-vs-dns.png)",
+      "Bash(cp __TRACKED_VAR__/correction_field_map.png images/mlrans/correction-field-map.png)",
+      "Bash(cp __TRACKED_VAR__/geometry_generalization.png images/mlrans/geometry-generalization.png)",
+      "Bash(cp __TRACKED_VAR__/flowfield_correction.png images/mlrans/flowfield-correction.png)",
+      "Bash(cp __TRACKED_VAR__/aposteriori_profiles.png images/mlrans/aposteriori-profiles.png)",
+      "Bash(python3 \"/tmp/claude-1000/-mnt-c-Users-thoma-Desktop-PersonalWebsite/fa2963cb-bd06-4225-a721-f54e4f37bb9d/scratchpad/build_mlrans.py\")",
+      "Bash(grep -c 'result-table th, .result-table td { padding: 10px 12px' ml-rans-project.html)",
+      "Bash(echo \"reduced-motion: $\\(grep -c 'prefers-reduced-motion' ml-rans-project.html\\), mobile-table: $\\(grep -c 'result-table th, .result-table td { padding: 10px 12px' ml-rans-project.html\\), backlink: $\\(grep -o 'href=\\\\\"index.html#projects\\\\\"' ml-rans-project.html\\)\")",
+      "Bash(git add *)"
+    ]
+  }
+}

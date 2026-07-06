@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ML-Augmented RANS Modelling of Separated Flow — Thomas Bainbridge</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+
+  <!-- SEO / Social preview -->
+  <meta name="description" content="A CFD + machine-learning study of whether a lightweight, interpretable data-driven correction can reduce the model-form error of RANS (k-omega SST) for separated flow over periodic hills, validated against DNS across geometries and different separated flows.">
+  <meta name="author" content="Thomas Bainbridge">
+  <meta name="theme-color" content="#0e0e0f">
+  <link rel="canonical" href="https://thomasbainbridge.github.io/PersonalWebsite/ml-rans-project.html">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Thomas Bainbridge — Engineering Portfolio">
+  <meta property="og:title" content="ML-Augmented RANS Modelling of Separated Flow">
+  <meta property="og:description" content="An interpretable, DNS-trained correction to k-omega SST RANS for separated flow over periodic hills, with custom OpenFOAM solvers and honest out-of-distribution validation across geometry and flow type.">
+  <meta property="og:url" content="https://thomasbainbridge.github.io/PersonalWebsite/ml-rans-project.html">
+  <meta property="og:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/mlrans/og-ml-rans.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ML-Augmented RANS Modelling of Separated Flow">
+  <meta name="twitter:description" content="An interpretable, DNS-trained correction to k-omega SST RANS for separated flow, with custom OpenFOAM solvers and honest generalisation tests.">
+  <meta name="twitter:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/mlrans/og-ml-rans.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0e0e0f; --bg2: #161618; --bg3: #1e1e21; --line: #2a2a2e;
+      --accent: #c8f060; --accent2: #60d4f0; --text: #e8e6df; --muted: #7a786f;
+      --serif: "DM Serif Display", serif; --mono: "DM Mono", monospace; --sans: "DM Sans", sans-serif;
+    }
+    html { scroll-behavior: smooth; overflow-x: hidden; scroll-padding-top: 80px; }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+    body::before {
+      content: ""; position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03; pointer-events: none; z-index: 1000;
+    }
+
+    .progress-bar { position: fixed; top: 0; left: 0; height: 2px; background: var(--accent); z-index: 200; width: 0%; transition: width 0.1s linear; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; justify-content: space-between; align-items: center; padding: 20px 48px; border-bottom: 1px solid transparent; transition: border-color .3s, background .3s, backdrop-filter .3s; }
+    nav.scrolled { background: rgba(14,14,15,.85); -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-color: var(--line); }
+    .nav-logo { font-family: var(--mono); font-size: 13px; color: var(--accent); letter-spacing: .05em; text-decoration: none; }
+    .nav-back { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 12px; color: var(--muted); text-decoration: none; letter-spacing: .08em; text-transform: uppercase; transition: color .2s; padding: 8px 0; }
+    .nav-back::before { content: "\2190  "; }
+    .nav-back:hover { color: var(--text); }
+
+    #hero { min-height: 85vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 140px 48px 80px; position: relative; overflow: hidden; border-bottom: 1px solid var(--line); }
+    .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(var(--line) 1px, transparent 1px), linear-gradient(90deg, var(--line) 1px, transparent 1px); background-size: 60px 60px; mask-image: radial-gradient(ellipse 60% 80% at 100% 100%, black, transparent); opacity: .35; }
+    .hero-inner { position: relative; z-index: 2; max-width: 960px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 24px; opacity: 0; animation: fadeUp .6s ease .1s forwards; }
+    .hero-tag::before { content: ""; display: block; width: 24px; height: 1px; background: var(--accent); }
+    .hero-title { font-family: var(--serif); font-size: clamp(36px, 5.5vw, 70px); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 32px; opacity: 0; animation: fadeUp .7s ease .2s forwards; }
+    .hero-title em { font-style: italic; color: var(--accent); }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 40px; margin-bottom: 40px; opacity: 0; animation: fadeUp .7s ease .3s forwards; }
+    .hero-meta-label { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px; }
+    .hero-meta-value { font-family: var(--mono); font-size: 13px; color: var(--text); }
+    .hero-desc { font-size: 17px; font-weight: 300; color: #b5b2aa; max-width: 760px; line-height: 1.75; opacity: 0; animation: fadeUp .7s ease .4s forwards; }
+
+    section { padding: 96px 48px; }
+    .section-label { display: flex; align-items: center; gap: 12px; font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .12em; text-transform: uppercase; margin-bottom: 48px; }
+    .section-label::before { content: ""; display: block; width: 32px; height: 1px; background: var(--accent); }
+    .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+    h2.section-title { font-family: var(--serif); font-size: clamp(32px, 4.5vw, 52px); font-weight: 400; letter-spacing: -.02em; line-height: 1.1; margin-bottom: 24px; }
+    h2.section-title em { font-style: italic; color: var(--accent); }
+    h3.sub-title { font-family: var(--serif); font-size: 26px; font-weight: 400; margin-bottom: 16px; }
+    .prose { font-size: 16px; font-weight: 300; color: #b5b2aa; line-height: 1.8; }
+    .prose p { margin-bottom: 16px; }
+    .prose p:last-child { margin-bottom: 0; }
+
+    .img-block {
+      background: var(--bg3);
+      border-radius: 4px;
+      padding: 16px;
+      text-align: center;
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    .img-block img {
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      max-height: 420px;
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+      margin: 0 auto;
+    }
+    .design-card .img-block { height: auto; min-height: 200px; margin-top: 0; padding: 16px; }
+    .design-card .img-block img { height: auto; max-height: 280px; width: 100%; object-fit: contain; }
+    .img-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; margin-top: 12px; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .two-col-img { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
+    .two-col-img .img-block { margin-top: 0; height: 100%; }
+    .three-col-img { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 32px; }
+
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 48px; }
+    .mission-card { background: var(--bg3); border: 1px solid var(--line); padding: 40px; }
+    .mission-card:first-child { border-radius: 4px 0 0 4px; }
+    .mission-card:last-child { border-radius: 0 4px 4px 0; }
+    .mission-num { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 12px; }
+    .mission-card h3 { font-family: var(--serif); font-size: 22px; font-weight: 400; margin-bottom: 20px; }
+    .spec-row { display: flex; justify-content: space-between; align-items: baseline; border-bottom: 1px solid var(--line); padding: 10px 0; gap: 16px; }
+    .spec-row:last-child { border-bottom: none; }
+    .spec-key { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; flex-shrink: 0; }
+    .spec-val { font-family: var(--mono); font-size: 13px; color: var(--text); text-align: right; }
+
+    .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; margin-top: 48px; }
+    .stat-box { background: var(--bg3); border: 1px solid var(--line); padding: 28px 24px; }
+    .stat-box:first-child { border-radius: 4px 0 0 4px; }
+    .stat-box:last-child { border-radius: 0 4px 4px 0; }
+    .stat-num { font-family: var(--serif); font-size: 36px; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-family: var(--mono); font-size: 11px; color: var(--muted); letter-spacing: .06em; text-transform: uppercase; }
+
+    .highlight-box { background: var(--bg2); border: 1px solid var(--line); border-left: 3px solid var(--accent); padding: 28px 32px; margin-top: 32px; border-radius: 0 4px 4px 0; }
+    .highlight-box p { font-size: 15px; color: #b5b2aa; line-height: 1.7; margin-bottom: 0; }
+    .highlight-box strong { color: var(--accent); font-weight: 500; }
+
+    .design-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; margin-top: 32px; }
+    .design-card { background: var(--bg2); border: 1px solid var(--line); padding: 0; overflow: hidden; }
+    .design-card-body { padding: 24px; }
+    .design-card h4 { font-family: var(--mono); font-size: 12px; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px; }
+    .design-card .drag { font-family: var(--mono); font-size: 20px; color: var(--text); margin: 8px 0 2px; }
+    .design-card .drag-label { font-family: var(--mono); font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .design-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .workflow { display: flex; flex-direction: column; gap: 2px; margin-top: 32px; }
+    .workflow-step { background: var(--bg2); border: 1px solid var(--line); padding: 20px 28px; display: grid; grid-template-columns: 40px 1fr; gap: 16px; align-items: start; }
+    .workflow-step:first-child { border-radius: 4px 4px 0 0; }
+    .workflow-step:last-child { border-radius: 0 0 4px 4px; }
+    .step-num { font-family: var(--serif); font-size: 26px; color: var(--accent); line-height: 1; padding-top: 2px; }
+    .step-content h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 4px; letter-spacing: .04em; }
+    .step-content p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    .result-table { width: 100%; border-collapse: collapse; margin-top: 24px; overflow-x: auto; display: block; }
+    .result-table th { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); background: var(--bg3); white-space: nowrap; }
+    .result-table td { font-family: var(--mono); font-size: 13px; color: var(--text); padding: 12px 16px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    .result-table tr:last-child td { border-bottom: none; }
+    .result-table .accent { color: var(--accent); font-weight: 500; }
+
+    .card-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: var(--line); border: 1px solid var(--line); margin-top: 40px; }
+    .content-card { background: var(--bg2); padding: 32px 28px; }
+    .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
+    .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+    .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
+    .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
+    .team-card.mine { border-color: var(--accent); }
+    .team-initial { font-family: var(--serif); font-size: 30px; color: var(--accent); margin-bottom: 12px; }
+    .team-name { font-family: var(--mono); font-size: 12px; color: var(--text); }
+
+    .tag-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 32px; }
+    .tag { font-family: var(--mono); font-size: 10px; color: var(--muted); border: 1px solid var(--line); padding: 4px 10px; border-radius: 2px; letter-spacing: .04em; }
+
+    footer { border-top: 1px solid var(--line); padding: 24px 48px; display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 900px) {
+      .result-table { -webkit-overflow-scrolling: touch; }
+      .result-table th, .result-table td { padding: 10px 12px; font-size: 11px; }
+      nav { padding: 16px 24px; }
+      .nav-back { font-size: 11px; }
+      #hero { padding: 100px 24px 56px; min-height: auto; }
+      .hero-title { font-size: clamp(32px, 9vw, 52px); margin-bottom: 24px; }
+      .hero-meta { gap: 20px; margin-bottom: 28px; }
+      .hero-meta-value { font-size: 12px; }
+      .hero-desc { font-size: 15px; }
+      section { padding: 64px 24px; }
+      .two-col { grid-template-columns: 1fr; gap: 40px; }
+      .two-col-img { grid-template-columns: 1fr; }
+      .two-col-img .img-block { height: auto; }
+      .three-col-img { grid-template-columns: 1fr; }
+      .card-grid-3 { grid-template-columns: 1fr; }
+      .mission-grid { grid-template-columns: 1fr; }
+      .mission-card { padding: 28px 24px; }
+      .mission-card:first-child { border-radius: 4px 4px 0 0; }
+      .mission-card:last-child { border-radius: 0 0 4px 4px; }
+      .design-grid { grid-template-columns: 1fr; }
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .stat-box:first-child { border-radius: 4px 0 0 0; }
+      .stat-box:nth-child(2) { border-radius: 0 4px 0 0; }
+      .stat-box:nth-child(3) { border-radius: 0 0 0 4px; }
+      .stat-box:last-child { border-radius: 0 0 4px 0; }
+      .stat-num { font-size: 28px; }
+      .team-grid { grid-template-columns: 1fr 1fr; gap: 2px; }
+      .team-card { padding: 24px 12px; }
+      .team-initial { font-size: 24px; }
+      .team-name { font-size: 11px; }
+      .img-block { padding: 12px; }
+      footer { padding: 20px 24px; flex-direction: column; gap: 8px; text-align: center; }
+    }
+    @media (max-width: 560px) {
+      .stat-row { grid-template-columns: 1fr 1fr; }
+      .hero-meta { gap: 14px; }
+    }
+
+    /* Respect reduced-motion preferences */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+      }
+      .reveal { opacity: 1 !important; transform: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar" id="progress"></div>
+
+  <nav id="nav">
+    <a href="index.html" class="nav-logo">TB.dev</a>
+    <a href="index.html#projects" class="nav-back">Back to portfolio</a>
+  </nav>
+
+  <section id="hero">
+    <div class="hero-grid-bg"></div>
+    <div class="hero-inner">
+      <div class="hero-tag">Personal Project &mdash; CFD &amp; Machine Learning &mdash; 2026</div>
+      <h1 class="hero-title">ML-Augmented RANS Modelling of<br><em>Separated Flow</em></h1>
+      <div class="hero-meta">
+        <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
+        <div><div class="hero-meta-label">Benchmark</div><div class="hero-meta-value">Periodic hill &middot; Re<sub>H</sub> = 5600</div></div>
+        <div><div class="hero-meta-label">Baseline</div><div class="hero-meta-value">OpenFOAM &middot; k-&omega; SST</div></div>
+        <div><div class="hero-meta-label">Reference</div><div class="hero-meta-value">DNS (Xiao et al. 2020)</div></div>
+        <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
+      </div>
+      <p class="hero-desc">A CFD and machine-learning study of whether a lightweight, <em>interpretable</em> data-driven correction can reduce the systematic model-form error of RANS (k-&omega; SST) for separated turbulent flow over periodic hills &mdash; built on OpenFOAM and DNS reference data, coupled back into the solver through two custom-compiled correction solvers, and validated honestly across five geometries and, ultimately, against completely different separated flows.</p>
+      <div style="margin-top: 36px;">
+        <a href="https://github.com/ThomasBainbridge/ml-augmented-rans-separated-flow" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 PROBLEM -->
+  <section id="problem" style="background: var(--bg2);">
+    <div class="section-label">01 &mdash; The Model-Form Error</div>
+    <h2 class="section-title reveal">Where standard RANS <em>gets it wrong</em></h2>
+    <div class="prose reveal">
+      <p>Flow over a periodic hill separates off the smooth crest, recirculates in the lee, and reattaches downstream. Linear-eddy-viscosity RANS closures &mdash; the workhorse of industrial CFD &mdash; systematically mispredict this, and separated flow is exactly the regime that governs drag, heat transfer, and loads. Steady <em>simpleFoam</em> with k-&omega; SST predicts the separation point well (x/H &approx; 0.41, matching DNS) but <strong>over-predicts reattachment badly</strong>: the recirculation bubble is roughly 65% too long.</p>
+      <p>Crucially, this error is <strong>mesh-independent</strong> (reattachment 7.48&ndash;7.50 over 8k&rarr;72k cells, GCI ~0.1%), so it is genuine model-form error, not discretisation. A second closure brackets the truth from the other side (k-&epsilon; reattaches at 3.5), confirming the error is closure-specific.</p>
+    </div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Model</th><th>Reattachment x/H</th></tr></thead>
+          <tbody>
+            <tr><td>DNS (reference)</td><td class="accent">4.5</td></tr>
+            <tr><td>k-&omega; SST baseline</td><td>7.5</td></tr>
+            <tr><td>k-&epsilon; (brackets low)</td><td>3.5</td></tr>
+          </tbody>
+        </table>
+        <div class="prose" style="margin-top:16px;"><p>The DNS value (4.5) matches the published Re = 5600 result, validating the metric. The correction problem: learn the RANS error from DNS and test how well it generalises.</p></div>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/rans-vs-dns.png" alt="RANS versus DNS mean flow over the periodic hill"><div class="img-label">Baseline k-&omega; SST (top) vs DNS (bottom) &mdash; the Black Line Encloses the Reversed-Flow Region</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 CORRECTION TARGET -->
+  <section id="target" style="background: var(--bg);">
+    <div class="section-label">02 &mdash; The Correction Target</div>
+    <h2 class="section-title reveal">An <em>interpretable</em> discrepancy to learn</h2>
+    <div class="prose reveal"><p>The steady RANS momentum balance carries the Reynolds stress that the turbulence model must supply. A linear eddy-viscosity model closes it with the Boussinesq approximation &mdash; aligning the deviatoric Reynolds stress with the mean strain &mdash; and that alignment is exactly what fails in separated flow. Rather than replace the model, this study learns a physically grounded correction to it.</p></div>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Boussinesq Closure</h4><p>k-&omega; SST assumes &tau;<sub>ij</sub> &minus; &#8532;k&delta;<sub>ij</sub> = &minus;2&nu;<sub>t</sub>S<sub>ij</sub> &mdash; the turbulent stress is aligned with the mean strain rate S<sub>ij</sub>. This single-alignment assumption is structurally wrong where the flow separates.</p></div>
+      <div class="content-card"><h4>Eddy-Viscosity Multiplier</h4><p>The primary, interpretable target is &beta;<sub>&nu;t</sub> = &nu;<sub>t,DNS</sub>/&nu;<sub>t,RANS</sub>, with &nu;<sub>t,DNS</sub> inferred from the DNS Reynolds shear stress. Median &beta;<sub>&nu;t</sub> &approx; 1.3&ndash;1.6, rising with hill steepness &mdash; SST systematically <em>under</em>-mixes.</p></div>
+      <div class="content-card"><h4>Stress Anisotropy</h4><p>The more expressive target is the Reynolds-stress anisotropy b<sub>ij</sub> = &tau;<sub>ij</sub>/(2k) &minus; &delta;<sub>ij</sub>/3, learned as a discrepancy from the RANS value &mdash; capturing the <em>shape</em> of the stress, not just its magnitude.</p></div>
+    </div>
+    <div class="highlight-box reveal"><p>About <strong>20% of cells are counter-gradient</strong> (&nu;<sub>t,DNS</sub> &lt; 0), where the eddy-viscosity ansatz breaks down entirely. These are honestly flagged and <strong>excluded from training rather than fit</strong>.</p></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/correction-field-map.png" alt="Field map showing where the model needs correcting"><div class="img-label">Where the Model Needs Correcting &mdash; &beta;<sub>&nu;t</sub> Field and Counter-Gradient Regions</div></div>
+  </section>
+
+  <!-- 03 A-PRIORI -->
+  <section id="apriori" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; A-Priori Generalisation</div>
+    <h2 class="section-title reveal">Predicting the correction on an <em>unseen hill</em></h2>
+    <div class="prose reveal"><p>The correction (log&thinsp;&beta;<sub>&nu;t</sub>) is learned from RANS-local features and validated <strong>leave-one-geometry-out</strong> &mdash; train on four hill slopes, predict the unseen fifth. The mapping is strongly nonlinear: a linear ridge model fails, while a random forest reaches R&sup2; &approx; 0.82 out-of-geometry.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Model</th><th>Position features</th><th>Invariant (geometry-agnostic)</th></tr></thead>
+          <tbody>
+            <tr><td>Ridge (linear)</td><td>0.11</td><td>0.06</td></tr>
+            <tr><td class="accent">Random forest</td><td class="accent">0.82</td><td class="accent">0.78</td></tr>
+            <tr><td>Gradient boosting</td><td>0.68</td><td>0.69</td></tr>
+          </tbody>
+        </table>
+        <div class="prose" style="margin-top:16px;"><p>Random forest reaches <strong>R&sup2; &approx; 0.82</strong> on an unseen geometry (0.89&ndash;0.96 interpolating to middle slopes, 0.63&ndash;0.66 extrapolating to the extremes). Geometry-agnostic invariant features are more physically defensible and <em>improve</em> the steepest-hill extrapolation &mdash; a mixed, honest result, with an honestly wide 5-geometry CI (~[0.62, 0.92]).</p></div>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/geometry-generalization.png" alt="Generalisation to an unseen hill shape"><div class="img-label">Predicted vs True Correction &mdash; Unseen Hill Shape</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 A-POSTERIORI -->
+  <section id="aposteriori" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; A-Posteriori: Does It Improve the CFD?</div>
+    <h2 class="section-title reveal">Coupling the correction <em>back into the solver</em></h2>
+    <div class="prose reveal"><p>Predicting a correction is only half the problem &mdash; it has to be propagated through the flow. The ML correction was injected via a <strong>custom-compiled OpenFOAM solver</strong> (<em>simpleFoamBeta</em>) and tested on a held-out geometry.</p></div>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <table class="result-table">
+          <thead><tr><th>Field</th><th>Reattachment x/H</th></tr></thead>
+          <tbody>
+            <tr><td>DNS (reference)</td><td>4.50</td></tr>
+            <tr><td>k-&omega; SST baseline</td><td>7.46</td></tr>
+            <tr><td class="accent">Corrected &mdash; ML &beta; (unseen)</td><td class="accent">3.85</td></tr>
+            <tr><td>Corrected &mdash; exact DNS &beta;</td><td>3.48</td></tr>
+          </tbody>
+        </table>
+        <div class="prose" style="margin-top:16px;"><p>The ML correction <strong>cuts the reattachment error by ~78%</strong> on a geometry it never saw. With the coupled solver, the velocity-profile RMSE vs DNS falls <strong>0.106 &rarr; 0.037 (&minus;65%)</strong>.</p></div>
+      </div>
+      <div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/flowfield-correction.png" alt="Baseline, corrected and DNS flow fields"><div class="img-label">Baseline &rarr; ML-Corrected &rarr; DNS &mdash; Held-Out Geometry</div></div>
+      </div>
+    </div>
+    <div class="highlight-box reveal"><p>Two honest coupling results emerge: with a solver that lets the turbulence model co-adapt, the SST model <strong>self-regulates</strong> (its &nu;<sub>t</sub> drops to 0.76&times;), partly cancelling a fixed multiplier &mdash; so frozen studies <em>overstate</em> the reattachment benefit. Evaluating &beta; self-consistently on the corrected flow settles reattachment at ~5.5: the single shot over-corrects.</p></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/aposteriori-profiles.png" alt="A-posteriori velocity profiles versus DNS"><div class="img-label">A-Posteriori Velocity Profiles &mdash; Baseline vs Corrected vs DNS</div></div>
+  </section>
+
+  <!-- 05 ANISOTROPY -->
+  <section id="anisotropy" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; Why Linear RANS Fails</div>
+    <h2 class="section-title reveal">The Reynolds-stress <em>anisotropy</em></h2>
+    <div class="prose reveal"><p>The eddy-viscosity multiplier only corrects the <em>magnitude</em> of the turbulent stress. Its <em>shape</em> &mdash; the Reynolds-stress anisotropy &mdash; is where a linear model is structurally wrong: RANS states collapse onto a single line of the barycentric map, while DNS fills it. Learning the anisotropy discrepancy is defined in 100% of cells (vs 80% for &beta;<sub>&nu;t</sub>) and generalises <em>better</em> across geometry (R&sup2; &approx; 0.93 / 0.99).</p></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/anisotropy-barycentric.png" alt="Anisotropy barycentric map: RANS collapses, DNS fills"><div class="img-label">Barycentric Anisotropy Map &mdash; RANS Collapses to a Line, DNS Fills the Triangle</div></div>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Prediction Limit (TBNN)</h4><p>A tensor-basis neural network with invariance embedded generalises <em>worse</em> than an unconstrained regressor. The diagnostic shows why: the leading coefficient g&#8321; is <strong>unpredictable from local invariants (R&sup2; &approx; 0)</strong> &mdash; the local-closure assumption itself fails for separated flow.</p></div>
+      <div class="content-card"><h4>Nonlocal Features</h4><p>Transport-informed nonlocal features roughly halve the g&#8321; gap (&minus;0.78 &rarr; &minus;0.44) but are not sufficient &mdash; direct evidence that the anisotropy carries convective history, not just local strain.</p></div>
+      <div class="content-card"><h4>Propagation Limit</h4><p>A second custom solver (<em>simpleFoamAniso</em>) injects the exact DNS anisotropy discrepancy, yet only nudges reattachment (7.46 &rarr; 6.62) and does not reduce the velocity error &mdash; reproducing the known ill-conditioning of RANS to Reynolds-stress corrections.</p></div>
+    </div>
+  </section>
+
+  <!-- 06 CROSS-FLOW -->
+  <section id="crossflow" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; Generalisation Across Flow Type</div>
+    <h2 class="section-title reveal">The lever that <em>actually works</em></h2>
+    <div class="prose reveal"><p>The strongest test: train on periodic hills only, then predict the anisotropy on <em>completely different</em> separated flows &mdash; a backward-facing step, bumps, and a converging-diverging channel (McConkey et al. 2021). Trained on hills alone, anisotropy R&sup2; falls from <strong>0.96 in-distribution to &le; 0</strong> on the other flows.</p></div>
+    <div class="two-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img loading="lazy" src="images/mlrans/flowfield-other-flows.png" alt="The separated flows used for the cross-flow test"><div class="img-label">The Separated Flows Used for the Cross-Flow Test</div></div>
+      <div class="img-block"><img loading="lazy" src="images/mlrans/generalization-story.png" alt="Generalisation across flow type"><div class="img-label">Generalisation Across Flow Type &mdash; Single-Flow vs Multi-Flow Training</div></div>
+    </div>
+    <div class="highlight-box reveal"><p>Training on <strong>three</strong> flows and testing on the unseen fourth <strong>substantially rescues it</strong> &mdash; the backward-facing step recovers from R&sup2; &minus;2.33 to <strong>+0.48</strong>, and every flow improves. The single-flow failure is a <strong>data-coverage</strong> problem, not a fundamental one.</p></div>
+    <div class="prose reveal" style="margin-top:32px;"><p>The full generalisation picture &mdash; interpolating geometry within a flow works (R&sup2; ~ 0.9&ndash;0.96), extrapolating to extreme geometry degrades (~0.6&ndash;0.7), single-flow&rarr;different-flow fails (R&sup2; &le; 0), and multi-flow&rarr;unseen-flow is largely recovered (~0.2&ndash;0.5).</p></div>
+  </section>
+
+  <!-- 07 TAKEAWAYS -->
+  <section id="takeaways" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Key Takeaways</div>
+    <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Quantified Model-Form Error</h4><p>A mesh-independent, closure-specific RANS failure was mapped against DNS across five geometries &mdash; a 65%-too-long recirculation bubble &mdash; with two custom OpenFOAM solvers built to couple corrections back into the CFD.</p></div>
+      <div class="content-card"><h4>Interpretable, Validated Correction</h4><p>A physically grounded correction generalises to an unseen hill at R&sup2; &approx; 0.82 and cuts the a-posteriori reattachment error ~78%, while the anisotropy target exposes <em>why</em> linear RANS fails.</p></div>
+      <div class="content-card"><h4>Honest About the Limits</h4><p>Data-driven closure is hard to predict, couple, propagate, and generalise &mdash; each shown with working code &mdash; and training diversity is a concrete, measurable lever that rescues cross-flow generalisation.</p></div>
+    </div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/summary.png" alt="Summary of headline results"><div class="img-label">Summary of Headline Results</div></div>
+    <div class="tag-row reveal">
+      <span class="tag">OpenFOAM v2312</span><span class="tag">k-&omega; SST</span><span class="tag">RANS</span>
+      <span class="tag">DNS Reference Data</span><span class="tag">C++ (custom solvers)</span><span class="tag">Python</span>
+      <span class="tag">scikit-learn</span><span class="tag">PyTorch / TBNN</span><span class="tag">Turbulence Modelling</span>
+      <span class="tag">Data-Driven Closure</span><span class="tag">Reynolds-Stress Anisotropy</span><span class="tag">Machine Learning</span>
+    </div>
+  </section>
+
+  <footer>
+    <span>&copy; 2026 Thomas Bainbridge</span>
+    <span>ML-Augmented RANS Modelling of Separated Flow</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById("nav");
+    const progress = document.getElementById("progress");
+    window.addEventListener("scroll", () => {
+      nav.classList.toggle("scrolled", window.scrollY > 60);
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      progress.style.width = (scrollTop / docHeight * 100) + "%";
+    });
+    const reveals = document.querySelectorAll(".reveal");
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add("visible"), i * 60);
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
