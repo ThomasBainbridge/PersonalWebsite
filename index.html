@@ -816,19 +816,14 @@
       <div class="skill-card">
         <h3>Individual Research Project &mdash; UAV Parameter Estimation with Universal Differential Equations</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          Individual MSc research project, completed with industrial partner Saab BlueBear, identifying
-          flight-dynamics models for a 1960&nbsp;mm twin-motor fixed-wing UAV directly from operational
-          ArduPilot flight logs rather than from dedicated system-identification manoeuvres. Eleven logs
-          &mdash; 3.7 hours of airborne data &mdash; were inspected, signal-mapped and automatically
-          segmented into manoeuvres before decoupled longitudinal and lateral-directional grey-box models,
-          and a coupled 6-DOF model, were fitted in Julia. A universal differential equation formulation
-          then added a neural residual to the physics-based state equations, improving held-out validation
-          error across the lateral-directional states by 21&ndash;42% consistently across five random seeds.
-          A hardened variant restricting neural authority over the vertical body-velocity equation was used
-          as a structural ablation to reduce systematic angle-of-attack degradation while retaining most of
-          the rotational-state benefit, with local Fisher / Cram&eacute;r&ndash;Rao sensitivity analysis and
-          independent OpenVSP aerodynamic estimates used to assess parameter conditioning and physical
-          plausibility.
+          Completed with industrial partner Saab BlueBear, identifying flight-dynamics models for a
+          1960&nbsp;mm twin-motor fixed-wing UAV from operational ArduPilot logs rather than dedicated
+          system-identification manoeuvres. Eleven flight logs &mdash; 3.7 hours airborne &mdash; were
+          signal-mapped and segmented into manoeuvres before longitudinal, lateral-directional and
+          coupled 6-DOF grey-box models were fitted in Julia. A universal differential equation
+          formulation then added a neural residual to the state equations, improving held-out validation
+          error across the lateral-directional states by 21&ndash;42% over five random seeds, with a
+          hardened structural ablation used to limit angle-of-attack degradation.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">Julia</span>
