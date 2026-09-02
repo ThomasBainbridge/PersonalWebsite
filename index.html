@@ -258,38 +258,35 @@
       opacity: 0; animation: fadeIn 1s ease 0.6s forwards;
     }
     .hero-visual { width: 360px; height: 360px; position: relative; }
-    .hero-circle {
-      width: 100%; height: 100%;
-      border-radius: 50%;
-      border: 1px solid var(--line);
-      position: absolute;
-      animation: spin 20s linear infinite;
+    .hero-visual svg { width: 100%; height: 100%; overflow: visible; }
+    .streamline {
+      fill: none;
+      stroke: var(--line);
+      stroke-width: 1.5;
+      stroke-dasharray: 6 9;
+      animation: flowDash 1.6s linear infinite;
     }
-    .hero-circle::before {
-      content: '';
-      position: absolute;
-      top: -3px; left: 50%;
-      transform: translateX(-50%);
-      width: 6px; height: 6px;
-      background: var(--accent);
-      border-radius: 50%;
+    .streamline.hi { stroke: var(--accent); opacity: 0.55; }
+    .streamline.hi2 { stroke: var(--accent2); opacity: 0.4; }
+    .airfoil { fill: var(--bg3); stroke: var(--muted); stroke-width: 1.5; }
+    .airfoil-camber { fill: none; stroke: var(--accent); stroke-width: 1; opacity: 0.35; stroke-dasharray: 2 4; }
+    .wake-ring {
+      fill: none;
+      stroke: var(--accent2);
+      stroke-width: 1.2;
+      stroke-dasharray: 3 5;
+      opacity: 0.45;
+      animation: flowDash 1s linear infinite, wakePulse 3s ease-in-out infinite;
+      transform-origin: center;
     }
-    .hero-circle-2 { width: 72%; height: 72%; top: 14%; left: 14%; animation-duration: 14s; animation-direction: reverse; }
-    .hero-circle-2::before { background: var(--accent2); }
-    .hero-center-box {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 120px; height: 120px;
-      border: 1px solid var(--line);
-      border-radius: 4px;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 4px;
-      background: var(--bg2);
+    .wake-ring.b { animation-duration: 0.8s, 3.4s; animation-delay: 0s, 0.6s; }
+    .tracer { fill: var(--accent); }
+    .hero-visual-tag {
+      position: absolute; left: 6px; bottom: 6px;
+      display: flex; flex-direction: column; gap: 3px;
+      font-family: var(--mono); font-size: 11px; color: var(--muted);
     }
-    .hero-center-box span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
-    .hero-center-box strong { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--accent); }
+    .hero-visual-tag strong { font-size: 14px; font-weight: 500; color: var(--accent); }
     .status-dot {
       position: absolute;
       bottom: 32px; right: 32px;
@@ -420,7 +417,8 @@
     /* ── ANIMATIONS ── */
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes flowDash { to { stroke-dashoffset: -30; } }
+    @keyframes wakePulse { 0%, 100% { opacity: 0.15; transform: scale(0.85); } 50% { opacity: 0.55; transform: scale(1); } }
     @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.8); } }
 
     .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
@@ -539,12 +537,32 @@
     </div>
     <div class="hero-right">
       <div class="hero-visual">
-        <div class="hero-circle"></div>
-        <div class="hero-circle hero-circle-2"></div>
-        <div class="hero-center-box">
-          <span>focus</span>
+        <svg viewBox="0 0 360 360">
+          <path class="streamline" d="M0,60 C120,60 145,52 180,52 C215,52 240,60 360,60" />
+          <path class="streamline hi" d="M0,100 C120,100 145,78 180,78 C215,78 240,100 360,100" />
+          <path class="streamline" d="M0,140 C120,140 145,110 180,110 C215,110 240,140 360,140" />
+          <path class="streamline" d="M0,220 C120,220 145,250 180,250 C215,250 240,220 360,220" />
+          <path class="streamline hi2" d="M0,260 C120,260 145,282 180,282 C215,282 240,260 360,260" />
+          <path class="streamline" d="M0,300 C120,300 145,308 180,308 C215,308 240,300 360,300" />
+
+          <circle class="wake-ring" cx="290" cy="164" r="10" />
+          <circle class="wake-ring b" cx="290" cy="196" r="7" />
+
+          <path class="airfoil" d="M95,180 C110,158 145,150 180,156 C215,150 250,158 265,180 C250,202 215,210 180,204 C145,210 110,202 95,180 Z" />
+          <path class="airfoil-camber" d="M95,180 C130,172 220,172 265,180" />
+
+          <circle class="tracer" r="3">
+            <animateMotion dur="3.2s" repeatCount="indefinite"
+              path="M0,140 C120,140 145,110 180,110 C215,110 240,140 360,140" />
+          </circle>
+          <circle class="tracer" r="3">
+            <animateMotion dur="3.6s" repeatCount="indefinite" begin="1.1s"
+              path="M0,220 C120,220 145,250 180,250 C215,250 240,220 360,220" />
+          </circle>
+        </svg>
+        <div class="hero-visual-tag">
           <strong>Mechanical</strong>
-          <span>Engineering</span>
+          <span>Engineering &amp; CFD</span>
         </div>
       </div>
     </div>
