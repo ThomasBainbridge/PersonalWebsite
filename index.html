@@ -258,7 +258,7 @@
       display: flex; justify-content: center; align-items: center;
       opacity: 0; animation: fadeIn 1s ease 0.6s forwards;
     }
-    .hero-visual { width: 100%; max-width: 580px; aspect-ratio: 1 / 1; position: relative; }
+    .hero-visual { width: 100%; max-width: 640px; aspect-ratio: 3 / 2; position: relative; }
     .hero-visual canvas { width: 100%; height: 100%; display: block; }
     .status-dot {
       position: absolute;
@@ -897,63 +897,406 @@
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
 
-    // Hero visual: animated vector field, colored through the site palette
+    // Hero visual: real OpenFOAM vortex-shedding data. Primary renderer is
+    // WebGL (true bicubic reconstruction at full native resolution, no blur
+    // hack needed); if WebGL is unavailable or fails to initialize, falls
+    // back to a filled/blurred 2D canvas contour, and if the data itself
+    // can't load, to a synthetic field. Each frame is a pure function of
+    // elapsed time in every path — no persistent per-frame state, so
+    // there's no lifetime/timing class of bug to worry about.
     const gridCanvas = document.getElementById('heroVectorGrid');
-    if (gridCanvas) {
-      const ctx = gridCanvas.getContext('2d');
+    if (gridCanvas && window.innerWidth > 900) {
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const SIZE = gridCanvas.getBoundingClientRect().width || 360;
-      const SPACING = 22, DPR = Math.min(window.devicePixelRatio || 1, 2);
-      gridCanvas.width = SIZE * DPR;
-      gridCanvas.height = SIZE * DPR;
-      ctx.scale(DPR, DPR);
+      const rect = gridCanvas.getBoundingClientRect();
+      const WIDTH = rect.width || 480, HEIGHT = rect.height || 320;
+      const DPR = Math.min(window.devicePixelRatio || 1, 2);
+      const LOOP_SECONDS = 4.2;
 
       const muted = [122, 120, 111];   // --muted
       const cyan  = [96, 212, 240];    // --accent2
       const lime  = [200, 240, 96];    // --accent
 
-      function mixColor(mag) {
-        const [c0, c1] = mag < 0.5 ? [muted, cyan] : [cyan, lime];
-        const t = mag < 0.5 ? mag / 0.5 : (mag - 0.5) / 0.5;
-        const r = c0[0] + (c1[0] - c0[0]) * t;
-        const g = c0[1] + (c1[1] - c0[1]) * t;
-        const b = c0[2] + (c1[2] - c0[2]) * t;
-        return `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${0.34 + mag * 0.55})`;
+      function catmullRom(p0, p1, p2, p3, t) {
+        const t2 = t * t, t3 = t2 * t;
+        return 0.5 * ((2 * p1) + (p2 - p0) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (3 * p1 - p0 - 3 * p2 + p3) * t3);
       }
 
-      function angleAt(x, y, t) {
-        return Math.sin(x * 0.012 + t * 0.6) + Math.cos(y * 0.014 - t * 0.4) + Math.sin((x + y) * 0.008 + t * 0.5);
+      function smoothstep(edge0, edge1, x) {
+        const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)));
+        return t * t * (3 - 2 * t);
       }
 
-      function draw(t) {
-        ctx.clearRect(0, 0, SIZE, SIZE);
-        for (let y = SPACING / 2; y < SIZE; y += SPACING) {
-          for (let x = SPACING / 2; x < SIZE; x += SPACING) {
-            const a = angleAt(x, y, t);
-            const len = 7.5;
-            const dx = Math.cos(a) * len, dy = Math.sin(a) * len;
-            const mag = (Math.sin(x * 0.02 + y * 0.02 + t) + 1) / 2;
-            ctx.strokeStyle = mixColor(mag);
-            ctx.lineWidth = 1.3;
-            ctx.beginPath();
-            ctx.moveTo(x - dx, y - dy);
-            ctx.lineTo(x + dx, y + dy);
-            ctx.stroke();
+      // ---------------------------------------------------------------
+      // 2D canvas renderer: filled + blurred raster contour. Used as the
+      // fallback when WebGL isn't available.
+      // ---------------------------------------------------------------
+      function runCFD2D(canvas, data) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = WIDTH * DPR; canvas.height = HEIGHT * DPR;
+        ctx.scale(DPR, DPR);
+
+        const panelBg = [14, 14, 15]; // --bg, matches page background so the visual blends in seamlessly
+        function divergingColor(signed, mag01) {
+          const target = signed >= 0 ? lime : cyan;
+          const r = panelBg[0] + (target[0] - panelBg[0]) * mag01;
+          const g = panelBg[1] + (target[1] - panelBg[1]) * mag01;
+          const b = panelBg[2] + (target[2] - panelBg[2]) * mag01;
+          return [r | 0, g | 0, b | 0];
+        }
+
+        const CELL = 3;
+        const cw = Math.ceil(WIDTH / CELL), ch = Math.ceil(HEIGHT / CELL);
+        const off = document.createElement('canvas');
+        off.width = cw; off.height = ch;
+        const octx = off.getContext('2d');
+        const img = octx.createImageData(cw, ch);
+        const BLUR = Math.round(WIDTH / 220);
+
+        function paintContour(scalarAt, cu, cv, cr) {
+          for (let cy = 0; cy < ch; cy++) {
+            for (let cx = 0; cx < cw; cx++) {
+              const u = (cx + 0.5) / cw, v = 1 - (cy + 0.5) / ch;
+              const idx = (cy * cw + cx) * 4;
+              if (cr && Math.hypot(u - cu, v - cv) < cr * 1.05) {
+                img.data[idx] = panelBg[0]; img.data[idx + 1] = panelBg[1]; img.data[idx + 2] = panelBg[2];
+                img.data[idx + 3] = 255;
+                continue;
+              }
+              const val = scalarAt(u, v);
+              const mag01 = Math.pow(Math.min(1, Math.abs(val) * 6), 0.55);
+              const blend = Math.min(1, mag01 * 1.3);
+              const [ir, ig, ib] = divergingColor(val, mag01);
+              img.data[idx] = (panelBg[0] + (ir - panelBg[0]) * blend) | 0;
+              img.data[idx + 1] = (panelBg[1] + (ig - panelBg[1]) * blend) | 0;
+              img.data[idx + 2] = (panelBg[2] + (ib - panelBg[2]) * blend) | 0;
+              img.data[idx + 3] = 255;
+            }
+          }
+          octx.putImageData(img, 0, 0);
+          ctx.clearRect(0, 0, WIDTH, HEIGHT);
+          ctx.filter = `blur(${BLUR}px)`;
+          ctx.drawImage(off, 0, 0, cw, ch, -BLUR, -BLUR, WIDTH + BLUR * 2, HEIGHT + BLUR * 2);
+          ctx.filter = 'none';
+        }
+
+        function drawCylinder(cu, cv, cr) {
+          ctx.beginPath();
+          ctx.arc(cu * WIDTH, (1 - cv) * HEIGHT, cr * WIDTH, 0, Math.PI * 2);
+          ctx.fillStyle = '#0e0e0f';
+          ctx.fill();
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = 'rgba(232,230,223,0.3)';
+          ctx.stroke();
+        }
+
+        const { nx, ny, bounds, cylinder, frames } = data;
+        const dataW = bounds.xmax - bounds.xmin;
+        const dataH = bounds.ymax - bounds.ymin;
+        const cropY0 = bounds.ymin, cropSizeY = dataH;
+        const cropX0 = bounds.xmin, cropSizeX = cropSizeY * (WIDTH / HEIGHT);
+        const cu = (cylinder.cx - cropX0) / cropSizeX;
+        const cv = (cylinder.cy - cropY0) / cropSizeY;
+        const cr = cylinder.radius / cropSizeX;
+
+        // Data arrives pre-quantized 0-255; decode via v/127.5 - 1 (same
+        // convention the WebGL shader uses, so both paths agree).
+        function sampleVort(frame, u, v) {
+          const gx = Math.max(0, Math.min(nx - 1, ((cropX0 + u * cropSizeX) - bounds.xmin) / dataW * (nx - 1)));
+          const gy = Math.max(0, Math.min(ny - 1, ((cropY0 + v * cropSizeY) - bounds.ymin) / dataH * (ny - 1)));
+          const x0 = Math.min(nx - 2, Math.floor(gx)), y0 = Math.min(ny - 2, Math.floor(gy));
+          const fx = gx - x0, fy = gy - y0;
+          const i00 = y0 * nx + x0, i10 = y0 * nx + x0 + 1, i01 = (y0 + 1) * nx + x0, i11 = (y0 + 1) * nx + x0 + 1;
+          const arr = frame.vorticity;
+          const a = arr[i00] + (arr[i10] - arr[i00]) * fx;
+          const b = arr[i01] + (arr[i11] - arr[i01]) * fx;
+          const raw = a + (b - a) * fy;
+          return raw / 127.5 - 1;
+        }
+
+        function draw(tSec) {
+          const n = frames.length;
+          const fFloat = ((tSec % LOOP_SECONDS) / LOOP_SECONDS) * n;
+          const fi = Math.floor(fFloat) % n;
+          const im1 = (fi - 1 + n) % n, fj = (fi + 1) % n, fjj = (fi + 2) % n;
+          const ft = fFloat - Math.floor(fFloat);
+          paintContour((u, v) => {
+            const s0 = sampleVort(frames[im1], u, v), s1 = sampleVort(frames[fi], u, v);
+            const s2 = sampleVort(frames[fj], u, v), s3 = sampleVort(frames[fjj], u, v);
+            return catmullRom(s0, s1, s2, s3, ft);
+          }, cu, cv, cr);
+          drawCylinder(cu, cv, cr);
+        }
+
+        if (reducedMotion) { draw(LOOP_SECONDS * 0.3); return; }
+        let start = null;
+        requestAnimationFrame(function frame(ts) {
+          if (start === null) start = ts;
+          draw((ts - start) / 1000);
+          requestAnimationFrame(frame);
+        });
+      }
+
+      function runSynthetic2D(canvas) {
+        const ctx = canvas.getContext('2d');
+        canvas.width = WIDTH * DPR; canvas.height = HEIGHT * DPR;
+        ctx.scale(DPR, DPR);
+
+        function mixColor(mag01) {
+          const [c0, c1] = mag01 < 0.5 ? [muted, cyan] : [cyan, lime];
+          const t = mag01 < 0.5 ? mag01 / 0.5 : (mag01 - 0.5) / 0.5;
+          const r = c0[0] + (c1[0] - c0[0]) * t, g = c0[1] + (c1[1] - c0[1]) * t, b = c0[2] + (c1[2] - c0[2]) * t;
+          return `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${0.25 + mag01 * 0.6})`;
+        }
+        const SPACING = 18;
+        function noiseAt(x, y, t) {
+          return Math.sin(x * 0.012 + t * 0.6) + Math.cos(y * 0.014 - t * 0.4) + Math.sin((x + y) * 0.008 + t * 0.5);
+        }
+        function draw(t) {
+          ctx.fillStyle = '#0e0e0f';
+          ctx.fillRect(0, 0, WIDTH, HEIGHT);
+          for (let y = SPACING / 2; y < HEIGHT; y += SPACING) {
+            for (let x = SPACING / 2; x < WIDTH; x += SPACING) {
+              const a = noiseAt(x, y, t);
+              const dx = Math.cos(a) * 7.5, dy = Math.sin(a) * 7.5;
+              const mag = (Math.sin(x * 0.02 + y * 0.02 + t) + 1) / 2;
+              ctx.strokeStyle = mixColor(mag);
+              ctx.lineWidth = 1.3;
+              ctx.beginPath(); ctx.moveTo(x - dx, y - dy); ctx.lineTo(x + dx, y + dy); ctx.stroke();
+            }
           }
         }
-      }
-
-      if (reducedMotion) {
-        draw(0);
-      } else {
+        if (reducedMotion) { draw(0); return; }
         let start = null;
-        function frame(ts) {
+        requestAnimationFrame(function frame(ts) {
           if (start === null) start = ts;
           draw((ts - start) / 1000 * 0.6);
           requestAnimationFrame(frame);
-        }
-        requestAnimationFrame(frame);
+        });
       }
+
+      // ---------------------------------------------------------------
+      // WebGL renderer: true bicubic (4-tap B-spline) reconstruction of
+      // the vorticity field, sampled at full native pixel resolution
+      // every frame — no offscreen low-res buffer, no blur filter.
+      // Throws synchronously on any setup failure so the caller can fall
+      // back cleanly (before anything is ever drawn to the real canvas).
+      // ---------------------------------------------------------------
+      function runCFDWebGL(canvas, data) {
+        const gl = canvas.getContext('webgl');
+        if (!gl) throw new Error('no webgl');
+        canvas.width = WIDTH * DPR; canvas.height = HEIGHT * DPR;
+
+        const { nx, ny, bounds, cylinder, frames } = data;
+        const dataW = bounds.xmax - bounds.xmin, dataH = bounds.ymax - bounds.ymin;
+        const cropY0 = bounds.ymin, cropSizeY = dataH;
+        const cropX0 = bounds.xmin, cropSizeX = cropSizeY * (WIDTH / HEIGHT);
+        const cu = (cylinder.cx - cropX0) / cropSizeX;
+        const cv = (cylinder.cy - cropY0) / cropSizeY;
+        const cr = cylinder.radius / cropSizeX;
+
+        // Data now arrives pre-quantized (0-255, decoded in-shader via
+        // v/127.5 - 1) at 800x450 — high enough resolution that smooth
+        // (bicubic) reconstruction shows genuine detail instead of haze.
+        const textures = frames.map((f) => {
+          const texData = Uint8Array.from(f.vorticity);
+          const tex = gl.createTexture();
+          gl.bindTexture(gl.TEXTURE_2D, tex);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.LUMINANCE, nx, ny, 0, gl.LUMINANCE, gl.UNSIGNED_BYTE, texData);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+          return tex;
+        });
+
+        const vsSrc = [
+          'attribute vec2 a_pos;',
+          'varying vec2 v_uv;',
+          'void main() {',
+          '  v_uv = (a_pos + 1.0) * 0.5;',
+          '  gl_Position = vec4(a_pos, 0.0, 1.0);',
+          '}'
+        ].join('\n');
+
+        const fsSrc = [
+          'precision highp float;',
+          'varying vec2 v_uv;',
+          'uniform sampler2D u_tex0, u_tex1, u_tex2, u_tex3;',
+          'uniform vec2 u_texSize;',
+          'uniform float u_ft;',
+          'uniform float u_cropX0, u_cropSizeX, u_cropY0, u_cropSizeY, u_boundsXmin, u_boundsYmin, u_dataW, u_dataH;',
+          'uniform vec3 u_cyan, u_lime;',
+          'uniform vec2 u_cylCenter;',
+          'uniform float u_cylRadius;',
+          'uniform float u_aspect;',
+          '',
+          'vec4 cubic(float v) {',
+          '  vec4 n = vec4(1.0, 2.0, 3.0, 4.0) - v;',
+          '  vec4 s = n * n * n;',
+          '  float x = s.x;',
+          '  float y = s.y - 4.0 * s.x;',
+          '  float z = s.z - 4.0 * s.y + 6.0 * s.x;',
+          '  float w = 6.0 - x - y - z;',
+          '  return vec4(x, y, z, w) * (1.0 / 6.0);',
+          '}',
+          '',
+          'float textureBicubic(sampler2D tex, vec2 texCoord, vec2 texSize) {',
+          '  vec2 invTexSize = 1.0 / texSize;',
+          '  texCoord = texCoord * texSize - 0.5;',
+          '  vec2 fxy = fract(texCoord);',
+          '  texCoord -= fxy;',
+          '  vec4 xcubic = cubic(fxy.x);',
+          '  vec4 ycubic = cubic(fxy.y);',
+          '  vec4 c = texCoord.xxyy + vec2(-0.5, 1.5).xyxy;',
+          '  vec4 s = vec4(xcubic.xz + xcubic.yw, ycubic.xz + ycubic.yw);',
+          '  vec4 offset = c + vec4(xcubic.yw, ycubic.yw) / s;',
+          '  offset *= invTexSize.xxyy;',
+          '  float sample0 = texture2D(tex, offset.xz).r;',
+          '  float sample1 = texture2D(tex, offset.yz).r;',
+          '  float sample2 = texture2D(tex, offset.xw).r;',
+          '  float sample3 = texture2D(tex, offset.yw).r;',
+          '  float sx = s.x / (s.x + s.y);',
+          '  float sy = s.z / (s.z + s.w);',
+          '  return mix(mix(sample3, sample2, sx), mix(sample1, sample0, sx), sy);',
+          '}',
+          '',
+          'float catmullRom(float p0, float p1, float p2, float p3, float t) {',
+          '  float t2 = t * t, t3 = t2 * t;',
+          '  return 0.5 * ((2.0 * p1) + (p2 - p0) * t + (2.0*p0 - 5.0*p1 + 4.0*p2 - p3) * t2 + (3.0*p1 - p0 - 3.0*p2 + p3) * t3);',
+          '}',
+          '',
+          // Solid opaque fill, not transparent — a threshold or alpha ramp
+          // aggressive enough to hide background noise also hides real (but
+          // low-magnitude) wake detail, since this data is concentrated near
+          // zero. Full opacity keeps every value visible at full detail; the
+          // tradeoff is panelBg reads as a faint boxed panel rather than
+          // blending into the page's grid-pattern texture.
+          '  vec3 panelBg = vec3(0.0549, 0.0549, 0.0588);',
+          '',
+          'void main() {',
+          '  vec2 d = v_uv - u_cylCenter;',
+          '  d.y /= u_aspect;',
+          '  float dist = length(d);',
+          '  if (dist < u_cylRadius) { gl_FragColor = vec4(panelBg, 1.0); return; }',
+          '',
+          '  float texU = (u_cropX0 + v_uv.x * u_cropSizeX - u_boundsXmin) / u_dataW;',
+          '  float texV = (u_cropY0 + v_uv.y * u_cropSizeY - u_boundsYmin) / u_dataH;',
+          '  vec2 tc = vec2(texU, texV);',
+          '',
+          '  float v0 = textureBicubic(u_tex0, tc, u_texSize) * 2.0 - 1.0;',
+          '  float v1 = textureBicubic(u_tex1, tc, u_texSize) * 2.0 - 1.0;',
+          '  float v2 = textureBicubic(u_tex2, tc, u_texSize) * 2.0 - 1.0;',
+          '  float v3 = textureBicubic(u_tex3, tc, u_texSize) * 2.0 - 1.0;',
+          '  float val = catmullRom(v0, v1, v2, v3, u_ft);',
+          '',
+          // Gain of 6 compensates for the export's color scale being set
+          // by a rare, extreme near-wall value — without it, the actual
+          // wake structure only reaches ~15% of full intensity and reads
+          // as washed out.
+          '  float mag01 = pow(min(1.0, abs(val) * 6.0), 0.55);',
+          '  vec3 target = val >= 0.0 ? u_lime : u_cyan;',
+          '  vec3 innerColor = mix(panelBg, target, mag01);',
+          '  float blend = min(1.0, mag01 * 1.3);',
+          '  vec3 color = mix(panelBg, innerColor, blend);',
+          '',
+          '  if (dist < u_cylRadius * 1.15) {',
+          '    float ringT = smoothstep(u_cylRadius, u_cylRadius * 1.15, dist);',
+          '    color = mix(vec3(0.91, 0.90, 0.87), color, ringT);',
+          '  }',
+          '',
+          '  gl_FragColor = vec4(color, 1.0);',
+          '}'
+        ].join('\n');
+
+        function compile(type, src) {
+          const s = gl.createShader(type);
+          gl.shaderSource(s, src);
+          gl.compileShader(s);
+          if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+          return s;
+        }
+        const prog = gl.createProgram();
+        gl.attachShader(prog, compile(gl.VERTEX_SHADER, vsSrc));
+        gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, fsSrc));
+        gl.linkProgram(prog);
+        if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(prog));
+        gl.useProgram(prog);
+
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+        const posLoc = gl.getAttribLocation(prog, 'a_pos');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        const u = {};
+        ['u_tex0', 'u_tex1', 'u_tex2', 'u_tex3', 'u_texSize', 'u_ft', 'u_cropX0', 'u_cropSizeX', 'u_cropY0', 'u_cropSizeY',
+         'u_boundsXmin', 'u_boundsYmin', 'u_dataW', 'u_dataH', 'u_cyan', 'u_lime', 'u_cylCenter', 'u_cylRadius', 'u_aspect']
+          .forEach((name) => { u[name] = gl.getUniformLocation(prog, name); });
+
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.clearColor(0, 0, 0, 0);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+        gl.uniform2f(u.u_texSize, nx, ny);
+        gl.uniform1f(u.u_cropX0, cropX0);
+        gl.uniform1f(u.u_cropSizeX, cropSizeX);
+        gl.uniform1f(u.u_cropY0, cropY0);
+        gl.uniform1f(u.u_cropSizeY, cropSizeY);
+        gl.uniform1f(u.u_boundsXmin, bounds.xmin);
+        gl.uniform1f(u.u_boundsYmin, bounds.ymin);
+        gl.uniform1f(u.u_dataW, dataW);
+        gl.uniform1f(u.u_dataH, dataH);
+        gl.uniform3f(u.u_cyan, cyan[0] / 255, cyan[1] / 255, cyan[2] / 255);
+        gl.uniform3f(u.u_lime, lime[0] / 255, lime[1] / 255, lime[2] / 255);
+        gl.uniform2f(u.u_cylCenter, cu, cv);
+        gl.uniform1f(u.u_cylRadius, cr);
+        gl.uniform1f(u.u_aspect, WIDTH / HEIGHT);
+
+        function draw(tSec) {
+          const n = frames.length;
+          const fFloat = ((tSec % LOOP_SECONDS) / LOOP_SECONDS) * n;
+          const fi = Math.floor(fFloat) % n;
+          const im1 = (fi - 1 + n) % n, fj = (fi + 1) % n, fjj = (fi + 2) % n;
+          const ft = fFloat - Math.floor(fFloat);
+
+          gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, textures[im1]); gl.uniform1i(u.u_tex0, 0);
+          gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, textures[fi]);  gl.uniform1i(u.u_tex1, 1);
+          gl.activeTexture(gl.TEXTURE2); gl.bindTexture(gl.TEXTURE_2D, textures[fj]);  gl.uniform1i(u.u_tex2, 2);
+          gl.activeTexture(gl.TEXTURE3); gl.bindTexture(gl.TEXTURE_2D, textures[fjj]); gl.uniform1i(u.u_tex3, 3);
+          gl.uniform1f(u.u_ft, ft);
+
+          gl.clear(gl.COLOR_BUFFER_BIT);
+          gl.drawArrays(gl.TRIANGLES, 0, 3);
+        }
+
+        if (reducedMotion) { draw(LOOP_SECONDS * 0.3); return; }
+        let start = null;
+        requestAnimationFrame(function frame(ts) {
+          if (start === null) start = ts;
+          draw((ts - start) / 1000);
+          requestAnimationFrame(frame);
+        });
+      }
+
+      // Sampled from a 2D OpenFOAM laminar cylinder case (Re=100), one full
+      // vortex-shedding period, exported to a 120x68 grid. See data/README.
+      fetch('data/cfd-vortex-shedding.json')
+        .then((r) => { if (!r.ok) throw new Error('cfd data not found'); return r.json(); })
+        .then((data) => {
+          try {
+            runCFDWebGL(gridCanvas, data);
+          } catch (e) {
+            // WebGL unavailable or shader setup failed — swap in a clean
+            // canvas (a canvas can't change context type once bound) and
+            // fall back to the known-good 2D contour renderer.
+            const fresh = gridCanvas.cloneNode(false);
+            gridCanvas.parentNode.replaceChild(fresh, gridCanvas);
+            runCFD2D(fresh, data);
+          }
+        })
+        .catch(() => runSynthetic2D(gridCanvas));
     }
   </script>
 
