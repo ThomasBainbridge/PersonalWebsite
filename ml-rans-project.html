@@ -273,7 +273,7 @@
         <div class="prose" style="margin-top:16px;"><p>The DNS value (4.5) matches the published Re = 5600 result, validating the metric. The correction problem: learn the RANS error from DNS and test how well it generalises.</p></div>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/rans-vs-dns.png" alt="RANS versus DNS mean flow over the periodic hill"><div class="img-label">Baseline k-&omega; SST (top) vs DNS (bottom) &mdash; the Black Line Encloses the Reversed-Flow Region</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/rans-vs-dns.webp" alt="RANS versus DNS mean flow over the periodic hill"><div class="img-label">Baseline k-&omega; SST (top) vs DNS (bottom) &mdash; the Black Line Encloses the Reversed-Flow Region</div></div>
       </div>
     </div>
   </section>
@@ -289,7 +289,7 @@
       <div class="content-card"><h4>Stress Anisotropy</h4><p>The more expressive target is the Reynolds-stress anisotropy b<sub>ij</sub> = &tau;<sub>ij</sub>/(2k) &minus; &delta;<sub>ij</sub>/3, learned as a discrepancy from the RANS value &mdash; capturing the <em>shape</em> of the stress, not just its magnitude.</p></div>
     </div>
     <div class="highlight-box reveal"><p>About <strong>20% of cells are counter-gradient</strong> (&nu;<sub>t,DNS</sub> &lt; 0), where the eddy-viscosity ansatz breaks down entirely. These are honestly flagged and <strong>excluded from training rather than fit</strong>.</p></div>
-    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/correction-field-map.png" alt="Field map showing where the model needs correcting"><div class="img-label">Where the Model Needs Correcting &mdash; &beta;<sub>&nu;t</sub> Field and Counter-Gradient Regions</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/correction-field-map.webp" alt="Field map showing where the model needs correcting"><div class="img-label">Where the Model Needs Correcting &mdash; &beta;<sub>&nu;t</sub> Field and Counter-Gradient Regions</div></div>
   </section>
 
   <!-- 03 A-PRIORI -->
@@ -310,7 +310,7 @@
         <div class="prose" style="margin-top:16px;"><p>Random forest reaches <strong>R&sup2; &approx; 0.82</strong> on an unseen geometry (0.89&ndash;0.96 interpolating to middle slopes, 0.63&ndash;0.66 extrapolating to the extremes). Geometry-agnostic invariant features are more physically defensible and <em>improve</em> the steepest-hill extrapolation &mdash; a mixed, honest result, with an honestly wide 5-geometry CI (~[0.62, 0.92]).</p></div>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/geometry-generalization.png" alt="Generalisation to an unseen hill shape"><div class="img-label">Predicted vs True Correction &mdash; Unseen Hill Shape</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/geometry-generalization.webp" alt="Generalisation to an unseen hill shape"><div class="img-label">Predicted vs True Correction &mdash; Unseen Hill Shape</div></div>
       </div>
     </div>
   </section>
@@ -334,11 +334,11 @@
         <div class="prose" style="margin-top:16px;"><p>The ML correction <strong>cuts the reattachment error by ~78%</strong> on a geometry it never saw. With the coupled solver, the velocity-profile RMSE vs DNS falls <strong>0.106 &rarr; 0.037 (&minus;65%)</strong>.</p></div>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/flowfield-correction.png" alt="Baseline, corrected and DNS flow fields"><div class="img-label">Baseline &rarr; ML-Corrected &rarr; DNS &mdash; Held-Out Geometry</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/flowfield-correction.webp" alt="Baseline, corrected and DNS flow fields"><div class="img-label">Baseline &rarr; ML-Corrected &rarr; DNS &mdash; Held-Out Geometry</div></div>
       </div>
     </div>
     <div class="highlight-box reveal"><p>Two honest coupling results emerge: with a solver that lets the turbulence model co-adapt, the SST model <strong>self-regulates</strong> (its &nu;<sub>t</sub> drops to 0.76&times;), partly cancelling a fixed multiplier &mdash; so frozen studies <em>overstate</em> the reattachment benefit. Evaluating &beta; self-consistently on the corrected flow settles reattachment at ~5.5: the single shot over-corrects.</p></div>
-    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/aposteriori-profiles.png" alt="A-posteriori velocity profiles versus DNS"><div class="img-label">A-Posteriori Velocity Profiles &mdash; Baseline vs Corrected vs DNS</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/aposteriori-profiles.webp" alt="A-posteriori velocity profiles versus DNS"><div class="img-label">A-Posteriori Velocity Profiles &mdash; Baseline vs Corrected vs DNS</div></div>
   </section>
 
   <!-- 05 ANISOTROPY -->
@@ -346,7 +346,7 @@
     <div class="section-label">05 &mdash; Why Linear RANS Fails</div>
     <h2 class="section-title reveal">The Reynolds-stress <em>anisotropy</em></h2>
     <div class="prose reveal"><p>The eddy-viscosity multiplier only corrects the <em>magnitude</em> of the turbulent stress. Its <em>shape</em> &mdash; the Reynolds-stress anisotropy &mdash; is where a linear model is structurally wrong: RANS states collapse onto a single line of the barycentric map, while DNS fills it. Learning the anisotropy discrepancy is defined in 100% of cells (vs 80% for &beta;<sub>&nu;t</sub>) and generalises <em>better</em> across geometry (R&sup2; &approx; 0.93 / 0.99).</p></div>
-    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/anisotropy-barycentric.png" alt="Anisotropy barycentric map: RANS collapses, DNS fills"><div class="img-label">Barycentric Anisotropy Map &mdash; RANS Collapses to a Line, DNS Fills the Triangle</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/anisotropy-barycentric.webp" alt="Anisotropy barycentric map: RANS collapses, DNS fills"><div class="img-label">Barycentric Anisotropy Map &mdash; RANS Collapses to a Line, DNS Fills the Triangle</div></div>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Prediction Limit (TBNN)</h4><p>A tensor-basis neural network with invariance embedded generalises <em>worse</em> than an unconstrained regressor. The diagnostic shows why: the leading coefficient g&#8321; is <strong>unpredictable from local invariants (R&sup2; &approx; 0)</strong> &mdash; the local-closure assumption itself fails for separated flow.</p></div>
       <div class="content-card"><h4>Nonlocal Features</h4><p>Transport-informed nonlocal features roughly halve the g&#8321; gap (&minus;0.78 &rarr; &minus;0.44) but are not sufficient &mdash; direct evidence that the anisotropy carries convective history, not just local strain.</p></div>
@@ -360,8 +360,8 @@
     <h2 class="section-title reveal">The lever that <em>actually works</em></h2>
     <div class="prose reveal"><p>The strongest test: train on periodic hills only, then predict the anisotropy on <em>completely different</em> separated flows &mdash; a backward-facing step, bumps, and a converging-diverging channel (McConkey et al. 2021). Trained on hills alone, anisotropy R&sup2; falls from <strong>0.96 in-distribution to &le; 0</strong> on the other flows.</p></div>
     <div class="two-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/mlrans/flowfield-other-flows.png" alt="The separated flows used for the cross-flow test"><div class="img-label">The Separated Flows Used for the Cross-Flow Test</div></div>
-      <div class="img-block"><img loading="lazy" src="images/mlrans/generalization-story.png" alt="Generalisation across flow type"><div class="img-label">Generalisation Across Flow Type &mdash; Single-Flow vs Multi-Flow Training</div></div>
+      <div class="img-block"><img loading="lazy" src="images/mlrans/flowfield-other-flows.webp" alt="The separated flows used for the cross-flow test"><div class="img-label">The Separated Flows Used for the Cross-Flow Test</div></div>
+      <div class="img-block"><img loading="lazy" src="images/mlrans/generalization-story.webp" alt="Generalisation across flow type"><div class="img-label">Generalisation Across Flow Type &mdash; Single-Flow vs Multi-Flow Training</div></div>
     </div>
     <div class="highlight-box reveal"><p>Training on <strong>three</strong> flows and testing on the unseen fourth <strong>substantially rescues it</strong> &mdash; the backward-facing step recovers from R&sup2; &minus;2.33 to <strong>+0.48</strong>, and every flow improves. The single-flow failure is a <strong>data-coverage</strong> problem, not a fundamental one.</p></div>
     <div class="prose reveal" style="margin-top:32px;"><p>The full generalisation picture &mdash; interpolating geometry within a flow works (R&sup2; ~ 0.9&ndash;0.96), extrapolating to extreme geometry degrades (~0.6&ndash;0.7), single-flow&rarr;different-flow fails (R&sup2; &le; 0), and multi-flow&rarr;unseen-flow is largely recovered (~0.2&ndash;0.5).</p></div>
@@ -376,7 +376,7 @@
       <div class="content-card"><h4>Interpretable, Validated Correction</h4><p>A physically grounded correction generalises to an unseen hill at R&sup2; &approx; 0.82 and cuts the a-posteriori reattachment error ~78%, while the anisotropy target exposes <em>why</em> linear RANS fails.</p></div>
       <div class="content-card"><h4>Honest About the Limits</h4><p>Data-driven closure is hard to predict, couple, propagate, and generalise &mdash; each shown with working code &mdash; and training diversity is a concrete, measurable lever that rescues cross-flow generalisation.</p></div>
     </div>
-    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/summary.png" alt="Summary of headline results"><div class="img-label">Summary of Headline Results</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/mlrans/summary.webp" alt="Summary of headline results"><div class="img-label">Summary of Headline Results</div></div>
     <div class="tag-row reveal">
       <span class="tag">OpenFOAM v2312</span><span class="tag">k-&omega; SST</span><span class="tag">RANS</span>
       <span class="tag">DNS Reference Data</span><span class="tag">C++ (custom solvers)</span><span class="tag">Python</span>

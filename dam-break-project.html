@@ -261,7 +261,7 @@
       <p>The flow is a gravity-driven, two-phase water&ndash;air problem solved with the Volume of Fluid (VOF) method, tracking the <em>alpha.water</em> volume fraction through the OpenFOAM <em>interFoam</em> solver in a laminar, 2D configuration with an end time of 1.5&nbsp;s per simulation.</p>
     </div>
     <div class="img-block reveal" style="margin-top:32px;">
-      <img loading="lazy" src="images/dambreak/cfd-vs-pod-surrogate.gif" alt="CFD vs POD surrogate free-surface reconstruction">
+      <img loading="lazy" src="images/dambreak/cfd-vs-pod-surrogate.webp" alt="CFD vs POD surrogate free-surface reconstruction">
       <div class="img-label">CFD vs POD Surrogate &mdash; Free-Surface Reconstruction on an Unseen Validation Case</div>
     </div>
   </section>
@@ -344,15 +344,15 @@
       </tbody>
     </table>
     <div class="two-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/dambreak/validation-r2.png" alt="Surrogate validation R-squared"><div class="img-label">Selected Surrogates &mdash; Validation R&sup2;</div></div>
-      <div class="img-block"><img loading="lazy" src="images/dambreak/validation-nrmse.png" alt="Surrogate validation nRMSE"><div class="img-label">Selected Surrogates &mdash; Validation nRMSE</div></div>
+      <div class="img-block"><img loading="lazy" src="images/dambreak/validation-r2.webp" alt="Surrogate validation R-squared"><div class="img-label">Selected Surrogates &mdash; Validation R&sup2;</div></div>
+      <div class="img-block"><img loading="lazy" src="images/dambreak/validation-nrmse.webp" alt="Surrogate validation nRMSE"><div class="img-label">Selected Surrogates &mdash; Validation nRMSE</div></div>
     </div>
     <div class="reveal" style="margin-top:48px;">
       <h3 class="sub-title">Design-space exploration</h3>
       <div class="prose"><p>Because the scalar surrogates evaluate instantly, they can be swept across the full parameter space to produce response surfaces and to search for designs that minimise or maximise a chosen impact metric &mdash; turning the static CFD database into an interactive design tool.</p></div>
       <div class="two-col-img" style="margin-top:24px;">
-        <div class="img-block"><img loading="lazy" src="images/dambreak/response-surface-dashboard.gif" alt="Surrogate response surface dashboard"><div class="img-label">Response Surfaces Across Obstacle Positions</div></div>
-        <div class="img-block"><img loading="lazy" src="images/dambreak/best-design-explorer.gif" alt="Surrogate best design explorer"><div class="img-label">Surrogate-Guided Best-Design Explorer</div></div>
+        <div class="img-block"><img loading="lazy" src="images/dambreak/response-surface-dashboard.webp" alt="Surrogate response surface dashboard"><div class="img-label">Response Surfaces Across Obstacle Positions</div></div>
+        <div class="img-block"><img loading="lazy" src="images/dambreak/best-design-explorer.webp" alt="Surrogate best design explorer"><div class="img-label">Surrogate-Guided Best-Design Explorer</div></div>
       </div>
     </div>
   </section>
@@ -379,14 +379,14 @@
         </table>
       </div>
       <div>
-        <div class="img-block"><img loading="lazy" src="images/dambreak/pod-explained-variance.png" alt="POD explained variance"><div class="img-label">POD Mode Explained Variance</div></div>
-        <div class="img-block" style="margin-top:16px;"><img loading="lazy" src="images/dambreak/pod-rmse-distribution.png" alt="POD RMSE distribution"><div class="img-label">Validation RMSE Distribution</div></div>
+        <div class="img-block"><img loading="lazy" src="images/dambreak/pod-explained-variance.webp" alt="POD explained variance"><div class="img-label">POD Mode Explained Variance</div></div>
+        <div class="img-block" style="margin-top:16px;"><img loading="lazy" src="images/dambreak/pod-rmse-distribution.webp" alt="POD RMSE distribution"><div class="img-label">Validation RMSE Distribution</div></div>
       </div>
     </div>
     <div class="three-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-error-over-time.png" alt="POD field error over time"><div class="img-label">Field RMSE Over Time</div></div>
-      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-interface-error.png" alt="POD interface-front error over time"><div class="img-label">Interface-Front Error Over Time</div></div>
-      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-phase-mask-iou.png" alt="POD phase-mask IoU over time"><div class="img-label">Phase-Mask IoU Over Time</div></div>
+      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-error-over-time.webp" alt="POD field error over time"><div class="img-label">Field RMSE Over Time</div></div>
+      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-interface-error.webp" alt="POD interface-front error over time"><div class="img-label">Interface-Front Error Over Time</div></div>
+      <div class="img-block"><img loading="lazy" src="images/dambreak/pod-phase-mask-iou.webp" alt="POD phase-mask IoU over time"><div class="img-label">Phase-Mask IoU Over Time</div></div>
     </div>
     <div class="highlight-box reveal"><p>The POD surrogate captures the dominant free-surface evolution but is an <strong>approximate reduced-order reconstruction, not a CFD replacement</strong>. Sharp moving VOF interfaces are difficult to represent with a linear POD basis &mdash; particularly near the obstacle face, wall-contact regions, and thin-film contact lines &mdash; and the error panel in the comparison above shows this honestly.</p></div>
   </section>

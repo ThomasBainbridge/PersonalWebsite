@@ -290,7 +290,7 @@
         </table>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/stokes-comparison.png" alt="Concentration fields versus Stokes number and time"><div class="img-label">Concentration Fields vs Stokes Number and Time</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/stokes-comparison.webp" alt="Concentration fields versus Stokes number and time"><div class="img-label">Concentration Fields vs Stokes Number and Time</div></div>
       </div>
     </div>
   </section>
@@ -309,7 +309,7 @@
     <div class="reveal" style="margin-top:48px;">
       <h3 class="sub-title">Four diagnostics confirm St &approx; 1 clusters hardest</h3>
       <div class="prose"><p>Four independent physical diagnostics &mdash; clustering index, spatial entropy, peak concentration, and field variance &mdash; all identify St &approx; 1 as the strongest-clustering regime, with the clustering index D peaking near 1.85. This validates the physics before any machine learning is applied.</p></div>
-      <div class="img-block" style="margin-top:24px;"><img loading="lazy" src="images/ropf/physical-diagnostics.png" alt="Physical diagnostics versus time"><div class="img-label">Physical Diagnostics vs Time &mdash; Clustering Index, Entropy, Peak, Variance</div></div>
+      <div class="img-block" style="margin-top:24px;"><img loading="lazy" src="images/ropf/physical-diagnostics.webp" alt="Physical diagnostics versus time"><div class="img-label">Physical Diagnostics vs Time &mdash; Clustering Index, Entropy, Peak, Variance</div></div>
     </div>
   </section>
 
@@ -330,11 +330,11 @@
         <div class="prose" style="margin-top:16px;"><p>The two are essentially tied &mdash; and both sit near the histogram <strong>shot-noise floor</strong> (~2.2&times;10&#8315;&#8308;). The raw fields need ~930 POD modes for 90% energy, because the per-cell Poisson noise is high-dimensional and incompressible. Both ROMs instead recover the smooth <em>coherent</em> clustering structure and discard the noise &mdash; the key physical insight of the study.</p></div>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/pod-energy-smooth.png" alt="POD energy spectrum (smoothed)"><div class="img-label">POD Energy Spectrum &mdash; Denoised Fields</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/pod-energy-smooth.webp" alt="POD energy spectrum (smoothed)"><div class="img-label">POD Energy Spectrum &mdash; Denoised Fields</div></div>
       </div>
     </div>
     <div class="highlight-box reveal"><p>On Gaussian-KDE-<strong>denoised</strong> fields the picture changes: they become nearly low-rank (24 modes &rarr; 90% energy) and POD reconstructs the clustering almost perfectly by r = 16 &mdash; a ~3&times; lower reconstruction floor.</p></div>
-    <div class="img-block reveal"><img loading="lazy" src="images/ropf/pod-panel-smooth.png" alt="POD reconstruction versus number of modes (smoothed)"><div class="img-label">POD Reconstruction vs Number of Modes &mdash; Denoised Fields</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/ropf/pod-panel-smooth.webp" alt="POD reconstruction versus number of modes (smoothed)"><div class="img-label">POD Reconstruction vs Number of Modes &mdash; Denoised Fields</div></div>
   </section>
 
   <!-- 05 FORECASTING -->
@@ -356,13 +356,13 @@
         </table>
       </div>
       <div>
-        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/forecast-raw.png" alt="Latent forecast vs persistence error versus horizon"><div class="img-label">Forecast vs Persistence &mdash; Error vs Horizon</div></div>
+        <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/forecast-raw.webp" alt="Latent forecast vs persistence error versus horizon"><div class="img-label">Forecast vs Persistence &mdash; Error vs Horizon</div></div>
       </div>
     </div>
     <div class="highlight-box reveal"><p>On the denoised data, a <strong>Stokes-conditioned, multi-step-trained</strong> forecaster does substantially better &mdash; roughly <strong>halving</strong> the persistence error at long horizons.</p></div>
     <div class="two-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-conditioned.png" alt="Conditioned latent forecast vs persistence (smoothed)"><div class="img-label">Stokes-Conditioned Forecaster &mdash; Denoised Data</div></div>
-      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-vs-true.gif" alt="True versus latent-forecast concentration evolution at St=1"><div class="img-label">Truth (left) vs Latent-Space Forecast (right) &mdash; St = 1, Held-Out Seed</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-conditioned.webp" alt="Conditioned latent forecast vs persistence (smoothed)"><div class="img-label">Stokes-Conditioned Forecaster &mdash; Denoised Data</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-vs-true.webp" alt="True versus latent-forecast concentration evolution at St=1"><div class="img-label">Truth (left) vs Latent-Space Forecast (right) &mdash; St = 1, Held-Out Seed</div></div>
     </div>
   </section>
 
@@ -372,11 +372,11 @@
     <h2 class="section-title reveal">Where nonlinearity <em>earns its keep</em></h2>
     <div class="prose reveal"><p>On the smooth single-scale flow, the linear and nonlinear ROMs tie. To expose the advantage of a nonlinear autoencoder, the carrier flow was swapped for a divergence-free <strong>multi-mode Fourier</strong> field with richer, multiscale structure.</p></div>
     <div class="two-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/ropf/rom-comparison-fourier.png" alt="Linear versus nonlinear ROM on the Fourier flow"><div class="img-label">Linear POD vs Nonlinear Autoencoder &mdash; Fourier Flow</div></div>
-      <div class="img-block"><img loading="lazy" src="images/ropf/ae-panel-fourier.png" alt="Autoencoder reconstruction on the Fourier flow"><div class="img-label">Autoencoder Reconstruction &mdash; Fourier Flow</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/rom-comparison-fourier.webp" alt="Linear versus nonlinear ROM on the Fourier flow"><div class="img-label">Linear POD vs Nonlinear Autoencoder &mdash; Fourier Flow</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/ae-panel-fourier.webp" alt="Autoencoder reconstruction on the Fourier flow"><div class="img-label">Autoencoder Reconstruction &mdash; Fourier Flow</div></div>
     </div>
     <div class="highlight-box reveal"><p>On the multiscale Fourier fields the 16-dim autoencoder <strong>beats POD at equal latent size</strong> and matches a ~32-mode POD basis &mdash; while POD needs 1,132 modes for 90% energy. A <strong>Neural-ODE</strong> latent forecaster (dz/dt = f(z, St), the direct Universal-Differential-Equation analogue) was also implemented, stable once Stokes-conditioned and multi-step trained.</p></div>
-    <div class="img-block reveal"><img loading="lazy" src="images/ropf/ode-clustering-index.png" alt="Neural-ODE forecast clustering index over time"><div class="img-label">Neural-ODE Forecast &mdash; Clustering Index Preserved Over Time</div></div>
+    <div class="img-block reveal"><img loading="lazy" src="images/ropf/ode-clustering-index.webp" alt="Neural-ODE forecast clustering index over time"><div class="img-label">Neural-ODE Forecast &mdash; Clustering Index Preserved Over Time</div></div>
   </section>
 
   <!-- 07 TAKEAWAYS -->

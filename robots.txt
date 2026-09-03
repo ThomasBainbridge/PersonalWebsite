@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://thomasbainbridge.github.io/PersonalWebsite/sitemap.xml
