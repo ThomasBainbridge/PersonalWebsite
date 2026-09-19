@@ -559,12 +559,11 @@
             <em>interFoam</em> laminar dam-break case. A fully automated pipeline generates a
             403-case 2D VOF simulation database &mdash; 343 structured training cases plus 60
             Latin-hypercube validation cases &mdash; varying water-column height, obstacle height,
-            and obstacle position. Robust impact metrics (rolling peak pressure, pressure impulse,
-            and wetting time) are extracted per case, and ten scalar surrogate model families are
-            screened to predict them, reaching R&sup2; up to 0.997 on unseen cases. A 200-mode
-            incremental-PCA POD reduced-order model trained on ~20,900 free-surface snapshots then
-            reconstructs the <em>alpha.water</em> field on unseen cases for rapid design-space
-            exploration.
+            and obstacle position. Ten surrogate model families predict integrated and
+            time-windowed impact loads on unseen geometries to within a few percent (R&sup2; up to
+            0.997), while showing that the narrowest peak-pressure definitions cannot be predicted
+            from geometry alone. A 200-mode POD reduced-order model trained on ~20,900 snapshots
+            reconstructs the <em>alpha.water</em> free surface on unseen cases.
           </p>
           <div class="project-tags">
             <span class="tag">OpenFOAM</span>
@@ -594,9 +593,9 @@
             Inertial particles are driven through an unsteady Taylor&ndash;Green vortex, reproducing
             textbook preferential concentration, with four diagnostics confirming St&nbsp;&approx;&nbsp;1
             as the strongest-clustering regime. POD and a convolutional autoencoder compress the
-            fields to a 16-dimensional latent space, and a residual latent forecaster &mdash; plus a
-            Stokes-conditioned Neural-ODE variant &mdash; rolls the dynamics forward in time, beating
-            the persistence baseline at every Stokes number.
+            fields to a 16-dimensional latent space. Neural latent forecasters (MLP, Neural-ODE, GRU)
+            beat persistence and win at short horizons, while a linear DMD baseline wins at long
+            range &mdash; benchmarked honestly over five training seeds.
           </p>
           <div class="project-tags">
             <span class="tag">Python</span>
@@ -604,7 +603,7 @@
             <span class="tag">Scientific ML</span>
             <span class="tag">Reduced-Order Modelling</span>
             <span class="tag">POD / Autoencoder</span>
-            <span class="tag">Neural ODE</span>
+            <span class="tag">DMD / Neural ODE</span>
             <span class="tag">Latent Forecasting</span>
             <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
           </div>

@@ -7,21 +7,21 @@
   <link rel="icon" type="image/png" href="favicon.png">
 
   <!-- SEO / Social preview -->
-  <meta name="description" content="A scientific-machine-learning testbed for particle-laden flow: a controlled 2D inertial-particle dataset, POD and convolutional-autoencoder reduced-order models, and latent-space / Neural-ODE forecasting of the concentration-field evolution.">
+  <meta name="description" content="A scientific-machine-learning testbed for particle-laden flow: a controlled 2D inertial-particle dataset, POD and convolutional-autoencoder reduced-order models, and latent-space forecasting with DMD and neural (MLP, Neural-ODE, GRU) models, benchmarked over training seeds.">
   <meta name="author" content="Thomas Bainbridge">
   <meta name="theme-color" content="#0e0e0f">
   <link rel="canonical" href="https://thomasbainbridge.github.io/PersonalWebsite/particle-flow-project.html">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Thomas Bainbridge — Engineering Portfolio">
   <meta property="og:title" content="Reduced-Order Forecasting of Particle-Laden Flow">
-  <meta property="og:description" content="A controlled inertial-particle dataset with POD / autoencoder reduced-order models and latent-space / Neural-ODE forecasting of the concentration-field evolution.">
+  <meta property="og:description" content="A controlled inertial-particle dataset with POD / autoencoder reduced-order models and DMD vs neural latent-space forecasting of the concentration-field evolution.">
   <meta property="og:url" content="https://thomasbainbridge.github.io/PersonalWebsite/particle-flow-project.html">
   <meta property="og:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/ropf/og-particle-flow.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Reduced-Order Forecasting of Particle-Laden Flow">
-  <meta name="twitter:description" content="A controlled inertial-particle dataset with POD / autoencoder ROMs and latent-space / Neural-ODE forecasting.">
+  <meta name="twitter:description" content="A controlled inertial-particle dataset with POD / autoencoder ROMs and DMD vs neural latent-space forecasting.">
   <meta name="twitter:image" content="https://thomasbainbridge.github.io/PersonalWebsite/images/ropf/og-particle-flow.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -241,11 +241,11 @@
       <div class="hero-meta">
         <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
         <div><div class="hero-meta-label">Physics</div><div class="hero-meta-value">Inertial particles &middot; Taylor&ndash;Green vortex</div></div>
-        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">POD &middot; Conv-Autoencoder &middot; Latent forecasting</div></div>
-        <div><div class="hero-meta-label">Stack</div><div class="hero-meta-value">PyTorch</div></div>
+        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">POD &middot; Autoencoder &middot; DMD &middot; Latent forecasting</div></div>
+        <div><div class="hero-meta-label">Tools</div><div class="hero-meta-value">Python &middot; PyTorch</div></div>
         <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
       </div>
-      <p class="hero-desc">A scientific-machine-learning testbed that generates a controlled 2D inertial-particle dataset, converts Lagrangian particle motion into Eulerian concentration fields, and trains reduced-order PyTorch models to reconstruct and forecast the concentration-field evolution &mdash; from POD and convolutional-autoencoder reduced representations through to latent-space and Neural-ODE forecasting, with physically interpretable error analysis.</p>
+      <p class="hero-desc">A scientific-machine-learning testbed that generates a controlled 2D inertial-particle dataset, converts Lagrangian particle motion into Eulerian concentration fields, and trains reduced-order PyTorch models to reconstruct and forecast the concentration-field evolution &mdash; from POD and convolutional-autoencoder reduced representations through to latent-space forecasting with DMD and neural models (MLP, Neural-ODE, GRU), benchmarked honestly over training seeds.</p>
       <div style="margin-top: 36px;">
         <a href="https://github.com/ThomasBainbridge/Reduced-Order-Particle-Flow" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
       </div>
@@ -268,7 +268,7 @@
 
   <!-- 02 PHYSICS -->
   <section id="physics" style="background: var(--bg);">
-    <div class="section-label">02 &mdash; The Physics</div>
+    <div class="section-label">02 &mdash; Governing Equations</div>
     <h2 class="section-title reveal">From Lagrangian particles to <em>Eulerian fields</em></h2>
     <div class="prose reveal"><p>A prescribed, divergence-free Taylor&ndash;Green carrier flow drives inertial point particles under linear Stokes drag; their positions are binned into a normalised concentration field that conserves mass. The single governing parameter is the Stokes number.</p></div>
     <div class="card-grid-3 reveal">
@@ -359,11 +359,26 @@
         <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/ropf/forecast-raw.webp" alt="Latent forecast vs persistence error versus horizon"><div class="img-label">Forecast vs Persistence &mdash; Error vs Horizon</div></div>
       </div>
     </div>
-    <div class="highlight-box reveal"><p>On the denoised data, a <strong>Stokes-conditioned, multi-step-trained</strong> forecaster does substantially better &mdash; roughly <strong>halving</strong> the persistence error at long horizons.</p></div>
-    <div class="two-col-img reveal" style="margin-top:32px;">
-      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-conditioned.webp" alt="Conditioned latent forecast vs persistence (smoothed)"><div class="img-label">Stokes-Conditioned Forecaster &mdash; Denoised Data</div></div>
-      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-vs-true.webp" alt="True versus latent-forecast concentration evolution at St=1"><div class="img-label">Truth (left) vs Latent-Space Forecast (right) &mdash; St = 1, Held-Out Seed</div></div>
+    <div class="reveal" style="margin-top:56px;">
+      <h3 class="sub-title">The linear baseline is harder to beat</h3>
+      <div class="prose"><p>On denoised fields, three neural forecasters &mdash; a Stokes-conditioned MLP, a Neural-ODE and a GRU &mdash; were each trained with <strong>five random seeds</strong> and compared against <strong>DMD</strong>: a linear latent map a<sub>t+1</sub> = A&thinsp;a<sub>t</sub> + b on 16 POD coefficients, fitted per Stokes number. Field RMSE on the held-out seed, mean over training seeds:</p></div>
+      <table class="result-table">
+        <thead><tr><th>Model</th><th>t = 1</th><th>t = 5</th><th>t = 20 (final)</th><th>Time-avg</th></tr></thead>
+        <tbody>
+          <tr><td>Conditioned MLP</td><td class="accent">7.4&times;10&#8315;&#8309;</td><td class="accent">8.6&times;10&#8315;&#8309;</td><td>1.66&times;10&#8315;&#8308;</td><td>1.16&times;10&#8315;&#8308;</td></tr>
+          <tr><td>GRU</td><td>7.5&times;10&#8315;&#8309;</td><td>9.4&times;10&#8315;&#8309;</td><td>2.11&times;10&#8315;&#8308;</td><td>1.35&times;10&#8315;&#8308;</td></tr>
+          <tr><td>Neural-ODE</td><td>7.6&times;10&#8315;&#8309;</td><td>1.00&times;10&#8315;&#8308;</td><td>2.20&times;10&#8315;&#8308;</td><td>1.39&times;10&#8315;&#8308;</td></tr>
+          <tr><td>DMD, per-Stokes (linear)</td><td>9.2&times;10&#8315;&#8309;</td><td>1.23&times;10&#8315;&#8308;</td><td class="accent">1.19&times;10&#8315;&#8308;</td><td class="accent">1.09&times;10&#8315;&#8308;</td></tr>
+          <tr><td>Persistence</td><td>1.36&times;10&#8315;&#8308;</td><td>1.99&times;10&#8315;&#8308;</td><td>3.02&times;10&#8315;&#8308;</td><td>2.29&times;10&#8315;&#8308;</td></tr>
+        </tbody>
+      </table>
     </div>
+    <div class="highlight-box reveal"><p>Every neural run beats DMD at <strong>short horizons</strong> (t &le; 5), but DMD beats <strong>all 15 neural runs at t = 20</strong> and on time-averaged error. The neural models&rsquo; long-horizon error varies by up to ~2&times; between training seeds &mdash; the GRU beat persistence in every Stokes regime in only 1 of its 5 seeds.</p></div>
+    <div class="two-col-img reveal" style="margin-top:32px;">
+      <div class="img-block"><img loading="lazy" src="images/ropf/forecast-conditioned.webp" alt="Conditioned latent forecast vs persistence (smoothed)"><div class="img-label">Stokes-Conditioned MLP vs Persistence &mdash; Denoised Data</div></div>
+      <div class="img-block"><img loading="lazy" src="images/ropf/dmd-forecast.webp" alt="DMD linear forecast vs persistence (smoothed)"><div class="img-label">DMD (Linear) vs Persistence &mdash; Denoised Data</div></div>
+    </div>
+    <div class="img-block reveal"><img loading="lazy" src="images/ropf/forecast-vs-true.webp" alt="True versus latent-forecast concentration evolution at St=1"><div class="img-label">Truth (left) vs Latent-Space Forecast (right) &mdash; St = 1, Held-Out Seed</div></div>
   </section>
 
   <!-- 06 STRETCH -->
@@ -375,23 +390,47 @@
       <div class="img-block"><img loading="lazy" src="images/ropf/rom-comparison-fourier.webp" alt="Linear versus nonlinear ROM on the Fourier flow"><div class="img-label">Linear POD vs Nonlinear Autoencoder &mdash; Fourier Flow</div></div>
       <div class="img-block"><img loading="lazy" src="images/ropf/ae-panel-fourier.webp" alt="Autoencoder reconstruction on the Fourier flow"><div class="img-label">Autoencoder Reconstruction &mdash; Fourier Flow</div></div>
     </div>
-    <div class="highlight-box reveal"><p>On the multiscale Fourier fields the 16-dim autoencoder <strong>beats POD at equal latent size</strong> and matches a ~32-mode POD basis &mdash; while POD needs 1,132 modes for 90% energy. A <strong>Neural-ODE</strong> latent forecaster (dz/dt = f(z, St), the direct Universal-Differential-Equation analogue) was also implemented, stable once Stokes-conditioned and multi-step trained.</p></div>
+    <div class="highlight-box reveal"><p>On the multiscale Fourier fields the 16-dim autoencoder <strong>beats POD at equal latent size</strong> and matches a ~32-mode POD basis &mdash; while POD needs 1,132 modes for 90% energy. A <strong>Neural-ODE</strong> latent forecaster (dz/dt = f(z, St), the direct Universal-Differential-Equation analogue) was also implemented, stable once Stokes-conditioned and multi-step trained &mdash; as was a <strong>GRU</strong> with a hidden memory, which needed 16-step training windows.</p></div>
     <div class="img-block reveal"><img loading="lazy" src="images/ropf/ode-clustering-index.webp" alt="Neural-ODE forecast clustering index over time"><div class="img-label">Neural-ODE Forecast &mdash; Clustering Index Preserved Over Time</div></div>
   </section>
 
-  <!-- 07 TAKEAWAYS -->
-  <section id="takeaways" style="background: var(--bg2);">
-    <div class="section-label">07 &mdash; Key Takeaways</div>
+  <!-- 07 LIMITATIONS -->
+  <section id="limitations" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Limitations &amp; Future Work</div>
+    <h2 class="section-title reveal">What it does <em>not</em> show</h2>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <h3 class="sub-title">Limitations</h3>
+        <div class="prose">
+          <p><strong>Prescribed, laminar carrier flow</strong> &mdash; not a turbulent DNS, with no two-way coupling or inter-particle collisions.</p>
+          <p><strong>One-way point particles</strong> with linear Stokes drag; no gravity, lift or history forces.</p>
+          <p><strong>Shot noise</strong> in the histogram fields sets a reconstruction floor (~2.2&times;10&#8315;&#8308;) that no low-rank model can beat on raw data.</p>
+          <p><strong>Seed sensitivity</strong> &mdash; neural forecasters&rsquo; long-horizon errors vary up to ~2&times; between training seeds, so results are reported as seed averages. The datasets, POD and DMD are deterministic.</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-title">Future work</h3>
+        <div class="prose">
+          <p><strong>A hybrid latent model</strong> &mdash; the per-Stokes DMD operator plus a learned nonlinear correction. DMD wins at long horizons and the neural forecasters at short ones, so learning only the nonlinear residual on top of a stable linear operator is the natural next step.</p>
+          <p><strong>Two-way particle&ndash;flow coupling</strong>, which first requires solving the carrier flow rather than prescribing it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 TAKEAWAYS -->
+  <section id="takeaways" style="background: var(--bg);">
+    <div class="section-label">08 &mdash; Key Takeaways</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Physics-First ML</h4><p>A controlled inertial-particle dataset reproduces textbook preferential concentration, with four diagnostics validating St &approx; 1 as the resonant clustering regime before any model is trained.</p></div>
       <div class="content-card"><h4>Reduced-Order Insight</h4><p>POD and a conv-autoencoder tie near the histogram shot-noise floor on raw fields &mdash; both recover coherent structure and reject high-dimensional Poisson noise; denoising makes the fields low-rank and nonlinearity wins on multiscale flow.</p></div>
-      <div class="content-card"><h4>Latent Forecasting</h4><p>A residual latent forecaster beats persistence at every Stokes number, and a Stokes-conditioned, multi-step Neural-ODE variant roughly halves the long-horizon error &mdash; a clean Universal-Differential-Equation demonstration.</p></div>
+      <div class="content-card"><h4>Honest Forecasting</h4><p>Neural latent forecasters (MLP, Neural-ODE, GRU) beat persistence and win at short horizons, but a per-Stokes linear DMD baseline beats all 15 neural training runs at long range &mdash; results reported over five seeds and checked by a from-scratch re-run.</p></div>
     </div>
     <div class="tag-row reveal">
       <span class="tag">Python</span><span class="tag">PyTorch</span><span class="tag">Scientific ML</span>
       <span class="tag">Reduced-Order Modelling</span><span class="tag">POD / PCA</span><span class="tag">Convolutional Autoencoder</span>
-      <span class="tag">Latent Forecasting</span><span class="tag">Neural ODE / UDE</span><span class="tag">Inertial Particles</span>
+      <span class="tag">Latent Forecasting</span><span class="tag">DMD</span><span class="tag">Neural ODE / GRU</span><span class="tag">Inertial Particles</span>
       <span class="tag">Preferential Concentration</span><span class="tag">NumPy / SciPy</span><span class="tag">Reproducible Pipeline</span>
     </div>
   </section>

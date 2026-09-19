@@ -240,14 +240,14 @@
       <h1 class="hero-title">OpenFOAM Dam-Break CFD<br><em>&amp; Surrogate Modelling</em></h1>
       <div class="hero-meta">
         <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
-        <div><div class="hero-meta-label">Solver</div><div class="hero-meta-value">OpenFOAM v2312 &middot; interFoam</div></div>
-        <div><div class="hero-meta-label">Method</div><div class="hero-meta-value">VOF (two-phase, laminar)</div></div>
-        <div><div class="hero-meta-label">Database</div><div class="hero-meta-value">403 CFD simulations</div></div>
+        <div><div class="hero-meta-label">Physics</div><div class="hero-meta-value">Dam-break surge &middot; two-phase VOF</div></div>
+        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">403-case DoE &middot; Surrogates &middot; POD</div></div>
+        <div><div class="hero-meta-label">Tools</div><div class="hero-meta-value">OpenFOAM v2312 &middot; Python &middot; scikit-learn</div></div>
         <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
       </div>
       <p class="hero-desc">A CFD and data-driven surrogate modelling study. Starting from the standard OpenFOAM <em>interFoam</em> laminar dam-break tutorial, this project builds a fully automated 403-case 2D VOF simulation database, extracts robust impact-pressure and wetting metrics, trains scalar surrogate models for design-space exploration, and develops a POD reduced-order field surrogate that reconstructs the free surface on unseen validation cases.</p>
       <div style="margin-top: 36px;">
-        <a href="https://github.com/ThomasBainbridge/openfoam-dambreak-surrogate" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
+        <a href="https://github.com/ThomasBainbridge/dambreak-surrogate" target="_blank" rel="noopener" style="display:inline-block; background:var(--accent); color:#0e0e0f; font-family:var(--mono); font-size:12px; font-weight:500; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; padding:14px 28px; border-radius:2px;">View on GitHub &#8599;</a>
       </div>
     </div>
   </section>
@@ -283,9 +283,9 @@
 
   <!-- 03 PARAMETER SPACE -->
   <section id="parameters" style="background: var(--bg2);">
-    <div class="section-label">03 &mdash; Parameter Space &amp; DoE</div>
+    <div class="section-label">03 &mdash; Design of Experiments</div>
     <h2 class="section-title reveal">Three geometric <em>design variables</em></h2>
-    <div class="prose reveal"><p>Three geometric parameters were varied while the obstacle width was held fixed. A structured design-of-experiments grid provided the training data, and a completely held-out Latin hypercube sample provided unbiased validation cases that the surrogates never saw during training.</p></div>
+    <div class="prose reveal"><p>Three geometric parameters were varied while the obstacle width was held fixed. A structured design-of-experiments grid provided the training data, and a Latin hypercube sample, nudged off the grid, provided validation geometries that the surrogates never saw during training. The design is seeded and regenerates exactly.</p></div>
     <div class="two-col reveal" style="margin-top:40px;">
       <div>
         <table class="result-table">
@@ -331,7 +331,7 @@
   <section id="scalar" style="background: var(--bg2);">
     <div class="section-label">05 &mdash; Scalar Surrogate Results</div>
     <h2 class="section-title reveal">Predicting <em>impact metrics</em></h2>
-    <div class="prose reveal"><p>Robust time-aggregated metrics proved to be strong surrogate targets. Raw instantaneous peak pressure was deliberately not pursued as a primary target &mdash; it is governed by short-duration transient events and is inherently difficult to predict with a single global scalar surrogate. All scores below are on the 60 off-grid LHS cases held out from every stage of training.</p></div>
+    <div class="prose reveal"><p>Eleven impact targets were each fitted with ten model families on raw and log-transformed values, and the best candidate kept. The raw single-sample peak pressure was deliberately not used as a target &mdash; it is set by isolated splash events. All scores are on the 60 off-grid validation geometries.</p></div>
     <table class="result-table reveal" style="margin-top:24px;">
       <thead><tr><th>Target</th><th>Best Model</th><th>Validation R&sup2;</th><th>Validation nRMSE</th></tr></thead>
       <tbody>
@@ -341,8 +341,14 @@
         <tr><td>Maximum-pressure impulse</td><td>KNN</td><td class="accent">0.967</td><td>4.15%</td></tr>
         <tr><td>First distributed wetting time</td><td>Gaussian process</td><td class="accent">0.974</td><td>5.29%</td></tr>
         <tr><td>Area-average 0.050&nbsp;s rolling peak pressure</td><td>RBF SVR</td><td class="accent">0.938</td><td>6.17%</td></tr>
+        <tr><td>Local max top-5% mean pressure</td><td>poly3 ridge</td><td>0.897</td><td>7.78%</td></tr>
+        <tr><td>Area-average top-5% mean pressure</td><td>poly3 ridge</td><td>0.708</td><td>11.25%</td></tr>
+        <tr><td>Area-average 0.025&nbsp;s rolling peak pressure</td><td>KNN</td><td>0.578</td><td>13.42%</td></tr>
+        <tr><td>Local max top-1% mean pressure</td><td>KNN</td><td>0.304</td><td>16.22%</td></tr>
+        <tr><td>Area-average top-1% mean pressure</td><td>poly3 ridge</td><td>0.147</td><td>21.45%</td></tr>
       </tbody>
     </table>
+    <div class="highlight-box reveal"><p><strong>The clearest result is about the targets, not the models.</strong> Integrated and time-windowed loads are predicted to within a few percent, but the narrower the peak definition, the worse the best surrogate does &mdash; from R&sup2; = 0.94 for the 0.050&nbsp;s rolling peak down to 0.15 for the top-1% mean of the same signal. Short-lived peaks are splash-driven, and three geometric inputs cannot determine them.</p></div>
     <div class="two-col-img reveal" style="margin-top:32px;">
       <div class="img-block"><img loading="lazy" src="images/dambreak/validation-r2.webp" alt="Surrogate validation R-squared"><div class="img-label">Selected Surrogates &mdash; Validation R&sup2;</div></div>
       <div class="img-block"><img loading="lazy" src="images/dambreak/validation-nrmse.webp" alt="Surrogate validation nRMSE"><div class="img-label">Selected Surrogates &mdash; Validation nRMSE</div></div>
@@ -391,16 +397,40 @@
     <div class="highlight-box reveal"><p>The POD surrogate captures the dominant free-surface evolution but is an <strong>approximate reduced-order reconstruction, not a CFD replacement</strong>. Sharp moving VOF interfaces are difficult to represent with a linear POD basis &mdash; particularly near the obstacle face, wall-contact regions, and thin-film contact lines &mdash; and the error panel in the comparison above shows this honestly.</p></div>
   </section>
 
-  <!-- 07 TAKEAWAYS -->
-  <section id="takeaways" style="background: var(--bg2);">
-    <div class="section-label">07 &mdash; Key Takeaways</div>
+  <!-- 07 LIMITATIONS -->
+  <section id="limitations" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Limitations &amp; Future Work</div>
+    <h2 class="section-title reveal">What it does <em>not</em> show</h2>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <h3 class="sub-title">Limitations</h3>
+        <div class="prose">
+          <p><strong>2-D, laminar, one mesh</strong> &mdash; no mesh-independence study was run on the impact pressures, the quantities most sensitive to resolution.</p>
+          <p><strong>Model selection uses the validation set</strong> &mdash; the best of 20 candidates per target is chosen by validation nRMSE and that same score is reported, so the headline R&sup2; values are mildly optimistic.</p>
+          <p><strong>Three inputs only</strong> &mdash; obstacle width and fluid properties are fixed, and the surrogates interpolate within the sampled design space.</p>
+          <p><strong>The POD field surrogate is approximate</strong> &mdash; its error concentrates at the moving interface near the obstacle, exactly where the load is generated.</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-title">Future work</h3>
+        <div class="prose">
+          <p><strong>A nonlinear field surrogate</strong> &mdash; local POD per flow regime, or a convolutional autoencoder, since the linear basis smooths the sharp VOF interface where the impact happens.</p>
+          <p><strong>Probabilistic surrogates for peak metrics</strong> &mdash; predicting a distribution of peak pressure rather than a single number, because the instantaneous peak behaves like a noisy extreme-value quantity.</p>
+          <p><strong>3-D and turbulent impact</strong>, to test whether the robust-metric conclusions survive beyond laminar, two-dimensional flow.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 08 TAKEAWAYS -->
+  <section id="takeaways" style="background: var(--bg);">
+    <div class="section-label">08 &mdash; Key Takeaways</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Automation at Scale</h4><p>A fully automated pipeline generated, ran, and post-processed a 403-case, ~27&nbsp;GB OpenFOAM VOF database end-to-end, turning a single tutorial case into a structured engineering dataset.</p></div>
-      <div class="content-card"><h4>Accurate Scalar Surrogates</h4><p>Robust time-aggregated impact metrics were predicted to within a few percent nRMSE on completely unseen cases &mdash; up to R&sup2;&nbsp;=&nbsp;0.997 &mdash; fast enough to drive interactive design-space exploration.</p></div>
+      <div class="content-card"><h4>What Is Predictable</h4><p>Integrated and time-windowed impact loads were predicted to within a few percent nRMSE on unseen geometries &mdash; up to R&sup2;&nbsp;=&nbsp;0.997 &mdash; while narrow peak definitions proved unpredictable (R&sup2; down to 0.15): a finding about the physics, not the models.</p></div>
       <div class="content-card"><h4>Honest Reduced-Order Modelling</h4><p>A 200-mode POD field surrogate reconstructs the free surface from design parameters alone, while transparently reporting where a linear basis struggles with sharp moving interfaces.</p></div>
     </div>
-    <div class="highlight-box reveal" style="margin-top:40px;"><p>Future work focuses on improving the field surrogate using <strong>local POD, Gaussian-process coefficient models, or autoencoder-based reconstruction</strong>, while keeping the workflow physically interpretable and validated against CFD.</p></div>
     <div class="tag-row reveal">
       <span class="tag">OpenFOAM v2312</span><span class="tag">interFoam</span><span class="tag">VOF</span>
       <span class="tag">Two-Phase Flow</span><span class="tag">Python</span><span class="tag">Bash</span>

@@ -240,9 +240,9 @@
       <h1 class="hero-title">ML-Augmented RANS Modelling of<br><em>Separated Flow</em></h1>
       <div class="hero-meta">
         <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">Independent Project</div></div>
-        <div><div class="hero-meta-label">Benchmark</div><div class="hero-meta-value">Periodic hill &middot; Re<sub>H</sub> = 5600</div></div>
-        <div><div class="hero-meta-label">Baseline</div><div class="hero-meta-value">OpenFOAM &middot; k-&omega; SST</div></div>
-        <div><div class="hero-meta-label">Reference</div><div class="hero-meta-value">DNS (Xiao et al. 2020)</div></div>
+        <div><div class="hero-meta-label">Physics</div><div class="hero-meta-value">Periodic-hill separation &middot; Re<sub>H</sub> = 5600</div></div>
+        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">k-&omega; SST &middot; Interpretable ML &middot; TBNN</div></div>
+        <div><div class="hero-meta-label">Tools</div><div class="hero-meta-value">OpenFOAM v2312 &middot; C++ &middot; Python</div></div>
         <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">2026</div></div>
       </div>
       <p class="hero-desc">A CFD and machine-learning study of whether a lightweight, <em>interpretable</em> data-driven correction can reduce the systematic model-form error of RANS (k-&omega; SST) for separated turbulent flow over periodic hills &mdash; built on OpenFOAM and DNS reference data, coupled back into the solver through two custom-compiled correction solvers, and validated honestly across five geometries and, ultimately, against completely different separated flows.</p>
@@ -254,7 +254,7 @@
 
   <!-- 01 PROBLEM -->
   <section id="problem" style="background: var(--bg2);">
-    <div class="section-label">01 &mdash; The Model-Form Error</div>
+    <div class="section-label">01 &mdash; The Problem</div>
     <h2 class="section-title reveal">Where standard RANS <em>gets it wrong</em></h2>
     <div class="prose reveal">
       <p>Flow over a periodic hill separates off the smooth crest, recirculates in the lee, and reattaches downstream. Linear-eddy-viscosity RANS closures &mdash; the workhorse of industrial CFD &mdash; systematically mispredict this, and separated flow is exactly the regime that governs drag, heat transfer, and loads. Steady <em>simpleFoam</em> with k-&omega; SST predicts the separation point well (x/H &approx; 0.41, matching DNS) but <strong>over-predicts reattachment badly</strong>: the recirculation bubble is roughly 65% too long.</p>
@@ -280,7 +280,7 @@
 
   <!-- 02 CORRECTION TARGET -->
   <section id="target" style="background: var(--bg);">
-    <div class="section-label">02 &mdash; The Correction Target</div>
+    <div class="section-label">02 &mdash; Governing Equations</div>
     <h2 class="section-title reveal">An <em>interpretable</em> discrepancy to learn</h2>
     <div class="prose reveal"><p>The steady RANS momentum balance carries the Reynolds stress that the turbulence model must supply. A linear eddy-viscosity model closes it with the Boussinesq approximation &mdash; aligning the deviatoric Reynolds stress with the mean strain &mdash; and that alignment is exactly what fails in separated flow. Rather than replace the model, this study learns a physically grounded correction to it.</p></div>
     <div class="card-grid-3 reveal">
@@ -292,9 +292,21 @@
     <div class="img-block reveal"><img loading="lazy" src="images/mlrans/correction-field-map.webp" alt="Field map showing where the model needs correcting"><div class="img-label">Where the Model Needs Correcting &mdash; &beta;<sub>&nu;t</sub> Field and Counter-Gradient Regions</div></div>
   </section>
 
-  <!-- 03 A-PRIORI -->
-  <section id="apriori" style="background: var(--bg2);">
-    <div class="section-label">03 &mdash; A-Priori Generalisation</div>
+  <!-- 03 REFERENCE DATA -->
+  <section id="data" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; Reference Data</div>
+    <h2 class="section-title reveal">RANS and DNS, <em>co-located</em></h2>
+    <div class="prose reveal"><p>Every correction is learned from, and judged against, DNS. The reference data is downloaded at runtime and is not redistributed.</p></div>
+    <div class="card-grid-3 reveal">
+      <div class="content-card"><h4>Periodic-Hill DNS</h4><p>Xiao, Wu, Laizet &amp; Duan (2020), <em>Comput. Fluids</em> 200, 104431 &mdash; parameterised periodic hills at Re = 5600 with five hill slopes, the basis for every leave-one-geometry-out test.</p></div>
+      <div class="content-card"><h4>Cross-Flow Dataset</h4><p>McConkey, Yee &amp; Lien (2021), <em>Sci. Data</em> 8, 255 &mdash; k-&omega; SST RANS with DNS labels for several separated flows (periodic hills, a curved backward-facing step, bumps, a converging-diverging channel), used for the cross-flow tests.</p></div>
+      <div class="content-card"><h4>Baseline RANS</h4><p>OpenFOAM <em>simpleFoam</em> with k-&omega; SST, steady and quasi-2D, run on all five geometries on the provided meshes so every RANS feature sits at the same point as its DNS target.</p></div>
+    </div>
+  </section>
+
+  <!-- 04 A-PRIORI -->
+  <section id="apriori" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; A-Priori Generalisation</div>
     <h2 class="section-title reveal">Predicting the correction on an <em>unseen hill</em></h2>
     <div class="prose reveal"><p>The correction (log&thinsp;&beta;<sub>&nu;t</sub>) is learned from RANS-local features and validated <strong>leave-one-geometry-out</strong> &mdash; train on four hill slopes, predict the unseen fifth. The mapping is strongly nonlinear: a linear ridge model fails, while a random forest reaches R&sup2; &approx; 0.82 out-of-geometry.</p></div>
     <div class="two-col reveal" style="margin-top:40px;">
@@ -315,9 +327,9 @@
     </div>
   </section>
 
-  <!-- 04 A-POSTERIORI -->
-  <section id="aposteriori" style="background: var(--bg);">
-    <div class="section-label">04 &mdash; A-Posteriori: Does It Improve the CFD?</div>
+  <!-- 05 A-POSTERIORI -->
+  <section id="aposteriori" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; A-Posteriori: Does It Improve the CFD?</div>
     <h2 class="section-title reveal">Coupling the correction <em>back into the solver</em></h2>
     <div class="prose reveal"><p>Predicting a correction is only half the problem &mdash; it has to be propagated through the flow. The ML correction was injected via a <strong>custom-compiled OpenFOAM solver</strong> (<em>simpleFoamBeta</em>) and tested on a held-out geometry.</p></div>
     <div class="two-col reveal" style="margin-top:40px;">
@@ -341,9 +353,9 @@
     <div class="img-block reveal"><img loading="lazy" src="images/mlrans/aposteriori-profiles.webp" alt="A-posteriori velocity profiles versus DNS"><div class="img-label">A-Posteriori Velocity Profiles &mdash; Baseline vs Corrected vs DNS</div></div>
   </section>
 
-  <!-- 05 ANISOTROPY -->
-  <section id="anisotropy" style="background: var(--bg2);">
-    <div class="section-label">05 &mdash; Why Linear RANS Fails</div>
+  <!-- 06 ANISOTROPY -->
+  <section id="anisotropy" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; Why Linear RANS Fails</div>
     <h2 class="section-title reveal">The Reynolds-stress <em>anisotropy</em></h2>
     <div class="prose reveal"><p>The eddy-viscosity multiplier only corrects the <em>magnitude</em> of the turbulent stress. Its <em>shape</em> &mdash; the Reynolds-stress anisotropy &mdash; is where a linear model is structurally wrong: RANS states collapse onto a single line of the barycentric map, while DNS fills it. Learning the anisotropy discrepancy is defined in 100% of cells (vs 80% for &beta;<sub>&nu;t</sub>) and generalises <em>better</em> across geometry (R&sup2; &approx; 0.93 / 0.99).</p></div>
     <div class="img-block reveal"><img loading="lazy" src="images/mlrans/anisotropy-barycentric.webp" alt="Anisotropy barycentric map: RANS collapses, DNS fills"><div class="img-label">Barycentric Anisotropy Map &mdash; RANS Collapses to a Line, DNS Fills the Triangle</div></div>
@@ -354,9 +366,9 @@
     </div>
   </section>
 
-  <!-- 06 CROSS-FLOW -->
-  <section id="crossflow" style="background: var(--bg);">
-    <div class="section-label">06 &mdash; Generalisation Across Flow Type</div>
+  <!-- 07 CROSS-FLOW -->
+  <section id="crossflow" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Generalisation Across Flow Type</div>
     <h2 class="section-title reveal">The lever that <em>actually works</em></h2>
     <div class="prose reveal"><p>The strongest test: train on periodic hills only, then predict the anisotropy on <em>completely different</em> separated flows &mdash; a backward-facing step, bumps, and a converging-diverging channel (McConkey et al. 2021). Trained on hills alone, anisotropy R&sup2; falls from <strong>0.96 in-distribution to &le; 0</strong> on the other flows.</p></div>
     <div class="two-col-img reveal" style="margin-top:32px;">
@@ -367,9 +379,34 @@
     <div class="prose reveal" style="margin-top:32px;"><p>The full generalisation picture &mdash; interpolating geometry within a flow works (R&sup2; ~ 0.9&ndash;0.96), extrapolating to extreme geometry degrades (~0.6&ndash;0.7), single-flow&rarr;different-flow fails (R&sup2; &le; 0), and multi-flow&rarr;unseen-flow is largely recovered (~0.2&ndash;0.5).</p></div>
   </section>
 
-  <!-- 07 TAKEAWAYS -->
+  <!-- 08 LIMITATIONS -->
+  <section id="limitations" style="background: var(--bg);">
+    <div class="section-label">08 &mdash; Limitations &amp; Future Work</div>
+    <h2 class="section-title reveal">What it does <em>not</em> show</h2>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <h3 class="sub-title">Limitations</h3>
+        <div class="prose">
+          <p><strong>A single Reynolds number</strong> &mdash; generalisation is tested across geometry and flow type, not Re, because no multi-Re DNS is openly available for this benchmark.</p>
+          <p><strong>The eddy-viscosity ansatz fails</strong> in the ~20% counter-gradient cells, which are flagged and excluded rather than fit.</p>
+          <p><strong>Frozen / fixed-field propagation</strong> &mdash; the a-posteriori corrections demonstrate the effect, not closed-loop robustness of a fully re-trained closure.</p>
+          <p><strong>Reattachment is a near-wall-velocity estimate</strong> (&plusmn;0.2&thinsp;H against the wall-shear definition), applied consistently to every comparison.</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-title">Future work</h3>
+        <div class="prose">
+          <p><strong>Nonlocal, convective-history closures</strong> &mdash; the g&#8321; diagnostic shows the anisotropy is not a local function of the mean-strain invariants.</p>
+          <p><strong>Reynolds-number generalisation</strong>, which needs an external multi-Re DNS source such as the Breuer / ERCOFTAC Case&nbsp;81 data.</p>
+          <p><strong>A fully re-trained coupled closure</strong> with conditioning-aware propagation of the Reynolds-stress correction, to tackle the RANS ill-conditioning directly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 TAKEAWAYS -->
   <section id="takeaways" style="background: var(--bg2);">
-    <div class="section-label">07 &mdash; Key Takeaways</div>
+    <div class="section-label">09 &mdash; Key Takeaways</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Quantified Model-Form Error</h4><p>A mesh-independent, closure-specific RANS failure was mapped against DNS across five geometries &mdash; a 65%-too-long recirculation bubble &mdash; with two custom OpenFOAM solvers built to couple corrections back into the CFD.</p></div>
