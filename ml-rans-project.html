@@ -346,7 +346,7 @@
   <section id="aposteriori" style="background: var(--bg2);">
     <div class="section-label">05 &mdash; A-Posteriori: Does It Improve the CFD?</div>
     <h2 class="section-title reveal">Coupling the correction <em>back into the solver</em></h2>
-    <div class="prose reveal"><p>Predicting a correction is only half the problem &mdash; it has to be propagated through the flow. The ML correction was injected via a <strong>custom-compiled OpenFOAM solver</strong> (<em>simpleFoamBeta</em>) and tested on a held-out geometry.</p></div>
+    <div class="prose reveal"><p>Predicting a correction is only half the problem &mdash; it has to be propagated through the flow. On a held-out geometry, the ML correction was first propagated through a <strong>frozen-turbulence</strong> momentum solve, then fully coupled into the CFD through a <strong>custom-compiled OpenFOAM solver</strong> (<em>simpleFoamBeta</em>) in which the turbulence model co-adapts.</p></div>
     <div class="two-col reveal" style="margin-top:40px;">
       <div>
         <table class="result-table">
@@ -354,11 +354,11 @@
           <tbody>
             <tr><td>DNS (reference)</td><td>4.50</td></tr>
             <tr><td>k-&omega; SST baseline</td><td>7.46</td></tr>
-            <tr><td class="accent">Corrected &mdash; ML &beta; (unseen)</td><td class="accent">3.85</td></tr>
-            <tr><td>Corrected &mdash; exact DNS &beta;</td><td>3.48</td></tr>
+            <tr><td class="accent">Corrected &mdash; ML &beta; (unseen, frozen)</td><td class="accent">3.85</td></tr>
+            <tr><td>Corrected &mdash; exact DNS &beta; (frozen)</td><td>3.48</td></tr>
           </tbody>
         </table>
-        <div class="prose" style="margin-top:16px;"><p>The ML correction <strong>cuts the reattachment error by ~78%</strong> on a geometry it never saw. With the coupled solver, the velocity-profile RMSE vs DNS falls <strong>0.106 &rarr; 0.037 (&minus;65%)</strong>.</p></div>
+        <div class="prose" style="margin-top:16px;"><p>In the frozen solve, the ML correction <strong>cuts the reattachment error by ~78%</strong> on a geometry it never saw. With the coupled solver, the velocity-profile RMSE vs DNS falls <strong>0.106 &rarr; 0.037 (&minus;65%)</strong>, but reattachment moves only 7.46 &rarr; 7.18.</p></div>
       </div>
       <div>
         <div class="img-block" style="margin-top:0;"><img loading="lazy" src="images/mlrans/flowfield-correction.webp" alt="Baseline, corrected and DNS flow fields"><div class="img-label">Baseline &rarr; ML-Corrected &rarr; DNS &mdash; Held-Out Geometry</div></div>
@@ -425,7 +425,7 @@
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Quantified Model-Form Error</h4><p>A mesh-independent, closure-specific RANS failure was mapped against DNS across five geometries &mdash; a 65%-too-long recirculation bubble &mdash; with two custom OpenFOAM solvers built to couple corrections back into the CFD.</p></div>
-      <div class="content-card"><h4>Interpretable, Validated Correction</h4><p>A physically grounded correction generalises to an unseen hill at R&sup2; &approx; 0.82 and cuts the a-posteriori reattachment error ~78%, while the anisotropy target exposes <em>why</em> linear RANS fails.</p></div>
+      <div class="content-card"><h4>Interpretable, Validated Correction</h4><p>A physically grounded correction generalises to an unseen hill at R&sup2; &approx; 0.82 and cuts the reattachment error ~78% in a frozen-turbulence solve, while the anisotropy target exposes <em>why</em> linear RANS fails.</p></div>
       <div class="content-card"><h4>Honest About the Limits</h4><p>Data-driven closure is hard to predict, couple, propagate, and generalise &mdash; each shown with working code &mdash; and training diversity is a concrete, measurable lever that rescues cross-flow generalisation.</p></div>
     </div>
     <div class="img-block reveal"><img loading="lazy" src="images/mlrans/summary.webp" alt="Summary of headline results"><div class="img-label">Summary of Headline Results</div></div>

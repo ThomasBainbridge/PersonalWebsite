@@ -555,15 +555,12 @@
           <div class="project-num">001</div>
           <h3>OpenFOAM Dam-Break CFD &amp; Surrogate Modelling</h3>
           <p>
-            A CFD and data-driven surrogate modelling study built on the OpenFOAM
-            <em>interFoam</em> laminar dam-break case. A fully automated pipeline generates a
-            403-case 2D VOF simulation database &mdash; 343 structured training cases plus 60
-            Latin-hypercube validation cases &mdash; varying water-column height, obstacle height,
-            and obstacle position. Ten surrogate model families predict integrated and
-            time-windowed impact loads on unseen geometries to within a few percent (R&sup2; up to
-            0.997), while showing that the narrowest peak-pressure definitions cannot be predicted
-            from geometry alone. A 200-mode POD reduced-order model trained on ~20,900 snapshots
-            reconstructs the <em>alpha.water</em> free surface on unseen cases.
+            An automated CFD and surrogate-modelling study of dam-break impact loads on an obstacle.
+            Starting from the OpenFOAM <em>interFoam</em> dam-break case, a pipeline generates and runs a
+            403-case two-phase VOF simulation database, varying the water-column height and the
+            obstacle's height and position. Impact metrics extracted from every run train scalar
+            surrogate models, and a POD reduced-order model reconstructs the free surface for unseen
+            geometries.
           </p>
           <div class="project-tags">
             <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
@@ -580,15 +577,11 @@
           <div class="project-num">002</div>
           <h3>Reduced-Order Forecasting of Particle-Laden Flow</h3>
           <p>
-            A scientific-machine-learning testbed that generates a controlled 2D inertial-particle
-            dataset, converts Lagrangian particle motion into Eulerian concentration fields, and
-            trains reduced-order PyTorch models to reconstruct and forecast the field evolution.
-            Inertial particles are driven through an unsteady Taylor&ndash;Green vortex, reproducing
-            textbook preferential concentration, with four diagnostics confirming St&nbsp;&approx;&nbsp;1
-            as the strongest-clustering regime. POD and a convolutional autoencoder compress the
-            fields to a 16-dimensional latent space. Neural latent forecasters (MLP, Neural-ODE, GRU)
-            beat persistence and win at short horizons, while a linear DMD baseline wins at long
-            range &mdash; benchmarked honestly over five training seeds.
+            A scientific-machine-learning testbed for particle-laden flow. Inertial particles are
+            tracked through a prescribed, unsteady vortical flow and converted into Eulerian
+            concentration fields. POD and a convolutional autoencoder compress those fields into a
+            low-dimensional latent space, where linear (DMD) and neural (MLP, Neural-ODE, GRU) models
+            forecast their evolution in time against a persistence baseline.
           </p>
           <div class="project-tags">
             <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
@@ -605,16 +598,12 @@
           <div class="project-num">003</div>
           <h3>ML-Augmented RANS Modelling of Separated Flow</h3>
           <p>
-            A CFD and machine-learning study of whether a lightweight, interpretable
-            data-driven correction can reduce the systematic model-form error of RANS
-            (k&#8209;&omega;&nbsp;SST) for separated turbulent flow over periodic hills, validated
-            against DNS. A baseline OpenFOAM failure map (reattachment x/H&nbsp;&approx;&nbsp;7.5 vs
-            DNS&nbsp;4.5) motivates an interpretable eddy-viscosity and Reynolds-stress-anisotropy
-            correction, learned with ridge / random-forest / gradient-boosting models and a
-            tensor-basis neural network. The correction is coupled back into the solver through
-            two custom-compiled OpenFOAM solvers &mdash; cutting the a-posteriori reattachment
-            error ~78% on an unseen geometry &mdash; then subjected to honest out-of-distribution
-            tests across geometry and completely different separated flows.
+            A CFD and machine-learning study of the model-form error of RANS turbulence models in
+            separated flow. Baseline k&#8209;&omega;&nbsp;SST simulations of flow over periodic hills in
+            OpenFOAM are compared with DNS reference data, and interpretable machine-learning models
+            learn a correction to the eddy viscosity and Reynolds-stress anisotropy. Two custom
+            OpenFOAM solvers feed the correction back into the CFD, and it is tested on unseen
+            geometries and different separated flows.
           </p>
           <div class="project-tags">
             <span class="tag" style="color: var(--accent); border-color: var(--accent);">View Project &#8599;</span>
