@@ -157,6 +157,15 @@
     .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
     .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
+    .eq-list { display: flex; flex-direction: column; gap: 2px; margin-top: 40px; }
+    .eq-row { display: grid; grid-template-columns: minmax(220px, 1fr) 2fr; gap: 40px; align-items: center; background: var(--bg2); border: 1px solid var(--line); padding: 28px 32px; }
+    .eq-row:first-child { border-radius: 4px 4px 0 0; }
+    .eq-row:last-child { border-radius: 0 0 4px 4px; }
+    .eq-name h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .eq-name p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .eq-math { font-size: 17px; color: var(--text); overflow-x: auto; overflow-y: hidden; }
+    .eq-math .katex-display { margin: 0; }
+
     .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
     .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
     .team-card.mine { border-color: var(--accent); }
@@ -189,6 +198,8 @@
       .two-col-img .img-block { height: auto; }
       .three-col-img { grid-template-columns: 1fr; }
       .card-grid-3 { grid-template-columns: 1fr; }
+      .eq-row { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px; }
+      .eq-math { font-size: 15px; }
       .mission-grid { grid-template-columns: 1fr; }
       .mission-card { padding: 28px 24px; }
       .mission-card:first-child { border-radius: 4px 4px 0 0; }
@@ -223,6 +234,9 @@
       .reveal { opacity: 1 !important; transform: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}]})"></script>
 </head>
 <body>
 
@@ -273,12 +287,12 @@
     <div class="prose reveal">
       <p>The <em>interFoam</em> solver uses a Volume of Fluid method to track the water&ndash;air interface. A single momentum equation is solved for the mixture, with density and viscosity blended by the local water volume fraction &alpha;. Interface sharpness is maintained by an artificial compression term that is active only within the interface region.</p>
     </div>
-    <div class="card-grid-3 reveal">
-      <div class="content-card"><h4>Volume Fraction Transport</h4><p>&part;&alpha;/&part;t&nbsp;+&nbsp;&nabla;&middot;(&alpha;<strong>U</strong>)&nbsp;+&nbsp;&nabla;&middot;[&alpha;(1&minus;&alpha;)<strong>U</strong><sub>r</sub>]&nbsp;=&nbsp;0. The third term is the interface-compression term that keeps the interface sharp without explicit reconstruction; <strong>U</strong><sub>r</sub> acts only where &alpha;(1&minus;&alpha;)&nbsp;&ne;&nbsp;0.</p></div>
-      <div class="content-card"><h4>Mixture Properties</h4><p>&rho;&nbsp;=&nbsp;&alpha;&rho;<sub>w</sub>&nbsp;+&nbsp;(1&minus;&alpha;)&rho;<sub>a</sub> and &mu;&nbsp;=&nbsp;&alpha;&mu;<sub>w</sub>&nbsp;+&nbsp;(1&minus;&alpha;)&mu;<sub>a</sub>. Density and dynamic viscosity are linearly blended between water and air by the local volume fraction.</p></div>
-      <div class="content-card"><h4>Continuity &amp; Momentum</h4><p>&nabla;&middot;<strong>U</strong>&nbsp;=&nbsp;0, with a single mixture momentum equation balancing pressure, viscous, gravity and surface-tension forces. OpenFOAM solves for the modified pressure p<sub>rgh</sub>&nbsp;=&nbsp;p&nbsp;&minus;&nbsp;&rho;<strong>g</strong>&middot;<strong>x</strong>, removing the hydrostatic part to improve conditioning.</p></div>
+    <div class="eq-list reveal">
+      <div class="eq-row"><div class="eq-name"><h4>Volume Fraction Transport</h4><p>The third term is the interface-compression term that keeps the interface sharp; <strong>U</strong><sub>r</sub> acts only where &alpha;(1&minus;&alpha;) &ne; 0.</p></div><div class="eq-math">\[ \frac{\partial \alpha}{\partial t} + \nabla\cdot(\alpha\mathbf{U}) + \nabla\cdot\big[\alpha(1-\alpha)\mathbf{U}_r\big] = 0 \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Mixture Properties</h4><p>Density and dynamic viscosity are blended linearly between water and air by the local volume fraction.</p></div><div class="eq-math">\[ \rho = \alpha\rho_w + (1-\alpha)\rho_a, \qquad \mu = \alpha\mu_w + (1-\alpha)\mu_a \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Continuity &amp; Momentum</h4><p>A single momentum equation for the mixture, balancing pressure, viscous, gravity and surface-tension forces.</p></div><div class="eq-math">\[ \begin{gathered}\nabla\cdot\mathbf{U} = 0 \\ \frac{\partial(\rho\mathbf{U})}{\partial t} + \nabla\cdot(\rho\mathbf{U}\otimes\mathbf{U}) = -\nabla p + \nabla\cdot\big[\mu(\nabla\mathbf{U}+\nabla\mathbf{U}^{T})\big] + \rho\mathbf{g} + \mathbf{f}_\sigma\end{gathered} \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Surface Tension &amp; Pressure</h4><p>Continuum Surface Force model (Brackbill et&nbsp;al. 1992). OpenFOAM solves for the modified pressure p<sub>rgh</sub>, removing the hydrostatic part.</p></div><div class="eq-math">\[ \mathbf{f}_\sigma = \sigma\kappa\nabla\alpha, \qquad p_{rgh} = p - \rho\,\mathbf{g}\cdot\mathbf{x} \]</div></div>
     </div>
-    <div class="highlight-box reveal"><p>Surface tension is applied through the <strong>Continuum Surface Force</strong> model (Brackbill et&nbsp;al. 1992), <strong>f</strong><sub>&sigma;</sub>&nbsp;=&nbsp;&sigma;&kappa;&nabla;&alpha;, where &kappa; is the interface curvature. The system is closed with water/air material properties and integrated transiently to 1.5&nbsp;s.</p></div>
   </section>
 
   <!-- 03 PARAMETER SPACE -->

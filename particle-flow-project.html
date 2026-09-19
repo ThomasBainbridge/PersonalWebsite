@@ -157,6 +157,15 @@
     .content-card h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--text); letter-spacing: .04em; margin-bottom: 10px; }
     .content-card p { font-size: 14px; color: var(--muted); line-height: 1.65; }
 
+    .eq-list { display: flex; flex-direction: column; gap: 2px; margin-top: 40px; }
+    .eq-row { display: grid; grid-template-columns: minmax(220px, 1fr) 2fr; gap: 40px; align-items: center; background: var(--bg2); border: 1px solid var(--line); padding: 28px 32px; }
+    .eq-row:first-child { border-radius: 4px 4px 0 0; }
+    .eq-row:last-child { border-radius: 0 0 4px 4px; }
+    .eq-name h4 { font-family: var(--mono); font-size: 12px; font-weight: 500; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 8px; }
+    .eq-name p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+    .eq-math { font-size: 17px; color: var(--text); overflow-x: auto; overflow-y: hidden; }
+    .eq-math .katex-display { margin: 0; }
+
     .team-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 2px; margin-top: 48px; }
     .team-card { background: var(--bg3); border: 1px solid var(--line); padding: 36px 16px; text-align: center; }
     .team-card.mine { border-color: var(--accent); }
@@ -189,6 +198,8 @@
       .two-col-img .img-block { height: auto; }
       .three-col-img { grid-template-columns: 1fr; }
       .card-grid-3 { grid-template-columns: 1fr; }
+      .eq-row { grid-template-columns: 1fr; gap: 16px; padding: 24px 20px; }
+      .eq-math { font-size: 15px; }
       .mission-grid { grid-template-columns: 1fr; }
       .mission-card { padding: 28px 24px; }
       .mission-card:first-child { border-radius: 4px 4px 0 0; }
@@ -223,6 +234,9 @@
       .reveal { opacity: 1 !important; transform: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}]})"></script>
 </head>
 <body>
 
@@ -271,10 +285,10 @@
     <div class="section-label">02 &mdash; Governing Equations</div>
     <h2 class="section-title reveal">From Lagrangian particles to <em>Eulerian fields</em></h2>
     <div class="prose reveal"><p>A prescribed, divergence-free Taylor&ndash;Green carrier flow drives inertial point particles under linear Stokes drag; their positions are binned into a normalised concentration field that conserves mass. The single governing parameter is the Stokes number.</p></div>
-    <div class="card-grid-3 reveal">
-      <div class="content-card"><h4>Carrier Flow</h4><p>An unsteady Taylor&ndash;Green vortex on a periodic 2&pi;&times;2&pi; square, u = A(t)(sin&thinsp;x cos&thinsp;y, &minus;cos&thinsp;x sin&thinsp;y) with A(t) = 1 + 0.25&thinsp;sin(&omega;t). Analytically incompressible, so no CFD solver is needed &mdash; velocity is evaluated directly at each particle.</p></div>
-      <div class="content-card"><h4>Inertial Particles</h4><p>Each particle obeys dv/dt = (u &minus; v)/&tau;<sub>p</sub>, integrated with vectorised RK4. With a unit flow time scale the Stokes number is simply St = &tau;<sub>p</sub> &mdash; the ratio of particle response time to flow time controlling how strongly particles cluster.</p></div>
-      <div class="content-card"><h4>Lagrangian &rarr; Eulerian</h4><p>At each saved time, 5,000 particle positions are binned onto a 64&times;64 grid and normalised to a concentration field that sums to one (discrete mass conservation), stored channel-first ready for PyTorch.</p></div>
+    <div class="eq-list reveal">
+      <div class="eq-row"><div class="eq-name"><h4>Carrier Flow</h4><p>An unsteady Taylor&ndash;Green vortex on the periodic square [0, 2&pi;]&sup2;. Analytically divergence-free, so the velocity is evaluated directly at each particle &mdash; no CFD solver needed.</p></div><div class="eq-math">\[ \mathbf{u}(x,y,t) = A(t)\begin{pmatrix}\sin x\cos y\\ -\cos x\sin y\end{pmatrix}, \qquad A(t) = 1 + 0.25\sin\omega t, \qquad \nabla\cdot\mathbf{u} = 0 \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Inertial Particles</h4><p>Linear Stokes drag, integrated with vectorised RK4. With a unit flow time scale, the Stokes number is simply the particle response time.</p></div><div class="eq-math">\[ \frac{d\mathbf{x}_p}{dt} = \mathbf{v}_p, \qquad \frac{d\mathbf{v}_p}{dt} = \frac{\mathbf{u}(\mathbf{x}_p,t) - \mathbf{v}_p}{\tau_p}, \qquad \mathrm{St} = \frac{\tau_p}{\tau_f} = \tau_p \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Lagrangian &rarr; Eulerian</h4><p>5,000 particle positions are binned onto a 64&times;64 grid, giving a concentration field that sums to one (discrete mass conservation).</p></div><div class="eq-math">\[ c_{ij}(t) = \frac{1}{N_p}\sum_{p=1}^{N_p} \mathbf{1}\big[\mathbf{x}_p(t) \in \Omega_{ij}\big], \qquad \sum_{i,j} c_{ij} = 1 \]</div></div>
     </div>
     <div class="two-col reveal" style="margin-top:40px;">
       <div>
