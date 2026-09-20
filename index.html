@@ -679,10 +679,9 @@
           the NASA HiLiftPW-1 trapezoidal wing configuration at Re = 8.5 million, following
           official workshop gridding guidelines. The surface mesh was built in Pointwise using
           an advancing front algorithm with targeted edge length clustering around high-curvature
-          regions. Near-wall resolution was achieved using T-Rex prism layer meshing with a
-          y&#8314; &#8776; 1 target, producing 38 prism layers at a growth rate of 1.2. The final grid
-          totalled ~15.9 million cells and was assessed against skewness, aspect ratio, and
-          orthogonal quality metrics before import into ANSYS Fluent.
+          regions. Near-wall resolution was handled with T-Rex prism-layer meshing to a
+          y&#8314; &#8776; 1 target, and the finished grid was assessed against skewness, aspect
+          ratio, and orthogonal quality metrics before import into ANSYS Fluent.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">Pointwise</span>
@@ -745,7 +744,7 @@
       <div class="skill-card">
         <h3>Numerical Modelling for Incompressible Flows</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow configuration to solve the benchmark lid-driven cavity problem, with physically correct boundary conditions implemented and channel-specific flow scaling removed. A grid convergence study across five mesh resolutions established an adequate cell count, with non-dimensionalised centreline velocity profiles validated against published datasets at Reynolds numbers 400, 1000, and 3200. Comparative simulations in ANSYS Fluent and OpenFOAM were used to assess the in-house solver against commercial CFD packages, with the assigned Reynolds number of 100 analysed through streamlines and velocity contours.
+          An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow configuration to solve the benchmark lid-driven cavity problem, with physically correct boundary conditions implemented and channel-specific flow scaling removed. A grid convergence study across five mesh resolutions set the cell count, and non-dimensionalised centreline velocity profiles were compared with published datasets at Reynolds numbers 400, 1000, and 3200. Comparative simulations in ANSYS Fluent and OpenFOAM were used to assess the in-house solver against commercial CFD packages, with the assigned Reynolds number of 100 analysed through streamlines and velocity contours.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">SIMPLE-TDMA</span>
@@ -784,9 +783,9 @@
           system-identification manoeuvres. Eleven flight logs &mdash; 3.7 hours airborne &mdash; were
           signal-mapped and segmented into manoeuvres before longitudinal, lateral-directional and
           coupled 6-DOF grey-box models were fitted in Julia. A universal differential equation
-          formulation then added a neural residual to the state equations, improving held-out validation
-          error across the lateral-directional states by 21&ndash;42% over five random seeds, with a
-          hardened structural ablation used to limit angle-of-attack degradation.
+          formulation then added a neural residual to the state equations, evaluated on held-out
+          flights across several random seeds, with structural ablations used to probe how much of
+          the fit the neural term was carrying.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">Julia</span>
