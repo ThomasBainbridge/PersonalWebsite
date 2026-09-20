@@ -529,9 +529,11 @@
     </div>
     <div class="hero-right">
       <div class="hero-visual">
-        <img class="hero-cfd" src="images/hero/vortex-shedding.webp" width="1246" height="829"
-             loading="lazy" decoding="async"
-             alt="2D vortex shedding behind a cylinder at Re = 100, coloured by vorticity">
+        <video class="hero-cfd" width="1246" height="828" autoplay muted loop playsinline
+               preload="metadata" poster="images/hero/vortex-shedding-poster.webp" aria-hidden="true">
+          <source src="images/hero/vortex-shedding.webm" type="video/webm">
+          <source src="images/hero/vortex-shedding.mp4" type="video/mp4">
+        </video>
         <div class="hero-legend" aria-hidden="true">
           <span class="hero-legend-title">&omega;</span>
           <div class="hero-legend-scale">
@@ -893,6 +895,14 @@
       });
     }, { threshold: 0.12 });
     reveals.forEach(el => observer.observe(el));
+
+    // Hero visual: a recorded loop of the OpenFOAM vortex-shedding case.
+    // Honour prefers-reduced-motion by holding the poster frame.
+    const heroCfd = document.querySelector('.hero-cfd');
+    if (heroCfd && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      heroCfd.removeAttribute('autoplay');
+      heroCfd.pause();
+    }
 
   </script>
 
