@@ -635,11 +635,12 @@
         <h3>Laminar Channel Flow — CFD vs Analytical Study</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
           Comparative study of analytical and numerical solutions for fully developed laminar
-          flow in a 2D channel. An analytical velocity profile was derived from the Navier–Stokes
-          equations and implemented in MATLAB as a benchmark. ANSYS Fluent simulations were
-          then run across three structured mesh densities, two outlet boundary conditions, and
-          first vs second order discretisation schemes. A non-isothermal case was also conducted
-          to examine thermal behaviour within the flow field.
+          flow in a 2D channel. An analytical velocity profile was derived from the Navier&ndash;Stokes
+          equations and implemented in MATLAB as a benchmark. ANSYS Fluent simulations were then run
+          across three structured mesh densities, two outlet boundary conditions, and first vs second
+          order discretisation schemes, each compared against the analytical profile to isolate the
+          effect of mesh, boundary treatment and scheme order. A non-isothermal case examined thermal
+          behaviour within the flow field.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">ANSYS Fluent</span>
@@ -717,7 +718,13 @@
       <div class="skill-card">
         <h3>Turbulence Modelling — Virginia Tech Stability Wind Tunnel</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          A group RANS study simulating turbulent airflow through the high-speed leg of the Virginia Tech Stability Wind Tunnel using ANSYS Fluent, with reference conditions derived from experimental operating points across three Mach numbers. Multiple turbulence closures were compared — including k-&#603; RNG, k-&#969; BSL, k-kL-&#969;, and k-&#969; SST — alongside curvature correction, corner correction, and energy equation effects to assess their influence on secondary flow features. Grid convergence was quantified using Roache's GCI framework across four mesh refinement levels, and turbulence intensity and Reynolds shear stress profiles were benchmarked against DNS reference data.
+          A group RANS study simulating turbulent airflow through the high-speed leg of the
+          Virginia Tech Stability Wind Tunnel using ANSYS Fluent, with reference conditions from
+          experimental operating points at three Mach numbers. Four turbulence closures &mdash;
+          k-&#603; RNG, k-&#969; BSL, k-kL-&#969; and k-&#969; SST &mdash; were compared, alongside
+          curvature correction, corner correction and energy-equation effects on secondary flow.
+          Grid convergence used Roache's GCI framework across four mesh levels, with turbulence
+          intensity and Reynolds shear stress benchmarked against DNS data.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">ANSYS Fluent</span>
@@ -732,7 +739,13 @@
       <div class="skill-card">
         <h3>Numerical Modelling for Compressible Flows</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          A Godunov-type finite-volume solver for the compressible Euler equations was extended in Fortran to implement HLL and HLLC approximate Riemann solvers alongside second-order piecewise-linear reconstruction with a minmod limiter, verified against a reference solution across three grid resolutions. Multidimensional benchmark problems — the 2D Riemann problem, Mach 3 forward-facing step, and double Mach reflection — were analysed using UCNS3D, with density, Mach number, and pressure contours used to identify wave structures and limiter activation contours used to compare CWENOZ scheme orders and reconstruction strategies.
+          A Godunov-type finite-volume solver for the compressible Euler equations was extended
+          in Fortran to implement HLL and HLLC approximate Riemann solvers alongside second-order
+          piecewise-linear reconstruction with a minmod limiter, verified against a reference solution
+          across three grid resolutions. Multidimensional benchmarks &mdash; the 2D Riemann problem,
+          Mach 3 forward-facing step and double Mach reflection &mdash; were analysed using UCNS3D,
+          with density, Mach and pressure contours identifying wave structures and limiter-activation
+          contours comparing CWENOZ scheme orders.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">Fortran</span>
@@ -748,7 +761,13 @@
       <div class="skill-card">
         <h3>Numerical Modelling for Incompressible Flows</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow configuration to solve the benchmark lid-driven cavity problem, with physically correct boundary conditions implemented and channel-specific flow scaling removed. A grid convergence study across five mesh resolutions set the cell count, and non-dimensionalised centreline velocity profiles were compared with published datasets at Reynolds numbers 400, 1000, and 3200. Comparative simulations in ANSYS Fluent and OpenFOAM were used to assess the in-house solver against commercial CFD packages, with the assigned Reynolds number of 100 analysed through streamlines and velocity contours.
+          An in-house SIMPLE-TDMA finite volume solver was adapted from a 2D channel flow
+          configuration to solve the benchmark lid-driven cavity problem, with corrected boundary
+          conditions and channel-specific flow scaling removed. A grid convergence study across five
+          mesh resolutions set the cell count, and non-dimensionalised centreline velocity profiles
+          were compared with published datasets at Reynolds numbers 400, 1000 and 3200. Comparative
+          simulations in ANSYS Fluent and OpenFOAM assessed the in-house solver against commercial
+          CFD packages.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">SIMPLE-TDMA</span>
@@ -763,9 +782,13 @@
       <a href="group-project.html" class="skill-card" style="text-decoration: none; display: block;">
         <h3 style="color: var(--accent);">Group Project — Design Optimisation of a Pod Deployable UAV</h3>
         <p style="font-size: 14px; color: var(--muted); line-height: 1.65; margin-top: 8px;">
-          Multidisciplinary MSc group project covering CFD aerodynamics, propulsion analysis,
-          automated duct geometry optimisation, flight dynamics simulation, and a
-          physics-informed machine learning surrogate model for a dual-mission pod-deployable UAV.
+          Multidisciplinary MSc group project designing a pod-deployable UAV for two contrasting
+          missions &mdash; high-speed interception and long-endurance payload carriage. Four initial
+          concepts were screened with CFD before a hybrid configuration was taken forward. The work
+          spans a NACA aerofoil optimisation framework, an EDF versus solid-propellant
+          propulsion study, an automated CFD-driven duct optimisation loop, full-aircraft simulations,
+          a MATLAB/Simulink six-degree-of-freedom trim and stability campaign, and a physics-informed
+          machine learning surrogate for aerodynamic forces and flow fields.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">ANSYS Fluent</span>
@@ -788,8 +811,8 @@
           signal-mapped and segmented into manoeuvres before longitudinal, lateral-directional and
           coupled 6-DOF grey-box models were fitted in Julia. A universal differential equation
           formulation then added a neural residual to the state equations, evaluated on held-out
-          flights across several random seeds, with structural ablations used to probe how much of
-          the fit the neural term was carrying.
+          flights across several random seeds, with structural ablations probing the neural term's
+          contribution.
         </p>
         <div class="skill-tags" style="margin-top: 16px;">
           <span class="tag">Julia</span>
