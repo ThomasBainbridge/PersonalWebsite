@@ -248,10 +248,10 @@
       <div class="hero-tag">MSc Group Project &mdash; Cranfield University &mdash; April 2026</div>
       <h1 class="hero-title">Design Optimisation of a<br><em>Pod Deployable UAV</em></h1>
       <div class="hero-meta">
-        <div><div class="hero-meta-label">Institution</div><div class="hero-meta-value">Cranfield University</div></div>
-        <div><div class="hero-meta-label">Programme</div><div class="hero-meta-value">MSc Computational Fluid Dynamics</div></div>
-        <div><div class="hero-meta-label">Supervisor</div><div class="hero-meta-value">Dr Laszlo K&ouml;n&ouml;zsy</div></div>
-        <div><div class="hero-meta-label">Team Size</div><div class="hero-meta-value">5 Engineers</div></div>
+        <div><div class="hero-meta-label">Type</div><div class="hero-meta-value">MSc Group Project &middot; 5 engineers</div></div>
+        <div><div class="hero-meta-label">Focus</div><div class="hero-meta-value">Pod-deployable UAV &middot; two mission profiles</div></div>
+        <div><div class="hero-meta-label">Methods</div><div class="hero-meta-value">CFD &middot; Duct optimisation &middot; 6-DOF flight dynamics &middot; ML surrogate</div></div>
+        <div><div class="hero-meta-label">Tools</div><div class="hero-meta-value">ANSYS Fluent &middot; Python &middot; MATLAB/Simulink &middot; PyTorch</div></div>
         <div><div class="hero-meta-label">Date</div><div class="hero-meta-value">April 2026</div></div>
       </div>
       <p class="hero-desc">A multidisciplinary group project to design and optimise a pod-deployable UAV capable of fulfilling two contrasting mission profiles &mdash; a short-duration high-speed interception role and a long-endurance payload mission. The project integrated CFD aerodynamics, propulsion analysis, flight dynamics simulation, automated duct optimisation, and a physics-informed machine learning surrogate model into a unified engineering framework.</p>
@@ -260,7 +260,7 @@
 
   <!-- 01 MISSIONS -->
   <section id="missions" style="background: var(--bg2);">
-    <div class="section-label">01 &mdash; Mission Requirements</div>
+    <div class="section-label">01 &mdash; The Problem</div>
     <h2 class="section-title reveal">Two <em>competing missions</em></h2>
     <div class="prose reveal"><p>The core design challenge was to develop a single pod-deployable platform capable of fulfilling two fundamentally different missions. The competing requirements imposed conflicting constraints on aerodynamics, propulsion, packaging, stability, and control &mdash; making this a genuine multidisciplinary optimisation problem rather than a straightforward sizing exercise.</p></div>
     <div class="mission-grid reveal">
@@ -554,8 +554,32 @@
   </section>
 
   <!-- 09 CONCLUSIONS -->
-  <section id="conclusions" style="background: var(--bg2);">
-    <div class="section-label">09 &mdash; Conclusions</div>
+  <section id="limitations" style="background: var(--bg2);">
+    <div class="section-label">09 &mdash; Limitations &amp; Future Work</div>
+    <h2 class="section-title reveal">What it does <em>not</em> show</h2>
+    <div class="two-col reveal" style="margin-top:40px;">
+      <div>
+        <h3 class="sub-title">Limitations</h3>
+        <div class="prose">
+          <p><strong>The duct study is 2-D and steady</strong> &mdash; candidate geometries are compared with steady RANS (k-&omega; SST) on a two-dimensional section at a single Mission&nbsp;1 condition (70&nbsp;m/s).</p>
+          <p><strong>The configuration is not passively stable</strong> &mdash; open-loop eigenvalue analysis across the trim campaign shows it is mathematically flyable but would not hold attitude unaided.</p>
+          <p><strong>The surrogate is a proof of concept</strong> &mdash; trained on 20 samples. Scalar thrust and drag are predicted almost exactly, but the flow-field head is weaker (velocity magnitude R&sup2; = 0.874, vertical velocity 0.694).</p>
+        </div>
+      </div>
+      <div>
+        <h3 class="sub-title">Future work</h3>
+        <div class="prose">
+          <p><strong>A scheduled feedback control system</strong>, with pitch, yaw and thrust scheduling based on the trimmed operating point, is what a practical flight implementation would need.</p>
+          <p><strong>A larger surrogate dataset</strong> &mdash; the 20-sample study shows the architecture works; more geometries would be needed before it could genuinely accelerate design iteration.</p>
+          <p><strong>Duct evaluation beyond the single 2-D cruise point</strong>, covering the off-design conditions the two missions actually span.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10 KEY TAKEAWAYS -->
+  <section id="conclusions" style="background: var(--bg);">
+    <div class="section-label">10 &mdash; Key Takeaways</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Propulsion &amp; Design</h4><p>While solid propellant offers substantially higher peak thrust, the EDF configuration better satisfies manoeuvrability and mission robustness. The hybrid modular design concept successfully served both missions with manageable compromises.</p></div>
@@ -566,9 +590,10 @@
   </section>
 
   <!-- 10 TEAM -->
-  <section id="team" style="background: var(--bg);">
-    <div class="section-label">10 &mdash; The Team</div>
+  <section id="team" style="background: var(--bg2);">
+    <div class="section-label">11 &mdash; The Team</div>
     <h2 class="section-title reveal">Five engineers, <em>one platform</em></h2>
+    <div class="prose reveal"><p>Completed for the MSc in Computational Fluid Dynamics at Cranfield University, supervised by Dr Laszlo K&ouml;n&ouml;zsy.</p></div>
     <div class="team-grid reveal">
       <div class="team-card mine"><div class="team-initial">TB</div><div class="team-name">Thomas Bainbridge</div></div>
       <div class="team-card"><div class="team-initial">JB</div><div class="team-name">James Bowie</div></div>
