@@ -232,6 +232,9 @@
       .reveal { opacity: 1 !important; transform: none !important; }
     }
   </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters: [{left: '\\[', right: '\\]', display: true}]})"></script>
 </head>
 <body>
 
@@ -289,9 +292,22 @@
     </div>
   </section>
 
+  <!-- 02 GOVERNING EQUATIONS -->
+  <section id="equations" style="background: var(--bg);">
+    <div class="section-label">02 &mdash; Governing Equations</div>
+    <h2 class="section-title reveal">The <em>physics</em> behind each stage</h2>
+    <div class="prose reveal"><p>The design loop couples four analyses, each with its own governing relations: CFD for the duct, propellant and full aircraft; an aerofoil search driven by lift-to-drag ratio; a duct objective defined at the fan face; and a six-degree-of-freedom flight model trimmed and linearised for stability.</p></div>
+    <div class="eq-list reveal">
+      <div class="eq-row"><div class="eq-name"><h4>Steady RANS (k-&omega; SST)</h4><p>Every CFD stage &mdash; duct, propellant and full-aircraft &mdash; solves the steady Reynolds-averaged equations with the k-&omega; SST closure, the turbulent stress carried by an eddy viscosity.</p></div><div class="eq-math">\[ \nabla\cdot(\rho\,\mathbf{U}\otimes\mathbf{U}) = -\nabla p + \nabla\cdot\big[(\mu+\mu_t)(\nabla\mathbf{U}+\nabla\mathbf{U}^{T})\big], \qquad \nabla\cdot(\rho\mathbf{U}) = 0, \qquad \mu_t = \frac{\rho k}{\omega} \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Aerofoil Objective</h4><p>Lift and drag coefficients from the validated PyFluent framework. Each optimiser searches for the angle of attack that maximises the lift-to-drag ratio.</p></div><div class="eq-math">\[ C_L = \frac{L}{\tfrac12\rho V^{2} S}, \qquad C_D = \frac{D}{\tfrac12\rho V^{2} S}, \qquad \alpha^{*} = \arg\max_{\alpha}\ \frac{C_L(\alpha)}{C_D(\alpha)} \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Duct Objective</h4><p>The duct search maximises mass flow delivered to the EDF fan face, with total-pressure recovery tracked across each candidate geometry.</p></div><div class="eq-math">\[ \dot{m} = \int_{A_{\mathrm{fan}}} \rho\,(\mathbf{U}\cdot\mathbf{n})\,dA \quad \longrightarrow\ \max, \qquad \mathrm{PR} = \frac{p_{t,\mathrm{fan}}}{p_{t,\mathrm{inlet}}} \]</div></div>
+      <div class="eq-row"><div class="eq-name"><h4>Trim &amp; Linear Stability</h4><p>Trim solves the 6-DOF equations for equilibrium at a given speed, load factor and sideslip. Linearising there gives the state matrix whose eigenvalues set open-loop stability.</p></div><div class="eq-math">\[ \mathbf{f}(\mathbf{x},\mathbf{u}) = \mathbf{0}, \qquad \mathbf{A} = \frac{\partial \mathbf{f}}{\partial \mathbf{x}}\bigg|_{\mathrm{trim}}, \qquad \text{stable} \iff \max_i \operatorname{Re}(\lambda_i) < 0 \]</div></div>
+    </div>
+  </section>
+
   <!-- 02 INITIAL DESIGN -->
-  <section id="design" style="background: var(--bg);">
-    <div class="section-label">02 &mdash; Initial Design &amp; Selection</div>
+  <section id="design" style="background: var(--bg2);">
+    <div class="section-label">03 &mdash; Initial Design &amp; Selection</div>
     <h2 class="section-title reveal">Four concepts, <em>one hybrid</em></h2>
     <div class="prose reveal"><p>Four initial UAV configurations were developed and evaluated in ANSYS Fluent to assess external aerodynamics, flow separation, and EDF airflow delivery. A decision matrix combining drag force, manoeuvrability, and ease of manufacture identified the most promising baseline for further iteration. Elements from all four designs were then combined into a final modular hybrid geometry.</p></div>
     <div class="design-grid reveal">
@@ -332,8 +348,8 @@
   </section>
 
   <!-- 03 AEROFOIL — text full-width, images below -->
-  <section id="aerofoil" style="background: var(--bg2);">
-    <div class="section-label">03 &mdash; Aerofoil Selection &amp; Validation</div>
+  <section id="aerofoil" style="background: var(--bg);">
+    <div class="section-label">04 &mdash; Aerofoil Selection &amp; Validation</div>
     <h2 class="section-title reveal">NACA optimisation <em>framework</em></h2>
     <div class="prose reveal">
       <p>Before aerofoil selection could proceed, the PyFluent CFD framework was validated against XFoil panel method predictions for the NACA 4412 at Re&nbsp;=&nbsp;1&times;10&sup6;. Lift coefficient predictions showed close agreement throughout the linear regime, with maximum discrepancy below 5%. Drag was over-predicted by approximately 60% relative to XFoil &mdash; expected given the fully turbulent SST k-&omega; assumption versus XFoil&rsquo;s integral boundary layer formulation.</p>
@@ -356,8 +372,8 @@
   </section>
 
   <!-- 04 PROPULSION — text full-width, table + images below -->
-  <section id="propulsion" style="background: var(--bg);">
-    <div class="section-label">04 &mdash; Propulsion Analysis</div>
+  <section id="propulsion" style="background: var(--bg2);">
+    <div class="section-label">05 &mdash; Propulsion Analysis</div>
     <h2 class="section-title reveal">EDF vs <em>solid propellant</em></h2>
     <div class="prose reveal">
       <p>Ammonium Perchlorate Composite Propellant (APCP) solid propellant was investigated as an alternative propulsion system for Mission 1. Three burn stages &mdash; beginning, middle, and end &mdash; were simulated using a density-based k-&omega; SST solver with the energy equation active, with mass flow inlets applied to the propellant burn area surfaces at each stage.</p>
@@ -383,8 +399,8 @@
   </section>
 
   <!-- 05 DUCT OPTIMISATION -->
-  <section id="duct" style="background: var(--bg2);">
-    <div class="section-label">05 &mdash; Duct Geometry Optimisation</div>
+  <section id="duct" style="background: var(--bg);">
+    <div class="section-label">06 &mdash; Duct Geometry Optimisation</div>
     <h2 class="section-title reveal">Automated CFD-driven <em>design loop</em></h2>
     <div class="prose reveal"><p>A 2D geometry optimisation framework was developed to improve air delivery to the EDF fan-face by systematically modifying the internal duct walls and evaluating each candidate geometry using CFD. The objective was to maximise fan-face mass flow rate while tracking total pressure recovery across the duct passage. The entire workflow from geometry generation through to post-processing was automated in Python, allowing a large number of candidate designs to be evaluated without manual intervention.</p></div>
     <div class="stat-row reveal">
@@ -456,8 +472,8 @@
   </section>
 
   <!-- 06 FINAL UAV -->
-  <section id="final" style="background: var(--bg);">
-    <div class="section-label">06 &mdash; Final UAV Simulations</div>
+  <section id="final" style="background: var(--bg2);">
+    <div class="section-label">07 &mdash; Final UAV Simulations</div>
     <h2 class="section-title reveal">Mission performance <em>assessment</em></h2>
     <div class="two-col reveal">
       <div>
@@ -497,8 +513,8 @@
   </section>
 
   <!-- 07 FLIGHT DYNAMICS -->
-  <section id="flight" style="background: var(--bg2);">
-    <div class="section-label">07 &mdash; Flight Dynamics</div>
+  <section id="flight" style="background: var(--bg);">
+    <div class="section-label">08 &mdash; Flight Dynamics</div>
     <h2 class="section-title reveal">Trim, stability <em>&amp; control analysis</em></h2>
     <div class="prose reveal"><p>A MATLAB/Simulink six-degree-of-freedom flight simulation model was assembled to evaluate whether the CFD-derived aerodynamic and propulsion data could support steady flight and manoeuvring across the operating envelope. The model assembles aerodynamic lookup tables into a rigid-body 6-DOF formulation with a Newton-style trim solver and local linearisation at each operating point.</p></div>
     <div class="two-col reveal" style="margin-top: 48px;">
@@ -517,8 +533,8 @@
   </section>
 
   <!-- 08 ML SURROGATE -->
-  <section id="ml" style="background: var(--bg);">
-    <div class="section-label">08 &mdash; Machine Learning Surrogate</div>
+  <section id="ml" style="background: var(--bg2);">
+    <div class="section-label">09 &mdash; Machine Learning Surrogate</div>
     <h2 class="section-title reveal">Physics-informed <em>aerodynamic surrogate</em></h2>
     <div class="prose reveal"><p>To accelerate future design iteration, a physics-informed machine learning surrogate was developed &mdash; a Dynamic Graph Convolutional Neural Network (DGCNN) combined with a FiLM-conditioned SIREN field head (PIDGCNN), trained to predict aerodynamic scalar forces and full mid-plane flow fields from surface point cloud geometry and operating condition inputs.</p></div>
     <div class="card-grid-3 reveal">
@@ -554,8 +570,8 @@
   </section>
 
   <!-- 09 CONCLUSIONS -->
-  <section id="limitations" style="background: var(--bg2);">
-    <div class="section-label">09 &mdash; Limitations &amp; Future Work</div>
+  <section id="limitations" style="background: var(--bg);">
+    <div class="section-label">10 &mdash; Limitations &amp; Future Work</div>
     <h2 class="section-title reveal">What it does <em>not</em> show</h2>
     <div class="two-col reveal" style="margin-top:40px;">
       <div>
@@ -578,8 +594,8 @@
   </section>
 
   <!-- 10 KEY TAKEAWAYS -->
-  <section id="conclusions" style="background: var(--bg);">
-    <div class="section-label">10 &mdash; Key Takeaways</div>
+  <section id="conclusions" style="background: var(--bg2);">
+    <div class="section-label">11 &mdash; Key Takeaways</div>
     <h2 class="section-title reveal">What the project <em>demonstrated</em></h2>
     <div class="card-grid-3 reveal">
       <div class="content-card"><h4>Propulsion &amp; Design</h4><p>While solid propellant offers substantially higher peak thrust, the EDF configuration better satisfies manoeuvrability and mission robustness. The hybrid modular design concept successfully served both missions with manageable compromises.</p></div>
@@ -590,8 +606,8 @@
   </section>
 
   <!-- 10 TEAM -->
-  <section id="team" style="background: var(--bg2);">
-    <div class="section-label">11 &mdash; The Team</div>
+  <section id="team" style="background: var(--bg);">
+    <div class="section-label">12 &mdash; The Team</div>
     <h2 class="section-title reveal">Five engineers, <em>one platform</em></h2>
     <div class="prose reveal"><p>Completed for the MSc in Computational Fluid Dynamics at Cranfield University, supervised by Dr Laszlo K&ouml;n&ouml;zsy.</p></div>
     <div class="team-grid reveal">
